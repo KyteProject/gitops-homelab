@@ -1,0 +1,156 @@
+---
+clusterName: &cluster main
+endpoint: https://192.168.10.10:6443
+talosVersion: v1.8.3
+kubernetesVersion: v1.31.3
+
+additionalApiServerCertSans: &sans
+  - 127.0.0.1
+  - ::1
+
+additionalMachineCertSans: *sans
+
+cniConfig:
+  name: none
+
+nodes:
+  - hostname: shiva
+    ipAddress: 192.168.10.10
+    controlPlane: true
+    installDisk: /dev/nvme0n1
+    talosImageURL: factory.talos.dev/installer/cfb759694adabf15484f8318005c7417c4a8051816195b26e057fa3930a07500
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 58:47:ca:78:ea:26
+        dhcp: true
+
+controlPlane:
+  schematic:
+    customization:
+      extraKernelArgs:
+        - talos.platform=metal
+        - reboot=k
+        - mitigations=off
+        - net.ifnames=0
+      systemExtensions:
+        officialExtensions:
+          - siderolabs/binfmt-misc
+          - siderolabs/i915-ucode
+          - siderolabs/intel-ucode
+          - siderolabs/mei
+          - siderolabs/realtek-firmware
+          - siderolabs/thunderbolt
+          - siderolabs/util-linux-tools
+          - siderolabs/v4l-uvc-drivers
+
+  patches:
+    # System Configuration
+    - |-
+      machine:
+        time:
+          disabled: false
+          servers:
+            - time.cloudflare.com
+    - |-
+      machine:
+        sysctls:
+          fs.inotify.max_user_watches: 524288
+          fs.inotify.max_user_instances: 8192
+          fs.inotify.max_queued_events: 65536
+          net.core.rmem_max: 7500000
+          net.core.wmem_max: 7500000
+    - |-
+      machine:
+        kernel:
+          modules:
+            - name: nbd
+            - name: thunderbolt
+            - name: thunderbolt_net
+    - |-
+      machine:
+        udev:
+          rules:
+            - ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
+            - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
+
+    # Container Runtime Configuration
+    - |-
+      machine:
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |-
+              [plugins."io.containerd.grpc.v1.cri"]
+                enable_unprivileged_ports = true
+                enable_unprivileged_icmp = true
+              [plugins."io.containerd.grpc.v1.cri".containerd]
+                discard_unpacked_layers = false
+              [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.runc]
+                discard_unpacked_layers = false
+
+    # Networking Configuration
+    - |-
+      machine:
+        features:
+          hostDNS:
+            enabled: true
+            resolveMemberNames: true
+            forwardKubeDNSToHost: false
+    - |-
+      cluster:
+        discovery:
+          enabled: true
+          registries:
+            kubernetes:
+              disabled: false
+            service:
+              disabled: false
+
+    # Kubernetes Configuration
+    - |-
+      machine:
+        kubelet:
+          disableManifestsDirectory: true
+          defaultRuntimeSeccompProfileEnabled: true
+          extraArgs:
+            rotate-server-certificates: false
+            image-gc-high-threshold: 55
+            image-gc-low-threshold: 50
+          nodeIP:
+            validSubnets:
+              - 192.168.10.0/24
+    - |-
+      machine:
+        features:
+          kubePrism:
+            enabled: true
+            port: 7445
+    - |-
+      cluster:
+        allowSchedulingOnControlPlanes: true
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        coreDNS:
+          disabled: true
+        etcd:
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
+          advertisedSubnets:
+            - 192.168.10.0/24
+        proxy:
+          disabled: true
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
+
+    # Security Configuration
+    - |-
+      machine:
+        features:
+          kubernetesTalosAPIAccess:
+            enabled: true
+            allowedRoles:
+              - os:admin
+            allowedKubernetesNamespaces:
+              - system-upgrade

@@ -1,0 +1,32 @@
+{
+  "editor.bracketPairColorization.enabled": true,
+  "editor.fontFamily": "FiraCode Nerd Font",
+  "editor.fontLigatures": true,
+  "editor.guides.bracketPairs": true,
+  "editor.guides.bracketPairsHorizontal": true,
+  "editor.guides.highlightActiveBracketPair": true,
+  "editor.hover.delay": 1500,
+  "editor.rulers": [100],
+  "editor.stickyScroll.enabled": false,
+  "explorer.autoReveal": false,
+  "files.associations": {
+    "**/*justfile": "just",
+    "**/*.just": "just"
+  },
+  "files.trimTrailingWhitespace": true,
+  "material-icon-theme.folders.associations": {
+    // .github
+    ".github/workflows": "robot",
+    // namespaces
+    "cert-manager": "guard",
+    "default": "home",
+    "rook-ceph": "base",
+    "storage": "dump",
+    "tools": "tools",
+    "volsync": "aws"
+  },
+  "yaml.schemaStore.enable": true,
+  "yaml.schemas": {
+    "kubernetes": "./kubernetes/**/*.yaml"
+  }
+}

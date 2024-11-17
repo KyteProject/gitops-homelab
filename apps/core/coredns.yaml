@@ -1,0 +1,17 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: coredns
+  namespace: flux-system
+spec:
+  interval: 10m
+  dependsOn:
+    - name: cilium
+  path: ./apps/core/coredns/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: gitops-homelab
+  wait: true
+  timeout: 5m

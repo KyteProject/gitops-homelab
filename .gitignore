@@ -1,0 +1,16 @@
+.env/
+*.log
+kubeconfig
+talosconfig
+.DS_Store
+.DS_Store?
+._*
+ehthumbs.db
+Thumbs.db
+vendor/
+node_modules/
+deps/
+*.key
+age.key
+keys.txt
+.env
