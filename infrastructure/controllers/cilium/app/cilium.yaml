@@ -42,7 +42,6 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: cilium-helm-values
-      namespace: kube-system
   # values:
   #   hubble:
   #     enabled: true
