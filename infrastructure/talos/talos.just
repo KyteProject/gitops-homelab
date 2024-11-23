@@ -8,6 +8,8 @@ conf_file := "clusterconfig/talosconfig"
 secret_file := "talsecret.sops.yaml"
 helm_file := "apps/helmfile.yaml"
 
+cluster := "main"
+
 # Talos: Generate Secrets
 @secrets:
   talhelper gensecret > {{secret_file}}
@@ -32,14 +34,12 @@ helm_file := "apps/helmfile.yaml"
   until echo Bootstrapping node: {{TALOS_CONTROLLER}} && talosctl bootstrap -n {{TALOS_CONTROLLER}}; do sleep 10; done
 
 # Talos: Bootstrap core apps
-bootstrap-apps:
-  # until kubectl wait --for=condition=Ready=False nodes --all --timeout=10m; do sleep 10; done
-  helmfile -f {{helm_file}} apply --skip-diff-on-install --suppress-diff
-  # until kubectl wait --for=condition=Ready nodes --all --timeout=10m; do sleep 10; done
+@bootstrap-apps:
+  helmfile --quiet --kube-context admin@{{cluster}} -f {{helm_file}} apply --skip-diff-on-install --suppress-diff
 
 # Talos: Get kubeconfig
 @kubeconfig:
-  talosctl kubeconfig -n {{TALOS_CONTROLLER}}
+  talosctl --context {{cluster}} kubeconfig --force-context-name {{cluster}} --talosconfig=./clusterconfig/talosconfig --nodes={{TALOS_CONTROLLER}} -f ../../clusters/{{cluster}}/kubeconfig
 
 # Talos: Reset node {nodeIp}
 @reset-node node:

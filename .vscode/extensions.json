@@ -1,0 +1,8 @@
+{
+  "recommendations": [
+    "mikestead.dotenv",
+    "mitchdenny.ecdc",
+    "redhat.vscode-yaml",
+    "signageos.signageos-vscode-sops"
+  ]
+}

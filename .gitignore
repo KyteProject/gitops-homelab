@@ -14,3 +14,11 @@ deps/
 age.key
 keys.txt
 .env
+**/*.env
+**/*.env.yaml
+*.key
+*.csr
+github-deploy.key.pub
+cluster-secrets.sops.yaml
+github-deploy.key
+**/kubeconfig

@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+metadata:
+  name: system-controllers
+namespace: kube-system
+resources:
+  - cilium
+  - coredns
+  - kubelet-csr-approver
+  - spegel
