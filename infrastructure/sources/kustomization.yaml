@@ -1,6 +1,3 @@
-# Source definitions
-# Lists helmrepositories.yaml as a resource
----
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
