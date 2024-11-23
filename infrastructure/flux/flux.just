@@ -33,7 +33,7 @@
   kubectl delete -n flux-system gitrepository flux-system
 
   # Uninstall Flux completely
-  flux uninstall --namespace=flux-system -y
+  flux uninstall --namespace=flux-system
 
 @logs:
   flux logs -A
