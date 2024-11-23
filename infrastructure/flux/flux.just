@@ -21,3 +21,19 @@
     --kustomization-file ./clusters/main/apps/core/core.yaml \
     --dry-run
 
+
+@reset:
+  # Delete the existing kustomizations
+  kubectl delete kustomization -n flux-system --all
+
+  # Delete the Flux cache directory in the tmp folder
+  kubectl exec -n flux-system deploy/kustomize-controller -- rm -rf /tmp/kustomization-*
+
+  # Delete the source artifacts
+  kubectl delete -n flux-system gitrepository flux-system
+
+  # Uninstall Flux completely
+  flux uninstall --namespace=flux-system -y
+
+@logs:
+  flux logs -A
