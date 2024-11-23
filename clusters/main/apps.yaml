@@ -7,11 +7,11 @@ metadata:
 spec:
   interval: 10m0s
   dependsOn:
-    - name: infra-sources
+    - name: infra-configs
   sourceRef:
     kind: GitRepository
     name: flux-system
-  path: ./clusters/main/apps
+  path: ./apps
   prune: true
   wait: true
-  timeout: 5m
+  timeout: 5m0s
