@@ -29,3 +29,8 @@ _default:
   just talos bootstrap
   just talos kubeconfig
   just talos bootstrap-apps
+
+@encrypt-secrets:
+  sops encrypt --output ./clusters/main/flux-system/vars/cluster-secrets.secret.sops.yaml --output-type yaml clusters/main/flux-system/vars/cluster-secrets.sops.yaml
+  sops --encrypt --in-place ./clusters/main/flux-system/age-key.sops.yaml
+  sops --encrypt --in-place ./clusters/main/flux-system/github-deploy-key.sops.yaml

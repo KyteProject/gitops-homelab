@@ -19,3 +19,5 @@ keys.txt
 *.key
 *.csr
 github-deploy.key.pub
+cluster-secrets.sops.yaml
+github-deploy.key

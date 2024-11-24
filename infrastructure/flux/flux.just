@@ -16,7 +16,6 @@
     --branch=main \
     --cluster=main \
     --path=./clusters/main \
-    --path=./infrastructure/flux \
     --personal \
     --network-policy=false \
 
