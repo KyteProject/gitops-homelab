@@ -1,0 +1,4 @@
+---
+replicas: 1
+bypassDnsResolution: true
+providerRegex: ^(shiva)$
