@@ -12,7 +12,8 @@ spec:
   prune: false
   sourceRef:
     kind: GitRepository
-    name: kube-system
+    name: flux-system
+  targetNamespace: kube-system
   decryption:
     provider: sops
     secretRef:
