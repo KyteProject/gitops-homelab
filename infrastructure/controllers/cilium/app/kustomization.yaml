@@ -1,11 +1,11 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+namespace: kube-system
 resources:
   - cilium.yaml
 configMapGenerator:
   - name: cilium-helm-values
+    namespace: kube-system
     files:
-      - values.yaml
-configurations:
-  - kustomizeconfig.yaml
+      - values.yaml=values.yaml
