@@ -3,38 +3,25 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: gitops-homelab
+  name: flux-system
   namespace: flux-system
 spec:
   interval: 1m0s
   ref:
     branch: main
   secretRef:
-    name: github-deploy-key
+    name: flux-system
   url: ssh://git@github.com/KyteProject/gitops-homelab
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: cluster
+  name: flux-system
   namespace: flux-system
 spec:
-  interval: 15m
+  interval: 10m0s
   path: ./clusters/main
   prune: true
-  wait: false
   sourceRef:
     kind: GitRepository
-    name: k8s-gitops
-  decryption:
-    provider: sops
-    secretRef:
-      name: gitops-homelab
-  postBuild:
-    substituteFrom:
-      - kind: ConfigMap
-        name: cluster-settings
-        optional: false
-      - kind: Secret
-        name: cluster-secrets
-        optional: true
+    name: flux-system
