@@ -25,7 +25,7 @@ releases:
     chart: cilium/cilium
     version: 1.16.4
     values:
-      - ../../../apps/core/cilium/app/values.yaml
+      - ../../controllers/base/cilium/values.yaml
     needs:
       - monitoring/prometheus-operator-crds
     wait: true
@@ -35,7 +35,7 @@ releases:
     chart: coredns/coredns
     version: 1.36.1
     values:
-      - ../../../apps/core/coredns/app/values.yaml
+      - ../../controllers/base/coredns/values.yaml
     needs:
       - monitoring/prometheus-operator-crds
       - cilium
@@ -46,7 +46,7 @@ releases:
     chart: postfinance/kubelet-csr-approver
     version: 1.2.3
     values:
-      - ../../../apps/core/kubelet-csr-approver/app/values.yaml
+      - ../../controllers/base/kubelet-csr-approver/values.yaml
     needs:
       - monitoring/prometheus-operator-crds
       - cilium
@@ -58,7 +58,7 @@ releases:
     chart: oci://ghcr.io/spegel-org/helm-charts/spegel
     version: v0.0.27
     values:
-      - ../../../apps/core/spegel/app/values.yaml
+      - ../../controllers/base/spegel/values.yaml
     needs:
       - monitoring/prometheus-operator-crds
       - kube-system/cilium

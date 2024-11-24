@@ -39,7 +39,8 @@ bootstrap-apps:
 
 # Talos: Get kubeconfig
 @kubeconfig:
-  talosctl kubeconfig -n {{TALOS_CONTROLLER}}
+  talosctl kubeconfig ../.. --talosconfig=./clusterconfig/talosconfig --nodes={{TALOS_CONTROLLER}} -f
+  # talosctl kubeconfig -n {{TALOS_CONTROLLER}}
 
 # Talos: Reset node {nodeIp}
 @reset-node node:
