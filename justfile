@@ -3,6 +3,10 @@
 set dotenv-load := true
 set export
 
+BOOTSTRAP_DIR := "./infrastructure/flux/bootstrap"
+KUBERNETES_DIR := "./clusters"
+ROOT_DIR := "."
+
 mod talos 'infrastructure/talos/talos.just'
 mod netboot 'infrastructure/netboot/netboot.just'
 mod flux 'infrastructure/flux/flux.just'
