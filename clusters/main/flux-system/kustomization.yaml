@@ -3,7 +3,6 @@ kind: Kustomization
 resources:
   - gotk-components.yaml
   - gotk-sync.yaml
-  - github.com/fluxcd/flux2/manifests/install?ref=v2.4.0
 patches:
   # Remove image automation and image reflector controllers
   - patch: |
