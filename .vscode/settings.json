@@ -25,8 +25,10 @@
     "tools": "tools",
     "volsync": "aws"
   },
-  "yaml.schemaStore.enable": true,
-  "yaml.schemas": {
-    "kubernetes": "./kubernetes/**/*.yaml"
-  }
+  "vs-kubernetes": {
+    "vs-kubernetes.kubeconfig": "./kubeconfig",
+    "vs-kubernetes.knownKubeconfigs": ["./kubeconfig"]
+  },
+  "sops.defaults.ageKeyFile": "age.key",
+  "yaml.schemaStore.enable": true
 }

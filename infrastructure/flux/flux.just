@@ -6,19 +6,20 @@
   kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
 
   # Apply encrypted secrets before bootstrap
-  sops --decrypt ../../clusters/main/flux-system/age-key.sops.yaml | kubectl apply --server-side  -f -
-  sops --decrypt ../../clusters/main/flux-system/github-deploy-key.sops.yaml | kubectl apply --server-side  -f -
+  sops --decrypt ./age-key.sops.yaml | kubectl apply --server-side  -f -
+  sops --decrypt ./github-deploy-key.sops.yaml | kubectl apply --server-side  -f -
 
   # Bootstrap flux with GitHub repository
   flux bootstrap github \
     --owner=${GITHUB_USER} \
     --repository=${GITHUB_REPO} \
     --branch=main \
+    --cluster=main \
     --path=./clusters/main \
+    --path=./infrastructure/flux/repos \
     --personal \
-    --components-extra=image-reflector-controller,image-automation-controller \
-    --read-write-key \
-    --network-policy=false
+    --network-policy=false \
+
 
 # Test flux builds
 @test-flux:

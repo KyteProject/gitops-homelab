@@ -18,4 +18,4 @@ keys.txt
 **/*.env.yaml
 *.key
 *.csr
-
+github-deploy.key.pub

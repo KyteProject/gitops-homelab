@@ -3,14 +3,14 @@
 apiVersion: source.toolkit.fluxcd.io/v1
 kind: GitRepository
 metadata:
-  name: flux-system
+  name: gitops-homelab
   namespace: flux-system
 spec:
-  interval: 1m0s
+  interval: 1m
   ref:
     branch: main
   secretRef:
-    name: flux-system
+    name: github-deploy-key
   url: ssh://git@github.com/KyteProject/gitops-homelab
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -25,3 +25,17 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: cluster-shared
+  namespace: flux-system
+spec:
+  interval: 30m
+  path: ./infrastructure/flux
+  prune: true
+  wait: true
+  sourceRef:
+    kind: GitRepository
+    name: home-kubernetes
