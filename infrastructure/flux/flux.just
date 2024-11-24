@@ -13,8 +13,17 @@ export KUBERNETES_DIR := "../../clusters"
     sops --decrypt ${BOOTSTRAP_DIR}/github-deploy-key.secret.sops.yaml | kubectl apply --server-side -f -
     sops --decrypt ${KUBERNETES_DIR}/{{cluster}}/flux-system/vars/cluster-secrets.secret.sops.yaml | kubectl apply --server-side -f -
 
-    # Install Flux Kustomization resources
-    kubectl apply --server-side --kustomize ${KUBERNETES_DIR}/{{cluster}}/flux-system
+    flux bootstrap github \
+    --owner=${GITHUB_USER} \
+    --repository=${GITHUB_REPO} \
+    --branch=main \
+    --path=./clusters/main \
+    --personal \
+    --components-extra=image-reflector-controller,image-automation-controller \
+    --read-write-key \
+    --network-policy=false
+
+
 
 # Test flux builds
 @test-flux:
