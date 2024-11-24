@@ -6,6 +6,7 @@ resources:
   - cilium.yaml
 configMapGenerator:
   - name: cilium-helm-values
-    namespace: kube-system
     files:
-      - values.yaml=values.yaml
+      - .values.yaml
+generatorOptions:
+  disableNameSuffixHash: true
