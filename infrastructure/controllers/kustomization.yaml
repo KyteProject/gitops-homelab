@@ -7,4 +7,5 @@ resources:
   - cilium
   - coredns
   - kubelet-csr-approver
+  - reloader
   - spegel
