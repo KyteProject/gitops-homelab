@@ -11,7 +11,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  path: ./infrastructure/controllers
+  path: ./infrastructure/controllers/kube-system
   prune: true
   wait: true
   decryption:
