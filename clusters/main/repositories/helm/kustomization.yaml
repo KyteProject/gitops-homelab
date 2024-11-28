@@ -8,3 +8,5 @@ resources:
   - ./grafana.yaml
   - ./ingress-nginx.yaml
   - ./postfinance.yaml
+  - ./jetstack.yaml
+  - ./metrics-server.yaml
