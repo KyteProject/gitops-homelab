@@ -21,3 +21,13 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  values:
+    fullnameOverride: *app
+    reloader:
+      enableHA: true
+      deployment:
+        replicas: 2
+      readOnlyRootFileSystem: true
+      podMonitor:
+        enabled: true
+        namespace: "{{ .Release.Namespace }}"

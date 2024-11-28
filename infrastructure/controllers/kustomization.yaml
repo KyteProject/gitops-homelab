@@ -6,6 +6,7 @@ namespace: kube-system
 resources:
   - cilium
   - coredns
+  - descheduler
   - kubelet-csr-approver
   - metrics-server
   - reloader
