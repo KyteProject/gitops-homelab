@@ -22,3 +22,7 @@ github-deploy.key.pub
 cluster-secrets.sops.yaml
 github-deploy.key
 **/kubeconfig
+1password-credentials.json
+1password-connect.sops.yaml
+onepassword-credentials.json
+onepassword-connect.sops.yaml

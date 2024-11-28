@@ -7,7 +7,7 @@ creation_rules:
     key_groups:
       - age:
           - age1j05ehe53s6a3zmdgqqvj7g6hm42g0h56ga4vxsr4u52kjpagrefqnaa87c
-  - path_regex: infrastructure/.*(secret|secrets|deploy-key|age-key)(\.sops)?\.ya?ml
+  - path_regex: infrastructure/.+\.*(secret|secrets|deploy-key|age-key)(\.sops)?\.ya?ml
     input_type: yaml
     encrypted_regex: ^(data|stringData)$
     mac_only_encrypted: true

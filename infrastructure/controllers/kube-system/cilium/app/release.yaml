@@ -53,10 +53,10 @@ spec:
           enabled: true
           className: internal
           annotations:
-            external-dns.alpha.kubernetes.io/target: internal.omuxlab.com
+            external-dns.alpha.kubernetes.io/target: internal.omux.io
             hajimari.io/icon: simple-icons:cilium
           hosts:
-            - &host hubble.omuxlab.com
+            - &host hubble.omux.io
           tls:
             - hosts:
                 - *host

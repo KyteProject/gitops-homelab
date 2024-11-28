@@ -4,13 +4,13 @@ metadata:
   name: system-controllers
   labels:
     kustomize.toolkit.fluxcd.io/prune: disabled
-namespace: kube-system
 resources:
-  - cilium
-  - coredns
-  - descheduler
-  - intel-device-plugin
-  - kubelet-csr-approver
-  - metrics-server
-  - reloader
-  - spegel
+  - cilium/ks.yaml
+  - coredns/ks.yaml
+  - descheduler/ks.yaml
+  - intel-device-plugin/ks.yaml
+  - irqbalance/ks.yaml
+  - kubelet-csr-approver/ks.yaml
+  - metrics-server/ks.yaml
+  - reloader/ks.yaml
+  - spegel/ks.yaml

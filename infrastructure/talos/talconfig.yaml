@@ -1,6 +1,6 @@
 ---
 clusterName: &cluster main
-endpoint: https://192.168.10.10:6443
+endpoint: https://192.168.10.200:6443
 talosVersion: v1.8.3
 kubernetesVersion: v1.31.3
 
@@ -11,6 +11,7 @@ clusterSvcNets:
 
 additionalApiServerCertSans: &sans
   - 127.0.0.1
+  - 192.168.10.200
   - ::1
 
 additionalMachineCertSans: *sans
@@ -28,6 +29,8 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:ea:26
         dhcp: true
+        vip:
+          ip: 192.168.10.200
 
   - hostname: ifrit
     ipAddress: 192.168.10.11
@@ -38,8 +41,12 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
         dhcp: true
+        vip:
+          ip: 192.168.10.200
 
 controlPlane:
+  nodeLabels:
+    topology.kubernetes.io/region: *cluster
   schematic:
     customization:
       extraKernelArgs:
@@ -119,14 +126,16 @@ controlPlane:
             kubernetes:
               disabled: false
             service:
-              disabled: false
+              disabled: true
+    - |-
+      machine:
+        network:
+          disableSearchDomain: true
 
     # Kubernetes Configuration
     - |-
       machine:
         kubelet:
-          disableManifestsDirectory: true
-          defaultRuntimeSeccompProfileEnabled: true
           extraArgs:
             rotate-server-certificates: false
             image-gc-high-threshold: 55
@@ -143,6 +152,9 @@ controlPlane:
     - |-
       cluster:
         allowSchedulingOnControlPlanes: true
+        apiServer:
+          extraArgs:
+            enable-aggregator-routing: true
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0
@@ -158,6 +170,19 @@ controlPlane:
         scheduler:
           extraArgs:
             bind-address: 0.0.0.0
+          config:
+            apiVersion: kubescheduler.config.k8s.io/v1
+            kind: KubeSchedulerConfiguration
+            profiles:
+              - schedulerName: default-scheduler
+                pluginConfig:
+                  - name: PodTopologySpread
+                    args:
+                      defaultingType: List
+                      defaultConstraints:
+                        - maxSkew: 1
+                          topologyKey: kubernetes.io/hostname
+                          whenUnsatisfiable: ScheduleAnyway
 
     # Security Configuration
     - |-

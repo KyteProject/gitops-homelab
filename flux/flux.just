@@ -18,8 +18,7 @@ export KUBERNETES_DIR := "../clusters"
     --repository=${GITHUB_REPO} \
     --branch=main \
     --path=./clusters/main \
-    --personal \
-    --components-extra=image-reflector-controller,image-automation-controller
+    --personal
 
 # Test flux builds
 @test:
