@@ -44,7 +44,6 @@ spec:
       - --zone-id-filter=$(CF_ZONE_ID)
     policy: sync
     sources:
-      - crd
       - ingress
     txtOwnerId: main
     txtPrefix: k8s.
