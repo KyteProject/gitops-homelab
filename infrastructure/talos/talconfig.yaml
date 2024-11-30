@@ -29,8 +29,20 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:ea:26
         dhcp: true
-        vip:
-          ip: 192.168.10.200
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 192.168.10.10/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.10.1
+            vip:
+              ip: 192.168.10.200
+          - vlanId: 20
+            dhcp: false
+            mtu: 1500
 
   - hostname: ifrit
     ipAddress: 192.168.10.11
@@ -41,8 +53,20 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
         dhcp: true
-        vip:
-          ip: 192.168.10.200
+        vlans:
+          - vlanId: 10
+            dhcp: false
+            addresses:
+              - 192.168.10.11/24
+            mtu: 9000
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.10.1
+            vip:
+              ip: 192.168.10.200
+          - vlanId: 20
+            dhcp: false
+            mtu: 1500
 
 controlPlane:
   nodeLabels:
