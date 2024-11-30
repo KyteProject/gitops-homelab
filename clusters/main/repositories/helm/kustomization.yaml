@@ -4,13 +4,12 @@ kind: Kustomization
 resources:
   - cilium.yaml
   - coredns.yaml
+  - descheduler.yaml
   - external-dns.yaml
   - external-secrets.yaml
   - grafana.yaml
   - ingress-nginx.yaml
   - intel.yaml
   - jetstack.yaml
-  - kubernetes-sigs-descheduler.yaml
   - metrics-server.yaml
   - postfinance.yaml
-

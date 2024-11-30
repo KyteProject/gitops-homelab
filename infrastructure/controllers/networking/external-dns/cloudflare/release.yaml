@@ -1,0 +1,61 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app external-dns-cloudflare
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: external-dns
+      version: 1.15.0
+      sourceRef:
+        kind: HelmRepository
+        name: external-dns
+        namespace: flux-system
+  install:
+    crds: CreateReplace
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    crds: CreateReplace
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    fullnameOverride: *app
+    provider: cloudflare
+    env:
+      - name: &name CF_API_TOKEN
+        valueFrom:
+          secretKeyRef:
+            name: &secret external-dns-cloudflare-secret
+            key: *name
+      - name: &name CF_ZONE_ID
+        valueFrom:
+          secretKeyRef:
+            name: *secret
+            key: *name
+    extraArgs:
+      - --cloudflare-dns-records-per-page=1000
+      - --annotation-filter=external-dns.alpha.kubernetes.io/target
+      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
+      - --crd-source-kind=DNSEndpoint
+      - --events
+      - --ignore-ingress-tls-spec
+      - --cloudflare-proxied
+      - --ingress-class=external
+      - --zone-id-filter=$(CF_ZONE_ID)
+    policy: sync
+    sources:
+      - crd
+      - ingress
+    txtOwnerId: main
+    txtPrefix: k8s.
+    domainFilters:
+      - omux.io
+    serviceMonitor:
+      enabled: true
+    podAnnotations:
+      secret.reloader.stakater.com/reload: *secret
