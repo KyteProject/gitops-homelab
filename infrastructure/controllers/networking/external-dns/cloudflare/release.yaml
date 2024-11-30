@@ -38,12 +38,7 @@ spec:
             name: *secret
             key: *name
     extraArgs:
-      - --cloudflare-dns-records-per-page=1000
       - --annotation-filter=external-dns.alpha.kubernetes.io/target
-      - --crd-source-apiversion=externaldns.k8s.io/v1alpha1
-      - --crd-source-kind=DNSEndpoint
-      - --events
-      - --ignore-ingress-tls-spec
       - --cloudflare-proxied
       - --ingress-class=external
       - --zone-id-filter=$(CF_ZONE_ID)
