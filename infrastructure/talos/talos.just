@@ -8,6 +8,8 @@ conf_file := "clusterconfig/talosconfig"
 secret_file := "talsecret.sops.yaml"
 helm_file := "apps/helmfile.yaml"
 
+timestamp := `date +%Y-%m-%d`
+
 cluster := "main"
 
 # Talos: Generate Secrets
@@ -48,3 +50,9 @@ cluster := "main"
 # Talos: Reset cluster
 @reset-cluster:
   talosctl reset --nodes {{nodes}} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --graceful=false --reboot
+
+# Talos: Take snapshots
+@snapshot:
+  talosctl -n 192.168.10.10 etcd snapshot snapshots/{{timestamp}}-shiva-snapshot.db
+  talosctl -n 192.168.10.11 etcd snapshot snapshots/{{timestamp}}-ifrit-snapshot.db
+  talosctl -n 192.168.10.12 etcd snapshot snapshots/{{timestamp}}-ramuh-snapshot.db

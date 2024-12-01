@@ -26,3 +26,4 @@ github-deploy.key
 1password-connect.sops.yaml
 onepassword-credentials.json
 onepassword-connect.sops.yaml
+*snapshot.db
