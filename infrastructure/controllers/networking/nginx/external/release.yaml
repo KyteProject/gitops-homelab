@@ -81,7 +81,7 @@ spec:
       service:
         annotations:
           external-dns.alpha.kubernetes.io/hostname: external.omux.io
-          # lbipam.cilium.io/ips: ${NET_SERVICES_INGRESS_IP_EXT}
+          lbipam.cilium.io/ips: ${NET_SERVICES_INGRESS_IP_EXT}
       terminationGracePeriodSeconds: 120
     defaultBackend:
       enabled: false

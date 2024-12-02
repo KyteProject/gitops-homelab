@@ -1,7 +1,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: system-controllers
+  name: apps
   namespace: flux-system
 spec:
   interval: 15m
@@ -10,10 +10,8 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
-    namespace: flux-system
-  path: ./infrastructure/controllers
+  path: ./clusters/main/apps
   prune: true
-  wait: true
   decryption:
     provider: sops
     secretRef:
@@ -45,41 +43,21 @@ spec:
         group: kustomize.toolkit.fluxcd.io
         kind: Kustomization
         labelSelector: substitution.flux.home.arpa/disabled notin (true)
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: system-configs
-#   namespace: flux-system
-# spec:
-#   interval: 15m
-#   retryInterval: 3m
-#   timeout: 2m
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#     namespace: flux-system
-#   path: ./cluster/system/configs
-#   prune: true
-#   wait: true
-#   dependsOn:
-#     - name: system-controllers
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1
-# kind: Kustomization
-# metadata:
-#   name: system-misc
-#   namespace: flux-system
-# spec:
-#   interval: 15m
-#   retryInterval: 3m
-#   timeout: 2m
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#     namespace: flux-system
-#   path: ./cluster/system/misc
-#   prune: true
-#   wait: true
-#   dependsOn:
-#     - name: system-controllers
+# # ---
+# # apiVersion: kustomize.toolkit.fluxcd.io/v1
+# # kind: Kustomization
+# # metadata:
+# #   name: infra-configs
+# #   namespace: flux-system
+# # spec:
+# #   targetNamespace: kube-system
+# #   dependsOn:
+# #     - name: infra-controllers
+# #   interval: 1h
+# #   retryInterval: 1m
+# #   timeout: 5m
+# #   sourceRef:
+# #     kind: GitRepository
+# #     name: flux-system
+# #   path: ./infrastructure/configs
+# #   prune: true

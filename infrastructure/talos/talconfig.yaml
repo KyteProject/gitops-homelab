@@ -42,7 +42,7 @@ nodes:
               ip: 192.168.10.200
           - vlanId: 20
             addresses:
-              - 192.168.20.10/24
+              - 192.168.20.5/24
             mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # ifrit
@@ -76,7 +76,7 @@ nodes:
               ip: 192.168.10.200
           - vlanId: 20
             addresses:
-              - 192.168.20.11/24
+              - 192.168.20.6/24
             mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # shiva
@@ -174,7 +174,12 @@ controlPlane:
     - |-
       machine:
         network:
-          disableSearchDomain: false
+          disableSearchDomain: true
+    - |-
+      machine:
+        network:
+          nameservers:
+            - 192.168.10.1
 
     # Kubernetes Configuration
     - |-

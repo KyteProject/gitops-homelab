@@ -1,64 +1,85 @@
+# ---
+# apiVersion: cilium.io/v2alpha1
+# kind: CiliumBGPPeeringPolicy
+# metadata:
+#   name: l3-policy
+# spec:
+#   nodeSelector:
+#     matchLabels:
+#       kubernetes.io/os: linux
+#   virtualRouters:
+#     - localASN: 64514
+#       exportPodCIDR: false
+#       serviceSelector:
+#         matchExpressions:
+#           - key: thisFakeSelector
+#             operator: NotIn
+#             values:
+#               - will-match-and-announce-all-services
+#       neighbors:
+#         - peerAddress: ${NET_LOCAL_GATEWAY_IP}/32
+#           peerASN: 64513
 ---
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPAdvertisement
 metadata:
-  name: l3-policy
+  name: cilium-bgp-advertisement
+  labels:
+    advertise: bgp
+spec:
+  advertisements:
+    - advertisementType: "PodCIDR"
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchExpressions:
+          - { key: somekey, operator: NotIn, values: ["never-used-value"] }
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-bgp-peer-config-ipv4
+spec:
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchLabels:
+          advertise: "bgp"
+  gracefulRestart:
+    enabled: true
+    restartTimeSeconds: 30
+  timers:
+    connectRetryTimeSeconds: 12
+    holdTimeSeconds: 9
+    keepAliveTimeSeconds: 3
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp-cluster-config
 spec:
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
-  virtualRouters:
-    - localASN: 64514
-      exportPodCIDR: false
-      serviceSelector:
-        matchExpressions:
-          - key: thisFakeSelector
-            operator: NotIn
-            values:
-              - will-match-and-announce-all-services
-      neighbors:
-        - peerAddress: ${NET_LOCAL_GATEWAY_IP}/32
+  bgpInstances:
+    - name: "instance-64514"
+      localASN: 64514
+      peers:
+        - name: "peer-64513-ipv4"
           peerASN: 64513
-# ---
-# apiVersion: "cilium.io/v2alpha1"
-# kind: CiliumBGPAdvertisement
-# metadata:
-#   name: cilium-bgp-advertisement
-#   labels:
-#     advertise: bgp
-# spec:
-#   advertisements:
-#     - advertisementType: "PodCIDR"
-#     - advertisementType: "Service"
-#       service:
-#         addresses:
-#           - LoadBalancerIP
-#       selector:
-#         matchExpressions:
-#           - { key: somekey, operator: NotIn, values: ["never-used-value"] }
-# ---
-# apiVersion: "cilium.io/v2alpha1"
-# kind: CiliumBGPPeerConfig
-# metadata:
-#   name: cilium-bgp-peer-config-ipv4
-# spec:
-#   families:
-#     - afi: ipv4
-#       safi: unicast
-#       advertisements:
-#         matchLabels:
-#           advertise: "bgp"
-# ---
-# apiVersion: "cilium.io/v2alpha1"
-# kind: CiliumBGPPeerConfig
-# metadata:
-#   name: cilium-bgp-peer-config-ipv6
-# spec:
-#   ebgpMultihop: 255
-#   families:
-#     - afi: ipv6
-#       safi: unicast
-#       advertisements:
-#         matchLabels:
-#           advertise: "bgp"
+          peerAddress: "192.168.10.1"
+          peerConfigRef:
+            name: "cilium-bgp-peer-config-ipv4"
 ---
+apiVersion: cilium.io/v2alpha1
+kind: CiliumLoadBalancerIPPool
+metadata:
+  name: lb-pool
+spec:
+  allowFirstLastIPs: "No"
+  blocks:
+    - start: "192.168.20.10"
+      stop: "192.168.20.254"

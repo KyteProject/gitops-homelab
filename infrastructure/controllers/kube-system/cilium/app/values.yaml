@@ -7,7 +7,7 @@ bgpControlPlane:
   enabled: true
 bpf:
   masquerade: true
-  preallocateMaps: true
+  # preallocateMaps: true
   tproxy: true
 cgroup:
   automount:
@@ -18,9 +18,7 @@ cluster:
   name: main
 cni:
   exclusive: false
-devices: eth2
-enableIPv4BIGTCP: true
-enableIPv6BIGTCP: true
+devices: eth+
 enableRuntimeDeviceDetection: true
 endpointRoutes:
   enabled: true
@@ -62,8 +60,6 @@ securityContext:
       - IPC_LOCK
       - SYS_ADMIN
       - SYS_RESOURCE
-      - PERFMON
-      - BPF
       - DAC_OVERRIDE
       - FOWNER
       - SETGID

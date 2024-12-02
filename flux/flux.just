@@ -29,6 +29,9 @@ export KUBERNETES_DIR := "../clusters"
 
 @reset:
   flux uninstall --namespace=flux-system
+  kubectl get namespace flux-system -o json \
+  | tr -d "\n" | sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" \
+  | kubectl replace --raw /api/v1/namespaces/flux-system/finalize -f -
 
 @logs:
   flux logs -A
