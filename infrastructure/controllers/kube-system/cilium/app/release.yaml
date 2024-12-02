@@ -54,12 +54,8 @@ spec:
           className: internal
           annotations:
             external-dns.alpha.kubernetes.io/target: internal.omux.io
-            hajimari.io/icon: simple-icons:cilium
           hosts:
-            - &host hubble.omux.io
-          tls:
-            - hosts:
-                - *host
+            - hubble.omux.io
     operator:
       prometheus:
         enabled: true
