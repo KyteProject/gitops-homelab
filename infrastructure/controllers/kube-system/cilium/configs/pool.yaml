@@ -7,3 +7,5 @@ spec:
   allowFirstLastIPs: "No"
   blocks:
     - cidr: 192.168.20.0/24
+      excludeIPs:
+        - 192.168.20.1
