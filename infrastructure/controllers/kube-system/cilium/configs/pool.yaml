@@ -7,3 +7,5 @@ spec:
   allowFirstLastIPs: "No"
   blocks:
     - cidr: ${NET_SERVICES_CIDR}
+      excludeIPs:
+        - 192.168.20.1 # Exclude the gateway IP
