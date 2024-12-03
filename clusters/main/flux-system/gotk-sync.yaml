@@ -25,3 +25,5 @@ spec:
   sourceRef:
     kind: GitRepository
     name: flux-system
+  commonLabels:
+    kustomize.toolkit.fluxcd.io/name: flux-system
