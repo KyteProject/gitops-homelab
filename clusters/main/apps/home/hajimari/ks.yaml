@@ -9,7 +9,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  path: ./clusters/main/apps/hajimari/app
+  path: ./clusters/main/apps/home/hajimari/app
   prune: true
   sourceRef:
     kind: GitRepository
