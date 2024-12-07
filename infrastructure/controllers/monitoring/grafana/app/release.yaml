@@ -119,50 +119,9 @@ spec:
         flux-control-plane:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
           datasource: Prometheus
-        api-server:
-          # renovate: depName="Kubernetes / System / API Server"
-          gnetId: 15761
-          revision: 18
-          datasource: Prometheus
-        coredns:
-          # renovate: depName="Kubernetes / System / CoreDNS"
-          gnetId: 15762
-          revision: 19
-          datasource: Prometheus
-        global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 42
-          datasource: Prometheus
-        namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 41
-          datasource: Prometheus
-        nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 32
-          datasource: Prometheus
-        pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 34
-          datasource: Prometheus
-        volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
-          datasource: Prometheus
         nfd:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
           datasource: Prometheus
-        spegel:
-          # renovate: depName="Spegel"
-          gnetId: 18089
-          revision: 1
-          datasource:
-            - {name: DS_PROMETHEUS, value: Prometheus}
       networking:
         cert-manager:
           url: https://raw.githubusercontent.com/szinn/k8s-homelab/main/kubernetes/main/apps/cert-manager/cert-manager/app/cert-manager-dashboard.json
@@ -173,57 +132,10 @@ spec:
         ingress-nginx-request-handling-performance:
           url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
           datasource: Prometheus
-        external-dns:
-          # renovate: depName="External-DNS"
-          gnetId: 15038
-          revision: 3
-          datasource: Prometheus
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
           datasource: Prometheus
-        unifi-client-dpi:
-          # renovate: depName="Unifi Client DPI"
-          gnetId: 11310
-          revision: 9
-          datasource: Prometheus
-        unifi-usw-insights:
-          # renovate: depName="Unifi USW"
-          gnetId: 11312
-          revision: 9
-          datasource: Prometheus
-        unifi-cg-insights:
-          # renovate: depName="Unifi CG"
-          gnetId: 11313
-          revision: 9
-          datasource: Prometheus
-        unifi-uap-insights:
-          # renovate: depName="Unifi UAP"
-          gnetId: 11314
-          revision: 10
-          datasource: Prometheus
-        unifi-client-insights:
-          # renovate: depName="Unifi Client"
-          gnetId: 11315
-          revision: 9
-          datasource: Prometheus
       default:
-        blackbox-exporter:
-          # renovate: depName="Prometheus Blackbox Exporter"
-          gnetId: 7587
-          revision: 3
-          datasource: Prometheus
-        cert-manager:
-          # renovate: depName="Cert-manager-Kubernetes"
-          gnetId: 20842
-          revision: 3
-          datasource: Prometheus
-        cloudflared:
-          # renovate: depName="Cloudflare Tunnels (cloudflared)"
-          gnetId: 17457
-          revision: 6
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
         emqx-authentication:
           url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/authentication.json
           datasource: Prometheus
@@ -245,11 +157,6 @@ spec:
         emqx-rule-engine-rate:
           url: https://raw.githubusercontent.com/emqx/emqx-exporter/main/grafana-dashboard/template/emqx-5/rule-engine-rate.json
           datasource: Prometheus
-        external-dns:
-          # renovate: depName="External-dns"
-          gnetId: 15038
-          revision: 3
-          datasource: Prometheus
         external-secrets:
           url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
           datasource: Prometheus
@@ -262,58 +169,8 @@ spec:
         flux-logs:
           url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
           datasource: Prometheus
-        kubernetes-api-server:
-          # renovate: depName="Kubernetes / System / API Server"
-          gnetId: 15761
-          revision: 18
-          datasource: Prometheus
-        kubernetes-coredns:
-          # renovate: depName="Kubernetes / System / CoreDNS"
-          gnetId: 15762
-          revision: 19
-          datasource: Prometheus
-        kubernetes-global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 42
-          datasource: Prometheus
-        kubernetes-namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 41
-          datasource: Prometheus
-        kubernetes-nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 32
-          datasource: Prometheus
-        kubernetes-pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 34
-          datasource: Prometheus
-        kubernetes-volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
-          datasource: Prometheus
-        nginx:
-          # renovate: depName="Kubernetes Nginx Ingress Prometheus NextGen"
-          gnetId: 14314
-          revision: 2
-          datasource: Prometheus
-        node-exporter-full:
-          # renovate: depName="Node Exporter Full"
-          gnetId: 1860
-          revision: 37
-          datasource: Prometheus
         node-feature-discovery:
           url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
-          datasource: Prometheus
-        prometheus:
-          # renovate: depName="Prometheus"
-          gnetId: 19105
-          revision: 6
           datasource: Prometheus
 
     sidecar:
