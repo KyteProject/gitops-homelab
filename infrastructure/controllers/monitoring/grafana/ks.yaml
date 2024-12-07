@@ -11,7 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
-  path: ./insrastructure/controllers/monitoring/grafana/app
+  path: ./infrastructure/controllers/monitoring/grafana/app
   prune: true
   sourceRef:
     kind: GitRepository
