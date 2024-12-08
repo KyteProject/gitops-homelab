@@ -4,5 +4,6 @@ kind: Kustomization
 resources:
   - bjw-s.yaml
   - kyverno.yaml
+  - prometheus-community.yaml
   - spegel.yaml
   - stakater.yaml
