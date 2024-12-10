@@ -40,7 +40,7 @@ spec:
             cache_location: var/loki/index_cache
             cache_ttl: 24h
       compactor:
-        working_directory: var/loki/compactor/retention
+        working_directory: /var/loki/compactor/retention
         delete_request_store: filesystem
         retention_enabled: true
       ingester:
