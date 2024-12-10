@@ -62,6 +62,16 @@ spec:
       replicas: 1
       persistence:
         enabled: false
+      storageConfig:
+        tsdb_shipper:
+          active_index_directory: var/loki/index
+          cache_location: var/loki/index_cache
+          cache_ttl: 24h
+    storageConfig:
+      tsdb_shipper:
+        active_index_directory: var/loki/index
+        cache_location: var/loki/index_cache
+        cache_ttl: 24h
     gateway:
       replicas: 0
     backend:
