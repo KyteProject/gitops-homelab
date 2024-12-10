@@ -34,6 +34,11 @@ spec:
         log_level: info
       commonConfig:
         replication_factor: 1
+        storageConfig:
+          tsdb_shipper:
+            active_index_directory: var/loki/index
+            cache_location: var/loki/index_cache
+            cache_ttl: 24h
       compactor:
         working_directory: var/loki/compactor/retention
         delete_request_store: filesystem
@@ -42,6 +47,9 @@ spec:
         chunk_encoding: snappy
       storage:
         type: filesystem
+      rulerConfig:
+        storage:
+          type: local
       storageConfig:
         tsdb_shipper:
           active_index_directory: var/loki/index
@@ -61,17 +69,8 @@ spec:
     singleBinary:
       replicas: 1
       persistence:
-        enabled: false
-      storageConfig:
-        tsdb_shipper:
-          active_index_directory: var/loki/index
-          cache_location: var/loki/index_cache
-          cache_ttl: 24h
-    storageConfig:
-      tsdb_shipper:
-        active_index_directory: var/loki/index
-        cache_location: var/loki/index_cache
-        cache_ttl: 24h
+        enabled: true
+        size: 10Gi
     gateway:
       replicas: 0
     backend:
@@ -106,6 +105,11 @@ spec:
       enabled: false
     test:
       enabled: false
+    monitoring:
+      selfMonitoring:
+        enabled: false
+        grafanaAgent:
+          installOperator: false
     sidecar:
       image:
         repository: ghcr.io/kiwigrid/k8s-sidecar
