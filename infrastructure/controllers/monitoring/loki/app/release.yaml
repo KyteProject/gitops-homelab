@@ -34,6 +34,12 @@ spec:
         log_level: info
       commonConfig:
         replication_factor: 1
+        extraVolumes:
+          - name: tsdb
+            emptyDir: {}
+        extraVolumeMounts:
+          - name: tsdb
+            mountPath: /var/loki
         storageConfig:
           tsdb_shipper:
             active_index_directory: var/loki/index
