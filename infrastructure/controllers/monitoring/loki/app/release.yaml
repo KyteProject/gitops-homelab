@@ -66,10 +66,28 @@ spec:
       replicas: 0
     backend:
       replicas: 0
+      extraVolumes:
+      - name: tsdb
+        emptyDir: {}
+      extraVolumeMounts:
+      - name: tsdb
+        mountPath: /var/loki
     read:
       replicas: 0
+      extraVolumes:
+      - name: tsdb
+        emptyDir: {}
+      extraVolumeMounts:
+      - name: tsdb
+        mountPath: /var/loki
     write:
       replicas: 0
+      extraVolumes:
+      - name: tsdb
+        emptyDir: {}
+      extraVolumeMounts:
+      - name: tsdb
+        mountPath: /var/loki
     chunksCache:
       enabled: false
     resultsCache:
