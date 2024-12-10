@@ -35,7 +35,7 @@ spec:
       commonConfig:
         replication_factor: 1
       compactor:
-        working_directory: /var/loki/compactor/retention
+        working_directory: /var/openebs/local/loki/compactor/retention
         delete_request_store: filesystem
         retention_enabled: true
       ingester:
