@@ -36,14 +36,15 @@ spec:
         replication_factor: 1
         extraVolumes:
           - name: tsdb
-            emptyDir: {}
+            persistentVolumeClaim:
+              claimName: loki-tsdb-pvc
         extraVolumeMounts:
           - name: tsdb
             mountPath: /var/loki
         storageConfig:
           tsdb_shipper:
-            active_index_directory: var/loki/index
-            cache_location: var/loki/index_cache
+            active_index_directory: /var/loki/index
+            cache_location: /var/loki/index_cache
             cache_ttl: 24h
       compactor:
         working_directory: /var/loki/compactor/retention
@@ -56,11 +57,6 @@ spec:
       rulerConfig:
         storage:
           type: local
-      storageConfig:
-        tsdb_shipper:
-          active_index_directory: var/loki/index
-          cache_location: var/loki/index_cache
-          cache_ttl: 24h
       schemaConfig:
         configs:
           - from: "2024-04-01" # quote
@@ -81,28 +77,10 @@ spec:
       replicas: 0
     backend:
       replicas: 0
-      extraVolumes:
-      - name: tsdb
-        emptyDir: {}
-      extraVolumeMounts:
-      - name: tsdb
-        mountPath: /var/loki
     read:
       replicas: 0
-      extraVolumes:
-      - name: tsdb
-        emptyDir: {}
-      extraVolumeMounts:
-      - name: tsdb
-        mountPath: /var/loki
     write:
       replicas: 0
-      extraVolumes:
-      - name: tsdb
-        emptyDir: {}
-      extraVolumeMounts:
-      - name: tsdb
-        mountPath: /var/loki
     chunksCache:
       enabled: false
     resultsCache:
