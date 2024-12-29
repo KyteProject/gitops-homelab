@@ -23,9 +23,13 @@ spec:
       retries: 3
   values:
     localpv-provisioner:
+      rbac:
+        create: true
       localpv:
         image:
           registry: quay.io/
+          repository: openebs/provisioner-localpv
+        priorityClassName: system-node-critical
       hostpathClass:
         enabled: true
         name: openebs-hostpath
