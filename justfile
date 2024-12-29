@@ -10,6 +10,7 @@ ROOT_DIR := "."
 mod flux 'flux/flux.just'
 mod talos 'infrastructure/talos/talos.just'
 mod netboot 'infrastructure/netboot/netboot.just'
+mod ansible 'infrastructure/ansible/ansible.just'
 
 # default recipe to display help information
 _default:
@@ -35,6 +36,5 @@ _default:
   just talos bootstrap-apps
 
 @encrypt-secrets:
-  sops encrypt --output ./clusters/main/flux-system/vars/cluster-secrets.secret.sops.yaml --output-type yaml clusters/main/flux-system/vars/cluster-secrets.sops.yaml
-  sops --encrypt --in-place ./clusters/main/flux-system/age-key.sops.yaml
-  sops --encrypt --in-place ./clusters/main/flux-system/github-deploy-key.sops.yaml
+  sops encrypt --output clusters/main/vars/cluster-secrets.secret.sops.yaml --output-type yaml clusters/main/vars/cluster-secrets.sops.yaml
+  just ansible truenas-secrets-edit
