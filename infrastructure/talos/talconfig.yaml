@@ -1,8 +1,8 @@
 ---
 clusterName: &cluster main
 endpoint: https://192.168.10.200:6443
-talosVersion: v1.8.3
-kubernetesVersion: v1.31.3
+talosVersion: v1.9.1
+kubernetesVersion: v1.32.0
 
 clusterPodNets:
   - 10.244.0.0/16
@@ -58,7 +58,7 @@ nodes:
     ipAddress: 192.168.10.11
     controlPlane: true
     installDisk: /dev/nvme0n1
-    talosImageURL: factory.talos.dev/installer/cfb759694adabf15484f8318005c7417c4a8051816195b26e057fa3930a07500
+    talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
@@ -89,19 +89,24 @@ nodes:
             metric: 2048
 
 controlPlane:
+  noSchematicValidate: true
   nodeLabels:
     topology.kubernetes.io/region: *cluster
   schematic:
     customization:
       extraKernelArgs:
-        - talos.platform=metal
-        - reboot=k
         - mitigations=off
         - net.ifnames=0
+        - apparmor=0
+        - init_on_alloc=0
+        - init_on_free=0
+        - intel_iommu=on
+        - iommu=pt
+        - security=none
       systemExtensions:
         officialExtensions:
           - siderolabs/binfmt-misc
-          - siderolabs/i915-ucode
+          - siderolabs/i915
           - siderolabs/intel-ucode
           - siderolabs/mei
           - siderolabs/realtek-firmware
