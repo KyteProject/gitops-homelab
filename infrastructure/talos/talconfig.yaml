@@ -24,7 +24,7 @@ nodes:
     ipAddress: 192.168.10.10
     controlPlane: true
     installDiskSelector:
-          serial: 241047FE4737 # CT500T500SSD8 500GB
+      serial: 241047FE4737 # CT500T500SSD8 500GB
     talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
@@ -53,6 +53,15 @@ nodes:
           - 169.254.255.10/32
         routes:
           - network: 169.254.255.11/32
+            metric: 2048
+      - deviceSelector:
+          busPath: 0-1.0 # ramuh
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.10/32
+        routes:
+          - network: 169.254.255.12/32
             metric: 2048
 
   - hostname: ifrit
@@ -89,11 +98,63 @@ nodes:
         routes:
           - network: 169.254.255.10/32
             metric: 2048
+      - deviceSelector:
+          busPath: 1-1.0 # ramuh
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.11/32
+        routes:
+          - network: 169.254.255.12/32
+            metric: 2048
+
+  - hostname: ramuh
+    ipAddress: 192.168.10.12
+    controlPlane: true
+    installDiskSelector:
+          serial: 24075W802656 #  WD_BLACK SN850X 1000GB
+    talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
+    networkInterfaces:
+      - deviceSelector:
+          hardwareAddr: 58:47:ca:79:7a:50
+          driver: i40e
+        dhcp: false
+        vlans:
+          - vlanId: 10
+            addresses:
+              - 192.168.10.12/24
+            mtu: 1500
+            routes:
+              - network: 0.0.0.0/0
+                gateway: 192.168.10.1
+            vip:
+              ip: 192.168.10.200
+          - vlanId: 20
+            addresses:
+              - 192.168.20.7/24
+            mtu: 1500
+      - deviceSelector:
+          busPath: 0-1.0 # ifrit
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.12/32
+        routes:
+          - network: 169.254.255.11/32
+            metric: 2048
+      - deviceSelector:
+          busPath: 1-1.0 # shiva
+        dhcp: false
+        mtu: 65520
+        addresses:
+          - 169.254.255.12/32
+        routes:
+          - network: 169.254.255.10/32
+            metric: 2048
 
 controlPlane:
   noSchematicValidate: true
-  nodeLabels:
-    topology.kubernetes.io/region: *cluster
+
   schematic:
     customization:
       extraKernelArgs:
@@ -110,12 +171,12 @@ controlPlane:
           - siderolabs/binfmt-misc
           - siderolabs/i915
           - siderolabs/intel-ucode
+          - siderolabs/iscsi-tools
           - siderolabs/mei
           - siderolabs/realtek-firmware
           - siderolabs/thunderbolt
           - siderolabs/util-linux-tools
           - siderolabs/v4l-uvc-drivers
-          - siderolabs/iscsi-tools
 
   patches:
     # System Configuration
