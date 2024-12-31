@@ -1,6 +1,8 @@
 ---
 clusterName: &cluster main
+
 endpoint: https://192.168.10.200:6443
+
 talosVersion: v1.9.1
 kubernetesVersion: v1.32.0
 
@@ -30,21 +32,25 @@ nodes:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:ea:26
           driver: i40e
-        dhcp: false
-        vlans:
-          - vlanId: 10
-            addresses:
-              - 192.168.10.10/24
-            mtu: 1500
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 192.168.10.1
-            vip:
-              ip: 192.168.10.200
-          - vlanId: 20
-            addresses:
-              - 192.168.20.5/24
-            mtu: 1500
+        dhcp: true
+        vip:
+          ip: 192.168.10.200
+        # vlans:
+        #   - vlanId: 10
+        #     dhcp: false
+        #     # addresses:
+        #     #   - 192.168.10.10/24
+        #     mtu: 1500
+        #     routes:
+        #       - network: 0.0.0.0/0
+        #         gateway: 192.168.10.1
+        #     vip:
+        #       ip: 192.168.10.200
+        #   - vlanId: 20
+        #     dhcp: false
+        #     # addresses:
+        #     #   - 192.168.20.5/24
+        #     mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # ifrit
         dhcp: false
@@ -68,27 +74,31 @@ nodes:
     ipAddress: 192.168.10.11
     controlPlane: true
     installDiskSelector:
-          serial: 24075W803462 #  WD_BLACK SN850X 1000GB
+      model: "WD_BLACK SN850X 1000GB"
     talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
           driver: i40e
-        dhcp: false
-        vlans:
-          - vlanId: 10
-            addresses:
-              - 192.168.10.11/24
-            mtu: 1500
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 192.168.10.1
-            vip:
-              ip: 192.168.10.200
-          - vlanId: 20
-            addresses:
-              - 192.168.20.6/24
-            mtu: 1500
+        dhcp: true
+        vip:
+          ip: 192.168.10.200
+        # vlans:
+        #   - vlanId: 10
+        #     dhcp: false
+        #     addresses:
+        #       - 192.168.10.11/24
+        #     mtu: 1500
+        #     routes:
+        #       - network: 0.0.0.0/0
+        #         gateway: 192.168.10.1
+        #     vip:
+        #       ip: 192.168.10.200
+        #   - vlanId: 20
+        #     dhcp: false
+        #     # addresses:
+        #     #   - 192.168.20.6/24
+        #     mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # shiva
         dhcp: false
@@ -112,27 +122,31 @@ nodes:
     ipAddress: 192.168.10.12
     controlPlane: true
     installDiskSelector:
-          serial: 24075W802656 #  WD_BLACK SN850X 1000GB
+      model: "WD_BLACK SN850X 1000GB"
     talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:79:7a:50
           driver: i40e
-        dhcp: false
-        vlans:
-          - vlanId: 10
-            addresses:
-              - 192.168.10.12/24
-            mtu: 1500
-            routes:
-              - network: 0.0.0.0/0
-                gateway: 192.168.10.1
-            vip:
-              ip: 192.168.10.200
-          - vlanId: 20
-            addresses:
-              - 192.168.20.7/24
-            mtu: 1500
+        dhcp: true
+        vip:
+          ip: 192.168.10.200
+        # vlans:
+        #   - vlanId: 10
+        #     dhcp: false
+        #     addresses:
+        #       - 192.168.10.12/24
+        #     mtu: 1500
+        #     routes:
+        #       - network: 0.0.0.0/0
+        #         gateway: 192.168.10.1
+        #     vip:
+        #       ip: 192.168.10.200
+        #   - vlanId: 20
+        #     dhcp: false
+        #     # addresses:
+        #     #   - 192.168.20.7/24
+        #     mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # ifrit
         dhcp: false
@@ -153,11 +167,14 @@ nodes:
             metric: 2048
 
 controlPlane:
-  noSchematicValidate: true
+  nodeLabels:
+    topology.kubernetes.io/region: *cluster
 
   schematic:
     customization:
       extraKernelArgs:
+        - talos.platform=metal
+        - reboot=k
         - mitigations=off
         - net.ifnames=0
         - apparmor=0
@@ -191,9 +208,6 @@ controlPlane:
         sysctls:
           fs.inotify.max_user_watches: 1048576   # Watchdog
           fs.inotify.max_user_instances: 8192    # Watchdog
-          fs.inotify.max_queued_events: 65536
-          net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
-          net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
           vm.nr_hugepages: 1024                  # ISCI
     - |-
       machine:
@@ -208,6 +222,18 @@ controlPlane:
           rules:
             - ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
             - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
+    - |
+      machine:
+        files:
+          - op: overwrite
+            path: /etc/nfsmount.conf
+            permissions: 0o644
+            content: |
+              [ NFSMount_Global_Options ]
+              nfsvers=4.1
+              hard=True
+              nconnect=16
+              noatime=True
 
     # Container Runtime Configuration
     - |-
@@ -233,7 +259,7 @@ controlPlane:
           enabled: true
           registries:
             kubernetes:
-              disabled: false
+              disabled: true
             service:
               disabled: false
     - |-
@@ -251,7 +277,7 @@ controlPlane:
       machine:
         kubelet:
           extraArgs:
-            rotate-server-certificates: true
+            rotate-server-certificates: false
           extraMounts:
             - destination: /var/openebs/local
               type: bind
@@ -296,6 +322,10 @@ controlPlane:
             kind: KubeSchedulerConfiguration
             profiles:
               - schedulerName: default-scheduler
+                plugins:
+                  score:
+                    disabled:
+                      - name: ImageLocality
                 pluginConfig:
                   - name: PodTopologySpread
                     args:
@@ -313,9 +343,9 @@ controlPlane:
             enabled: true
             allowedRoles:
               - os:admin
-              - os:etcd:backup
             allowedKubernetesNamespaces:
               - system-upgrade
+              - kube-system
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl

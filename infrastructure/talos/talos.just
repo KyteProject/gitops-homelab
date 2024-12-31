@@ -41,7 +41,7 @@ cluster := "main"
 
 # Talos: Get kubeconfig
 @kubeconfig:
-  talosctl --context {{cluster}} kubeconfig --force-context-name {{cluster}} --talosconfig=./clusterconfig/talosconfig --nodes={{TALOS_CONTROLLER}} -f ../../clusters/{{cluster}}/kubeconfig
+  talosctl --context {{cluster}} kubeconfig --force-context-name {{cluster}} --talosconfig=./clusterconfig/talosconfig --nodes={{TALOS_CONTROLLER}} -f ../../kubeconfig
 
 # Talos: Reset node {nodeIp}
 @reset-node node:
@@ -49,7 +49,7 @@ cluster := "main"
 
 # Talos: Reset cluster
 @reset-cluster:
-  talosctl reset --nodes {{nodes}} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --graceful=false --reboot
+  talosctl reset --nodes {{nodes}} --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL --system-labels-to-wip META --graceful=false --reboot
 
 # Talos: Take snapshots
 @snapshot:

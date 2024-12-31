@@ -1,7 +1,4 @@
-k8s-m0.k8s.internal.yaml
-talosconfig
-k8s-shiva.yaml
 main-shiva.yaml
-main-shiva.yaml.bak
 main-ifrit.yaml
 main-ramuh.yaml
+talosconfig
