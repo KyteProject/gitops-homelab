@@ -34,6 +34,17 @@ spec:
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret
+            env:
+              - name: POSTGRES_USER
+                value: ${INIT_POSTGRES_SUPER_USER}
+              - name: POSTGRES_PASSWORD
+                value: ${INIT_POSTGRES_SUPER_PASS}
+              - name: APP_DB
+                value: ${INIT_POSTGRES_DBNAME}
+              - name: APP_USER
+                value: ${INIT_POSTGRES_USER}
+              - name: APP_PASSWORD
+                value: ${INIT_POSTGRES_PASS}
           init-config:
             dependsOn: init-db
             image:
