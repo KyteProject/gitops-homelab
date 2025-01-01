@@ -74,8 +74,6 @@ spec:
           namespace: networking
           namespaceSelector:
             any: true
-      publishService:
-        enabled: false
       resources:
         requests:
           cpu: 100m
