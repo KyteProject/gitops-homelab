@@ -60,6 +60,8 @@ spec:
         ssl-early-data: true
         ssl-protocols: TLSv1.3 TLSv1.2
         use-forwarded-headers: true
+      publishService:
+        enabled: false  # Explicitly disable publish-service
       extraArgs:
         default-ssl-certificate: networking/wildcard-tls
         publish-status-address: &hostname external.omux.io
