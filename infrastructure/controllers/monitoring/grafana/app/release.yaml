@@ -314,17 +314,6 @@ spec:
         - hosts:
             - *host
     persistence:
-      enabled: true
-      type: pvc
-      size: 10Gi
+      enabled: false
     testFramework:
       enabled: false
-    initChownData:
-      enabled: true
-      securityContext:
-        runAsUser: 0
-        runAsNonRoot: false
-    securityContext:
-      runAsUser: 472
-      runAsGroup: 472
-      fsGroup: 472
