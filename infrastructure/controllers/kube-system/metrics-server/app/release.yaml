@@ -22,6 +22,8 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    args:
+      - --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
     metrics:
       enabled: true
     serviceMonitor:
