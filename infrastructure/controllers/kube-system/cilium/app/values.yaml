@@ -6,8 +6,9 @@ bandwidthManager:
 bgpControlPlane:
   enabled: true
 bpf:
+  datapathMode: netkit
   masquerade: true
-  # preallocateMaps: true
+  preallocateMaps: true
   tproxy: true
 cgroup:
   automount:
@@ -33,6 +34,7 @@ ipam:
 ipv4:
   enabled: true
 ipv4NativeRoutingCIDR: 10.244.0.0/16
+# enableIPv4BIGTCP: true
 ipv6:
   enabled: false
 # ipv6NativeRoutingCIDR: fdcf:5280:f513::/48
@@ -43,6 +45,7 @@ kubeProxyReplacementHealthzBindAddr: 0.0.0.0:10256
 l2announcements:
   enabled: true
 loadBalancer:
+  acceleration: best-effort
   algorithm: maglev
   mode: dsr
 localRedirectPolicy: true
@@ -64,6 +67,8 @@ securityContext:
       - FOWNER
       - SETGID
       - SETUID
+      - PERFMON
+      - BPF
     cleanCiliumState:
       - NET_ADMIN
       - SYS_ADMIN

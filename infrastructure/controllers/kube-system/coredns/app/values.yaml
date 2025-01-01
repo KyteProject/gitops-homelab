@@ -7,7 +7,6 @@ serviceAccount:
 service:
   name: kube-dns
   clusterIP:  10.245.0.10
-  ipFamilyPolicy: "PreferDualStack"
 servers:
   - zones:
       - zone: .
@@ -31,9 +30,18 @@ servers:
           pods insecure
           fallthrough in-addr.arpa ip6.arpa
       - name: forward
+        parameters: internal /etc/resolv.conf
+      - name: forward
+        parameters: omux.io /etc/resolv.conf
+      - name: forward
         parameters: . /etc/resolv.conf
+      - name: forward
+        parameters: . tls://1.1.1.1 tls://1.0.0.1
+        configBlock: |-
+          tls_servername cloudflare-dns.com
+          health_check 5s
+          policy random
       - name: cache
-        parameters: 30
       - name: loop
       - name: reload
       - name: loadbalance
@@ -50,10 +58,3 @@ tolerations:
   - key: node-role.kubernetes.io/control-plane
     operator: Exists
     effect: NoSchedule
-topologySpreadConstraints:
-  - maxSkew: 1
-    topologyKey: kubernetes.io/hostname
-    whenUnsatisfiable: DoNotSchedule
-    labelSelector:
-      matchLabels:
-        app.kubernetes.io/instance: coredns

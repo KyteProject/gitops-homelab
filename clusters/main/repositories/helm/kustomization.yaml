@@ -21,3 +21,4 @@ resources:
   - openebs.yaml
   - piraeus.yaml
   - postfinance.yaml
+  - rook-ceph.yaml
