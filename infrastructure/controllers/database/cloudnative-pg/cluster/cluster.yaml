@@ -6,7 +6,7 @@ metadata:
   name: postgres
 spec:
   instances: 3
-  imageName: ghcr.io/cloudnative-pg/postgresql:17.2-7
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
   primaryUpdateStrategy: unsupervised
   storage:
     size: 20Gi
@@ -22,7 +22,7 @@ spec:
     requests:
       cpu: 500m
     limits:
-      # hugepages-2Mi: 2Gi # Requires sysctl set on the host
+      hugepages-2Mi: 2Gi # Requires sysctl set on the host
       memory: 4Gi
   monitoring:
     enablePodMonitor: true
@@ -38,7 +38,7 @@ spec:
         compression: bzip2
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
-      endpointURL: R2_ENDPOINT_URL
+      endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
       # Note: serverName version needs to be inplemented
       # when recovering from an existing cnpg cluster
       serverName: &currentCluster postgres-v1
@@ -49,17 +49,16 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: R2_SECRET_ACCESS_KEY
-  # # Note: previousCluster needs to be set to the name of the previous
-  # # cluster when recovering from an existing cnpg cluster
-  # bootstrap:
-  #   recovery:
-  #     source: &previousCluster postgres-v9
-  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  # externalClusters:
-  #   - name: *previousCluster
-  #     barmanObjectStore:
-  #       <<: *barmanObjectStore
-  #       serverName: *previousCluster
-  affinity:
-    nodeSelector:
-      beta.kubernetes.io/arch: amd64
+
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        destinationPath: s3://cloudnative-pg/
+        endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
+        s3Credentials:
+          accessKeyId:
+            name: cloudnative-pg-secret
+            key: R2_ACCESS_KEY_ID
+          secretAccessKey:
+            name: cloudnative-pg-secret
+            key: R2_SECRET_ACCESS_KEY
