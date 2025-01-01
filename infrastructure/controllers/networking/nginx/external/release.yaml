@@ -26,7 +26,6 @@ spec:
     fullnameOverride: *app
     controller:
       replicaCount: 2
-      allowSnippetAnnotations: true
       admissionWebhooks:
         objectSelector:
           matchExpressions:
@@ -36,6 +35,7 @@ spec:
                 - external
       config:
         block-user-agents: "GPTBot,~*GPTBot*,ChatGPT-User,~*ChatGPT-User*,Google-Extended,~*Google-Extended*,CCBot,~*CCBot*,Omgilibot,~*Omgilibot*,FacebookBot,~*FacebookBot*" # taken from https://github.com/superseriousbusiness/gotosocial/blob/main/internal/web/robots.go
+        allow-snippet-annotations: true
         annotations-risk-level: Critical
         client-body-buffer-size: 100M
         client-body-timeout: 120
@@ -75,6 +75,8 @@ spec:
           namespace: networking
           namespaceSelector:
             any: true
+      publishService:
+        enabled: false
       resources:
         requests:
           cpu: 100m
