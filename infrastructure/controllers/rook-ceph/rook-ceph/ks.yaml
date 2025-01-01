@@ -11,7 +11,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: snapshot-controller
-  path: ./infrastructurre/controllers/rook-ceph/rook-ceph/app
+  path: ./infrastructure/controllers/rook-ceph/rook-ceph/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -33,7 +33,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: rook-ceph
-  path: ./infrastructurre/controllers/rook-ceph/rook-ceph/cluster
+  path: ./infrastructure/controllers/rook-ceph/rook-ceph/cluster
   prune: true
   sourceRef:
     kind: GitRepository
