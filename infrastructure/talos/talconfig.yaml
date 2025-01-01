@@ -206,8 +206,17 @@ controlPlane:
     - |-
       machine:
         sysctls:
-          fs.inotify.max_user_watches: 1048576   # Watchdog
-          fs.inotify.max_user_instances: 8192    # Watchdog
+          fs.inotify.max_user_watches: 1048576   # Increase limit for file watching
+          fs.inotify.max_user_instances: 8192    # Prevent "too many open files" errors
+          net.core.default_qdisc: fq             # Fair Queuing for reduced latency
+          net.core.rmem_max: 67108864            # Increase max TCP receive buffer (64MB)
+          net.core.wmem_max: 67108864            # Increase max TCP send buffer (64MB)
+          net.ipv4.tcp_mtu_probing: 1            # Enable MTU probing for optimal packet size
+          net.ipv4.tcp_window_scaling: 1         # Enable large TCP windows (>64KB)
+          net.ipv4.tcp_congestion_control: bbr   # Better congestion control
+          net.ipv4.tcp_fastopen: 3               # Fast TCP handshakes
+          net.ipv4.tcp_rmem: 4096 87380 33554432 # TCP receive buffer: min=4KB, default=85KB, max=32MB
+          net.ipv4.tcp_wmem: 4096 65536 33554432 # TCP send buffer: min=4KB, default=64KB, max=32MB
           vm.nr_hugepages: 1024                  # ISCI
     - |-
       machine:
