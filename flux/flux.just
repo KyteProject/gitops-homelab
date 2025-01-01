@@ -35,3 +35,46 @@ export KUBERNETES_DIR := "../clusters"
 
 @logs:
   flux logs -A
+
+@sync:
+  flux reconcile kustomization system-controllers
+
+# Debug:
+# Show all Flux objects that are not ready
+@not-ready:
+    flux get all -A --status-selector ready=false
+
+# Show flux warning events
+@warn:
+    kubectl get events -n flux-system --field-selector type=Warning
+
+# Check all sources status
+@sources:
+    flux get sources all -A
+
+# Check all kustomizations and helm releases
+@workloads:
+    flux get kustomizations -A
+    flux get helmreleases -A
+
+# Check detailed helm charts and releases status
+@helm-status:
+    kubectl get helmcharts.source.toolkit.fluxcd.io -A
+    kubectl get helmreleases.helm.toolkit.fluxcd.io -A
+
+# Show controller errors
+@err:
+    flux logs --all-namespaces --level=error
+
+# Check controllers readiness and versions
+@health:
+    flux check
+
+# Get detailed status of a specific helm release (usage: just helm-debug <release-name> <namespace>)
+@helm-debug release namespace:
+    kubectl describe helmrelease {{release}} -n {{namespace}}
+
+# Get all sources with kubectl for deeper inspection
+@sources-kubectl:
+    kubectl get gitrepositories.source.toolkit.fluxcd.io -A
+    kubectl get helmrepositories.source.toolkit.fluxcd.io -A
