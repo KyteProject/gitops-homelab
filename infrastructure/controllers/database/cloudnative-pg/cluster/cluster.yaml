@@ -55,11 +55,11 @@ spec:
   #   recovery:
   #     source: &previousCluster postgres-v9
   # # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+  # externalClusters:
+  #   - name: *previousCluster
+  #     barmanObjectStore:
+  #       <<: *barmanObjectStore
+  #       serverName: *previousCluster
   affinity:
     nodeSelector:
       beta.kubernetes.io/arch: amd64
