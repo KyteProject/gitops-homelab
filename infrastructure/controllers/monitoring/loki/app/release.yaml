@@ -5,11 +5,10 @@ metadata:
   name: loki
 spec:
   interval: 30m
-  timeout: 15m
   chart:
     spec:
       chart: loki
-      version: 6.23.0
+      version: 6.24.0
       sourceRef:
         kind: HelmRepository
         name: grafana
@@ -34,18 +33,6 @@ spec:
         log_level: info
       commonConfig:
         replication_factor: 1
-        extraVolumes:
-          - name: tsdb
-            persistentVolumeClaim:
-              claimName: loki-tsdb-pvc
-        extraVolumeMounts:
-          - name: tsdb
-            mountPath: /var/loki
-        storageConfig:
-          tsdb_shipper:
-            active_index_directory: /var/loki/index
-            cache_location: /var/loki/index_cache
-            cache_ttl: 24h
       compactor:
         working_directory: /var/loki/compactor/retention
         delete_request_store: filesystem
@@ -54,9 +41,6 @@ spec:
         chunk_encoding: snappy
       storage:
         type: filesystem
-      rulerConfig:
-        storage:
-          type: local
       schemaConfig:
         configs:
           - from: "2024-04-01" # quote
@@ -72,7 +56,8 @@ spec:
       replicas: 1
       persistence:
         enabled: true
-        size: 10Gi
+        storageClass: ceph-block
+        size: 50Gi
     gateway:
       replicas: 0
     backend:
@@ -89,11 +74,6 @@ spec:
       enabled: false
     test:
       enabled: false
-    monitoring:
-      selfMonitoring:
-        enabled: false
-        grafanaAgent:
-          installOperator: false
     sidecar:
       image:
         repository: ghcr.io/kiwigrid/k8s-sidecar

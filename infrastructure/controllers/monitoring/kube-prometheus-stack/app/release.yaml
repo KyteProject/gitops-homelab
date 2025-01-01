@@ -5,89 +5,41 @@ metadata:
   name: kube-prometheus-stack
 spec:
   interval: 30m
-  timeout: 15m
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 66.3.1
+      version: 67.5.0
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
         namespace: flux-system
   install:
-    crds: CreateReplace
+    crds: Skip
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: CreateReplace
+    crds: Skip
     remediation:
       strategy: rollback
       retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: kube-state-metrics-config
-      valuesKey: kube-state-metrics.yaml
-  dependsOn:
-    - name: prometheus-operator-crds
-      namespace: monitoring
-    - name: openebs
-      namespace: storage
   values:
-    crds:
-      enabled: true
     cleanPrometheusOperatorObjectNames: true
-    defaultRules:
-      create: true
-      rules:
-        alertmanager: true
-        etcd: true
-        configReloaders: true
-        general: true
-        k8s: true
-        kubeApiserver: true
-        kubeApiserverAvailability: true
-        kubeApiserverSlos: true
-        kubelet: true
-        kubeProxy: false
-        kubePrometheusGeneral: true
-        kubePrometheusNodeRecording: true
-        kubernetesApps: true
-        kubernetesResources: true
-        kubernetesStorage: true
-        kubernetesSystem: true
-        kubeScheduler: false
-        kubeStateMetrics: true
-        network: true
-        node: true
-        nodeExporterAlerting: true
-        nodeExporterRecording: true
-        prometheus: true
-        prometheusOperator: true
     alertmanager:
       ingress:
         enabled: true
         ingressClassName: internal
-        annotations:
-          hajimari.io/appName: Alertmanager
-          hajimari.io/icon: fluent:alert-16-filled
-          # external-dns.alpha.kubernetes.io/target: "internal.omux.io"
-        hosts:
-          - &host am.omux.io
-        paths:
-          - /
-        pathType: Prefix
-        tls:
-          - hosts:
-              - *host
+        hosts: ["am.omux.io"]
       alertmanagerSpec:
-        useExistingSecret: true
-        configSecret: alertmanager-secret
+        alertmanagerConfiguration:
+          name: alertmanager
+          global:
+            resolveTimeout: 5m
         externalUrl: https://am.omux.io
         storage:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: ceph-block
               resources:
                 requests:
                   storage: 1Gi
@@ -111,19 +63,8 @@ spec:
       ingress:
         enabled: true
         ingressClassName: internal
-        annotations:
-          hajimari.io/appName: Prometheus
-          hajimari.io/icon: simple-icons:prometheus
-        hosts:
-          - &host prometheus.omux.io
-        paths:
-          - /
-        pathType: Prefix
-        tls:
-          - hosts:
-              - *host
+        hosts: ["prometheus.omux.io"]
       prometheusSpec:
-        scrapeInterval: 1m # Must match interval in Grafana Helm chart
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
@@ -132,9 +73,7 @@ spec:
         enableAdminAPI: true
         walCompression: true
         enableFeatures:
-          - auto-gomemlimit
           - memory-snapshot-on-shutdown
-          - new-service-discovery-manager
         externalUrl: https://prometheus.omux.io
         retention: 14d
         retentionSize: 50GB
@@ -146,10 +85,10 @@ spec:
         storageSpec:
           volumeClaimTemplate:
             spec:
-              storageClassName: openebs-hostpath
+              storageClassName: ceph-block
               resources:
                 requests:
-                  storage: 75Gi
+                  storage: 50Gi
     prometheus-node-exporter:
       fullnameOverride: node-exporter
       prometheus: &prometheus

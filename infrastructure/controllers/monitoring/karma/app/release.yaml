@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app unpoller
+  name: &app karma
 spec:
   interval: 30m
   chart:
@@ -23,28 +23,29 @@ spec:
       retries: 3
   values:
     controllers:
-      unpoller:
-        annotations:
-          reloader.stakater.com/auto: "true"
+      karma:
+        replicas: 2
+        strategy: RollingUpdate
         containers:
           app:
             image:
-              repository: ghcr.io/unpoller/unpoller
-              tag: v2.12.0@sha256:3af948dc9a6b51f1cc4ad86f0a3ba5548233baec0f40658a4761af5d4eede830
+              repository: ghcr.io/prymitive/karma
+              tag: v0.120@sha256:733bff15f2529065f1c1b50b13e4a56a541d3c0615dbc6b4b6a07befbfcc27ff
             env:
-              TZ: ${TIMEZONE}
-              UP_UNIFI_DEFAULT_ROLE: Unpoller
-              UP_UNIFI_DEFAULT_URL: https://192.168.1.1
-              UP_UNIFI_DEFAULT_VERIFY_SSL: false
-              UP_INFLUXDB_DISABLE: true
-            envFrom:
-              - secretRef:
-                  name: unpoller-secret
+              ALERTMANAGER_URI: http://alertmanager-operated.monitoring.svc.cluster.local:9093
             probes:
-              liveness:
+              liveness: &probes
                 enabled: true
-              readiness:
-                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /health
+                    port: &port 8080
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
             resources:
               requests:
                 cpu: 10m
@@ -61,16 +62,24 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: "{{ .Release.Name }}.omux.io"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 9130
+            port: *port
     serviceMonitor:
       app:
         serviceName: *app
         endpoints:
           - port: http
-            interval: 2m # Unifi API only polls at 2m intervals
-            scrapeTimeout: 10s
