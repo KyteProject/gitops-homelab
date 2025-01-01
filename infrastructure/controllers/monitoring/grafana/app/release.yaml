@@ -110,127 +110,83 @@ spec:
             options:
               path: /var/lib/grafana/dashboards/system
     dashboards:
-      kubernetes:
-        flux-cluster:
-          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/cluster.json
-          datasource: Prometheus
-        flux-control-plane:
-          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/control-plane.json
-          datasource: Prometheus
-        flux-logs:
-          url: https://raw.githubusercontent.com/fluxcd/flux2-monitoring-example/main/monitoring/configs/dashboards/logs.json
-          datasource: Prometheus
-        nfd:
-          url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
-          datasource: Prometheus
-        kubernetes-api-server:
-          # renovate: depName="Kubernetes / System / API Server"
-          gnetId: 15761
-          revision: 18
-          datasource: Prometheus
-        kubernetes-coredns:
-          # renovate: depName="Kubernetes / System / CoreDNS"
-          gnetId: 15762
-          revision: 19
-          datasource: Prometheus
-        kubernetes-global:
-          # renovate: depName="Kubernetes / Views / Global"
-          gnetId: 15757
-          revision: 42
-          datasource: Prometheus
-        kubernetes-namespaces:
-          # renovate: depName="Kubernetes / Views / Namespaces"
-          gnetId: 15758
-          revision: 41
-          datasource: Prometheus
-        kubernetes-nodes:
-          # renovate: depName="Kubernetes / Views / Nodes"
-          gnetId: 15759
-          revision: 32
-          datasource: Prometheus
-        kubernetes-pods:
-          # renovate: depName="Kubernetes / Views / Pods"
-          gnetId: 15760
-          revision: 34
-          datasource: Prometheus
-        kubernetes-volumes:
-          # renovate: depName="K8s / Storage / Volumes / Cluster"
-          gnetId: 11454
-          revision: 14
-          datasource: Prometheus
-        spegel:
-          # renovate: depName="Spegel"
-          gnetId: 18089
-          revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-
-      networking:
-        cert-manager:
-          url: https://raw.githubusercontent.com/szinn/k8s-homelab/main/kubernetes/main/apps/cert-manager/cert-manager/app/cert-manager-dashboard.json
-          datasource: Prometheus
-        # cert-manager:
-        #   # renovate: depName="Cert-manager-Kubernetes"
-        #   gnetId: 20842
-        #   revision: 3
+      # kubernetes:
+        # nfd:
+        #   url: https://raw.githubusercontent.com/kubernetes-sigs/node-feature-discovery/master/examples/grafana-dashboard.json
         #   datasource: Prometheus
-        ingress-nginx:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
-          datasource: Prometheus
-        ingress-nginx-request-handling-performance:
-          url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
-          datasource: Prometheus
-        external-dns:
-          # renovate: depName="External-dns"
-          gnetId: 15038
-          revision: 3
-          datasource: Prometheus
-        cloudflared:
-          # renovate: depName="Cloudflare Tunnels (cloudflared)"
-          gnetId: 17457
-          revision: 6
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-        nginx:
-          # renovate: depName="Kubernetes Nginx Ingress Prometheus NextGen"
-          gnetId: 14314
-          revision: 2
-          datasource: Prometheus
+      #   spegel:
+      #     # renovate: depName="Spegel"
+      #     gnetId: 18089
+      #     revision: 1
+      #     datasource:
+      #       - name: DS_PROMETHEUS
+      #         value: Prometheus
 
-      security:
-        external-secrets:
-          url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
-          datasource: Prometheus
+      # networking:
+      #   cert-manager:
+      #     url: https://raw.githubusercontent.com/szinn/k8s-homelab/main/kubernetes/main/apps/cert-manager/cert-manager/app/cert-manager-dashboard.json
+      #     datasource: Prometheus
+      #   # cert-manager:
+      #   #   # renovate: depName="Cert-manager-Kubernetes"
+      #   #   gnetId: 20842
+      #   #   revision: 3
+      #   #   datasource: Prometheus
+      #   ingress-nginx:
+      #     url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/nginx.json
+      #     datasource: Prometheus
+      #   ingress-nginx-request-handling-performance:
+      #     url: https://raw.githubusercontent.com/kubernetes/ingress-nginx/master/deploy/grafana/dashboards/request-handling-performance.json
+      #     datasource: Prometheus
+      #   external-dns:
+      #     # renovate: depName="External-dns"
+      #     gnetId: 15038
+      #     revision: 3
+      #     datasource: Prometheus
+      #   cloudflared:
+      #     # renovate: depName="Cloudflare Tunnels (cloudflared)"
+      #     gnetId: 17457
+      #     revision: 6
+      #     datasource:
+      #       - name: DS_PROMETHEUS
+      #         value: Prometheus
+      #   nginx:
+      #     # renovate: depName="Kubernetes Nginx Ingress Prometheus NextGen"
+      #     gnetId: 14314
+      #     revision: 2
+      #     datasource: Prometheus
 
-      storage:
-        ceph-cluster:
-          # renovate: depName="Ceph Cluster"
-          gnetId: 2842
-          revision: 18
-          datasource: Prometheus
-        ceph-osd:
-          # renovate: depName="Ceph - OSD (Single)"
-          gnetId: 5336
-          revision: 9
-          datasource: Prometheus
-        ceph-pools:
-          # renovate: depName="Ceph - Pools"
-          gnetId: 5342
-          revision: 9
-          datasource: Prometheus
-        volsync:
-          # renovate: depName="VolSync Dashboard"
-          gnetId: 21356
-          revision: 3
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
+      # security:
+      #   external-secrets:
+      #     url: https://raw.githubusercontent.com/external-secrets/external-secrets/main/docs/snippets/dashboard.json
+      #     datasource: Prometheus
+
+      # storage:
+      #   ceph-cluster:
+      #     # renovate: depName="Ceph Cluster"
+      #     gnetId: 2842
+      #     revision: 18
+      #     datasource: Prometheus
+      #   ceph-osd:
+      #     # renovate: depName="Ceph - OSD (Single)"
+      #     gnetId: 5336
+      #     revision: 9
+      #     datasource: Prometheus
+      #   ceph-pools:
+      #     # renovate: depName="Ceph - Pools"
+      #     gnetId: 5342
+      #     revision: 9
+      #     datasource: Prometheus
+      #   volsync:
+      #     # renovate: depName="VolSync Dashboard"
+      #     gnetId: 21356
+      #     revision: 3
+      #     datasource:
+      #       - name: DS_PROMETHEUS
+      #         value: Prometheus
 
       default:
         gatus:
-          url: https://raw.githubusercontent.com/TwiN/gatus/master/.examples/docker-compose-grafana-prometheus/grafana/provisioning/dashboards/gatus.json
+          url: 17718
           datasource: Prometheus
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
@@ -268,6 +224,55 @@ spec:
           # renovate: depName="UniFi-Poller: USW Insights - Prometheus"
           gnetId: 11312
           revision: 9
+          datasource: Prometheus
+
+      kubernetes:
+        flux-cluster:
+          gnetId: 17797  # Using official Flux dashboard from Grafana.com
+          revision: 1
+          datasource: Prometheus
+        flux-control-plane:
+          gnetId: 17798
+          revision: 1
+          datasource: Prometheus
+        flux-logs:
+          gnetId: 17799
+          revision: 1
+          datasource: Prometheus
+        kubernetes-api-server:
+          # renovate: depName="Kubernetes / System / API Server"
+          gnetId: 15761
+          revision: 18
+          datasource: Prometheus
+        kubernetes-coredns:
+          # renovate: depName="Kubernetes / System / CoreDNS"
+          gnetId: 15762
+          revision: 19
+          datasource: Prometheus
+        kubernetes-global:
+          # renovate: depName="Kubernetes / Views / Global"
+          gnetId: 15757
+          revision: 42
+          datasource: Prometheus
+        kubernetes-namespaces:
+          # renovate: depName="Kubernetes / Views / Namespaces"
+          gnetId: 15758
+          revision: 41
+          datasource: Prometheus
+        kubernetes-nodes:
+          # renovate: depName="Kubernetes / Views / Nodes"
+          gnetId: 15759
+          revision: 32
+          datasource: Prometheus
+        kubernetes-pods:
+          # renovate: depName="Kubernetes / Views / Pods"
+          gnetId: 15760
+          revision: 34
+          datasource: Prometheus
+        kubernetes-volumes:
+          # renovate: depName="K8s / Storage / Volumes / Cluster"
+          gnetId: 11454
+          revision: 14
           datasource: Prometheus
 
     sidecar:
@@ -309,6 +314,17 @@ spec:
         - hosts:
             - *host
     persistence:
-      enabled: false
+      enabled: true
+      type: pvc
+      size: 10Gi
     testFramework:
       enabled: false
+    initChownData:
+      enabled: true
+      securityContext:
+        runAsUser: 0
+        runAsNonRoot: false
+    securityContext:
+      runAsUser: 472
+      runAsGroup: 472
+      fsGroup: 472
