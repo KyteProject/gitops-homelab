@@ -3,14 +3,13 @@
 set dotenv-load := true
 set export
 
-BOOTSTRAP_DIR := "./infrastructure/flux/bootstrap"
 KUBERNETES_DIR := "./clusters"
 ROOT_DIR := "."
 
 mod flux 'flux/flux.just'
 mod talos 'infrastructure/talos/talos.just'
 mod netboot 'infrastructure/netboot/netboot.just'
-mod ansible 'infrastructure/ansible/ansible.just'
+mod bootstrap 'infrastructure/bootstrap/bootstrap.just'
 
 # default recipe to display help information
 _default:
@@ -34,6 +33,7 @@ _default:
   just talos bootstrap
   just talos kubeconfig
   just talos bootstrap-apps
+  just bootstrap rook-prep "WD_BLACK_SN850X_2000GB" main
 
 @encrypt-secrets:
   sops encrypt --output clusters/main/vars/cluster-secrets.secret.sops.yaml --output-type yaml clusters/main/vars/cluster-secrets.sops.yaml
