@@ -5,7 +5,7 @@ metadata:
   name: telegram
 spec:
   type: telegram
-  channel: "2289514722"
+  channel: "-1002289514722"
   secretRef:
     name: flux-telegram-token
 ---
