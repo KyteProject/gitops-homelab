@@ -13,9 +13,6 @@ spec:
         kind: HelmRepository
         name: intel
         namespace: flux-system
-      dependsOn:
-        - name: cert-manager
-          namespace: cert-manager
   install:
     crds: CreateReplace
     remediation:
