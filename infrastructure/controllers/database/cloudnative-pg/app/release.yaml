@@ -28,6 +28,6 @@ spec:
     crds:
       create: true
     monitoring:
-      podMonitorEnabled: true
+      podMonitorEnabled: false
       grafanaDashboard:
         create: true
