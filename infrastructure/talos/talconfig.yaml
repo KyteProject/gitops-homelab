@@ -61,7 +61,7 @@ nodes:
           - network: 169.254.255.11/32
             metric: 2048
       - deviceSelector:
-          busPath: 0-1.0 # ramuh
+          busPath: 1-1.0 # ramuh
         dhcp: false
         mtu: 65520
         addresses:
