@@ -50,15 +50,15 @@ spec:
           name: cloudnative-pg-secret
           key: R2_SECRET_ACCESS_KEY
 
-  externalClusters:
-    - name: *previousCluster
-      barmanObjectStore:
-        destinationPath: s3://cloudnative-pg/
-        endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
-        s3Credentials:
-          accessKeyId:
-            name: cloudnative-pg-secret
-            key: R2_ACCESS_KEY_ID
-          secretAccessKey:
-            name: cloudnative-pg-secret
-            key: R2_SECRET_ACCESS_KEY
+  # externalClusters:
+  #   - name: *previousCluster
+  #     barmanObjectStore:
+  #       destinationPath: s3://cloudnative-pg/
+  #       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
+  #       s3Credentials:
+  #         accessKeyId:
+  #           name: cloudnative-pg-secret
+  #           key: R2_ACCESS_KEY_ID
+  #         secretAccessKey:
+  #           name: cloudnative-pg-secret
+  #           key: R2_SECRET_ACCESS_KEY
