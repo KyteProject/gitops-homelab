@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.5.1
+      version: 3.6.0
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -65,7 +65,7 @@ spec:
               requests:
                 cpu: 10m
               limits:
-                memory: 256M
+                memory: 64Mi
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
