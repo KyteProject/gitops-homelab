@@ -1,0 +1,136 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app wakapi
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      wakapi:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/buroa/postgres-init
+              tag: 17
+            envFrom: &envFrom
+              - secretRef:
+                  name: wakapi-secret
+        containers:
+          app:
+            image:
+              repository: docker.io/n1try/wakapi
+              tag: v2.12.3@sha256:d04a98102dcde30c48c708b4fb8fa04973a3258c13f4cecc52c0e3450d63f9a8
+            envFrom: *envFrom
+            env:
+              - name: ENVIRONMENT
+                value: "production"
+              - name: WAKAPI_PORT
+                value: 80
+              - name: WAKAPI_LISTEN_IPV4
+                value: "0.0.0.0"
+              - name: WAKAPI_BASE_PATH
+                value: "/"
+              - name: WAKAPI_DB_TYPE
+                value: "postgres"
+              - name: WAKAPI_DB_HOST
+                valueFrom:
+                  secretKeyRef:
+                    name: wakapi-secret
+                    key: INIT_POSTGRES_HOST
+              - name: WAKAPI_DB_PORT
+                value: "5432"
+              - name: WAKAPI_DB_USER
+                valueFrom:
+                  secretKeyRef:
+                    name: wakapi-secret
+                    key: INIT_POSTGRES_USER
+              - name: WAKAPI_DB_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: wakapi-secret
+                    key: INIT_POSTGRES_PASS
+              - name: WAKAPI_DB_NAME
+                valueFrom:
+                  secretKeyRef:
+                    name: wakapi-secret
+                    key: INIT_POSTGRES_DBNAME
+              - name: WAKAPI_DB_MAX_CONNECTIONS
+                value: "2"
+              - name: WAKAPI_DB_SSL
+                value: "false"
+              - name: WAKAPI_INSECURE_COOKIES
+                value: "false"
+              - name: TZ
+                value: "Europe/London"
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: 80
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+
+    ingress:
+      app:
+        className: external
+        hosts:
+          - host: "{{ .Release.Name }}.omux.io"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+
+    serviceAccount:
+      create: true
+      name: *app
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http

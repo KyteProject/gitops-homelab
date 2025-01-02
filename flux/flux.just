@@ -38,6 +38,7 @@ export KUBERNETES_DIR := "../clusters"
 
 @sync:
   flux reconcile kustomization system-controllers
+  flux reconcile kustomization apps
 
 # Debug:
 # Show all Flux objects that are not ready
