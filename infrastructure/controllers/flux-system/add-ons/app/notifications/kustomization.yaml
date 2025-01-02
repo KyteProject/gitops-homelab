@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - alert-manager
   - github
-  - telegram
+  # - telegram
