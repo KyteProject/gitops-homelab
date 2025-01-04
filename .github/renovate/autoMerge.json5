@@ -1,0 +1,43 @@
+{
+  $schema: "https://docs.renovatebot.com/renovate-schema.json",
+  packageRules: [
+    {
+      description: [
+        "Auto-merge container digests updates for trusted containers",
+      ],
+      matchDatasources: ["docker"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["digest"],
+      matchPackagePatterns: [
+        "ghcr.io/buroa",
+        "ghcr.io/bjw-s",
+        "ghcr.io/onedr0p",
+        "ghcr.io/KyteProject"
+      ],
+    },
+    {
+      description: ["Auto-merge GitHub Actions for minor, patch, and digest"],
+      matchManagers: ["github-actions"],
+      matchDatasources: ["github-tags"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch", "digest"],
+    },
+    {
+      description: "Auto merge pre-commits",
+      matchDatasources: ["github-releases", "github-tags"],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: ["minor", "patch"],
+      matchPackageNames: [
+        "sirosen/texthooks",
+        "gruntwork-io/pre-commit",
+        "zricethezav/gitleaks",
+        "Lucas-C/pre-commit-hooks",
+        "adrienverge/yamllint",
+        "pre-commit/pre-commit-hooks",
+      ],
+    },
+  ],
+}

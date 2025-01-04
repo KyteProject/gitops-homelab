@@ -1,2 +1,35 @@
 * text=auto eol=lf
 *.sops.* diff=sopsdiffer
+
+# Documentation
+*.md linguist-documentation
+README.md linguist-documentation
+
+# Vendored files
+.vscode/** linguist-vendored
+.github/renovate/** linguist-vendored
+
+# YAML files (primary language)
+*.yaml linguist-detectable
+*.yml linguist-detectable
+
+# Justfile (secondary)
+**/justfile linguist-detectable
+**/*.just linguist-detectable
+
+# SOPS encrypted files (don't count towards language stats)
+*.sops.* linguist-generated
+*.sops.*.yaml linguist-generated
+*.sops.*.yml linguist-generated
+
+# Other config files (don't count towards language stats)
+.editorconfig linguist-vendored
+.gitattributes linguist-vendored
+.gitignore linguist-vendored
+
+# JSON files
+*.json linguist-detectable
+*.json5 linguist-detectable
+
+# Ignore specific directories from language statistics
+bootstrap/** linguist-vendored

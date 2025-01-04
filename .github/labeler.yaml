@@ -1,0 +1,67 @@
+---
+# Areas
+area/apps:
+  - changed-files:
+    - any-glob-to-any-file: "apps/**/*"
+
+area/flux:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "clusters/**/flux-system/**/*"
+      - "infrastructure/controllers/flux-system/**/*"
+
+area/github:
+  - changed-files:
+    - any-glob-to-any-file: ".github/**/*"
+
+area/docs:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "docs/**/*"
+          - "README.md"
+
+area/infrastructure:
+  - changed-files:
+    - any-glob-to-any-file: "infrastructure/**/*"
+
+area/monitoring:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "apps/monitoring/**/*"
+      - "infrastructure/controllers/monitoring/**/*"
+
+area/security:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/cert-manager/**/*"
+      - "**/*.sops.*"
+      - ".sops.yaml"
+
+area/storage:
+  - changed-files:
+    - any-glob-to-any-file: "infrastructure/controllers/storage/**/*"
+
+area/talos:
+  - changed-files:
+    - any-glob-to-any-file: "infrastructure/talos/**/*"
+
+# Clusters
+cluster/main:
+  - changed-files:
+    - any-glob-to-any-file: "clusters/main/**/*"
+
+# Types
+type/documentation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/*.md"
+      - "docs/**/*"
+
+type/dependency:
+  - changed-files:
+    - any-glob-to-any-file:
+      - "**/Chart.yaml"
+      - "**/requirements.yaml"
+      - ".github/renovate.json5"
+
+# Size labels are automatically handled by GitHub Actions
