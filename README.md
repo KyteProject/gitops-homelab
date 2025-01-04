@@ -1,154 +1,178 @@
-# Homelab Gitops Project
+# 🏠 Homelab GitOps Project
 
 Todo..
 
-## Getting Started
+## 🌟 Features
 
-Todo..
+- **Fully Automated**: GitOps-driven deployments using Flux CD
+- **Secure by Design**: SOPS encryption, age keys, and strict security policies
+- **High Availability**: Multi-node Kubernetes cluster powered by Talos Linux
+- **Monitoring Stack**: Comprehensive monitoring with Prometheus, Grafana, and Gatus
+- **Automated Updates**: Renovate bot keeps dependencies current
+- **CI/CD Integration**: GitHub Actions with self-hosted runners
+- **Network Security**: Cilium CNI for advanced networking and security policies
+
+## 🚀 Getting Started
 
 ### Prerequisites
 
-Todo..
+The following tools are required to work with this repository:
 
-### Dependencies
+- `talosctl`: Talos Linux management
+- `talhelper`: Talos configuration helper
+- `kubectl`: Kubernetes CLI
+- `flux`: FluxCD CLI
+- `sops`: Secret encryption
+- `age`: Encryption key management
+- `just`: Command runner
+- `helm`: Package manager
+- `jq`: JSON processor
 
-- talosctl
-- talhelper
-- just
-- sops
-- age
-- kubectl
-- jq
-- helm
-- helm-diff
-- flux
+- `helm-diff`: Helm chart diff tool:
 
-`helm plugin install https://github.com/databus23/helm-diff`
+```bash
+helm plugin install https://github.com/databus23/helm-diff
+```
 
-[FluxCD Docs](https://fluxcd.io/flux/guides/repository-structure/)
+### 🔧 Initial Setup
 
-## Setup cluster
+1. Generate age encryption key:
 
-generate age key
+```bash
+age-keygen -o age.agekey
+```
 
-todo...
-
-Generate sops secrets
+2. Create encrypted secrets:
 
 ```bash
 just talos secrets
 ```
 
-Generate clusterconfig
+3. Generate cluster configuration:
 
 ```bash
 just talos conf-gen
 ```
 
-First time apply config insecure
+4. Bootstrap the cluster:
 
 ```bash
-just talos conf-apply-insecure
+just cluster-bootstrap
 ```
 
-Bootstrap Talos
 
-```bash
-just talos bootstrap
-```
+## 🏗️ Project Structure
 
-Copy kubeconfig
+### Core Components
 
-```bash
-just talos kubeconfig
-```
+- **Infrastructure Layer**
+  - Talos Linux base configuration
+  - Core networking (Cilium)
+  - DNS services (CoreDNS)
+  - Certificate management
 
-Bootstrap core (kube-system) apps
+- **Platform Services**
+  - Flux CD controllers
+  - Monitoring stack
+  - Backup solutions
+  - External secrets management
 
-```bash
-just talos bootstrap-apps
-```
+- **Application Layer**
+  - User applications
+  - Development tools
+  - Home automation services
 
-## Project Structure
+### Directory Layout
 
-This repository follows GitOps principles to manage a Kubernetes homelab cluster using Talos Linux and Flux CD.
-
-### Directory Structure
-
-```bash
+```shell
 .
-├── apps/                             # Application deployments
-│   ├── core/                         # Core cluster services
-│   │   ├── cilium/                   # CNI and network policy
-│   │   ├── coredns/                  # DNS service
-│   │   ├── kubelet-csr-approver/     # Certificate management
-│   │   └── spegel/                   # Container registry mirror
-│   │
-│   └── monitoring/                   # Monitoring services
-│       └── prometheus-operator-crds/ # Prometheus CRDs
-│
-├── infrastructure/                   # Infrastructure components
-│   ├── talos/                        # Talos Linux configuration
-│   │   ├── apps/                     # Bootstrap applications
-│   │   └── clusterconfig/            # Talhelper configuration output
-│   │
-│   ├── netboot/                      # Network boot configuration
-│   │
-│   └── sources/                      # Flux source definitions
-│
-└── clusters/                         # Cluster-specific configurations
-    └── main/                         # Main cluster
-    │    ├── apps/                    # App deployments for this cluster
-    │    │   ├── core/                # Core services deployment
-    │    │   └── monitoring/          # Monitoring deployment
-    │    └── infrastructure/          # Infrastructure for this cluster
-    │    └── sources/                 # Source configurations
-    └── pve/                          # Proxmox VE cluster
-        └── ...                       # Proxmox VE cluster configuration
+├── bootstrap             # Initial cluster bootstrap configurations
+├── clusters              # Cluster-specific configurations
+│   └── main                # Production cluster
+│       ├── apps              # User applications (home automation, tools, etc.)
+│       ├── flux-system       # Core Flux configuration
+│       ├── repositories      # External resource definitions (git, helm, oci)
+│       └── vars              # Cluster-wide variables
+├── docs                  # Project documentation
+├── flux                  # Flux-specific configurations and templates
+└── infrastructure        # Core infrastructure components
+    ├── bootstrap           # Infrastructure bootstrapping resources
+    ├── controllers         # System controllers and services
+    │   ├── cert-manager      # Certificate management
+    │   ├── database          # Database operators and clusters
+    │   ├── kube-system       # Core kubernetes components
+    │   ├── monitoring        # Observability stack
+    │   ├── networking        # Network services and ingress
+    │   ├── security          # Secret management and security tools
+    │   └── storage           # Storage controllers and operators
+    ├── talos             # Talos Linux configurations
+    └── unifi             # UniFi network configurations
 ```
 
-### Component Overview
+The repository follows a hierarchical structure:
 
-#### Apps Directory
+- `clusters/`: Contains cluster-specific applications and configurations
+- `infrastructure/`: Houses all core system components and controllers
+- `infrastructure/controllers`: The controllers are grouped by namespace
 
-Contains all application definitions deployed to the cluster. Organized into:
+## 🔄 Deployment Workflow
 
-- **core/**: Essential cluster services (CNI, DNS, etc.)
-- **monitoring/**: Monitoring and observability tools
+1. **Infrastructure Provisioning**
+   - Talos Linux deployment
+   - Network configuration
+   - Storage setup
 
-#### Infrastructure Directory
+2. **Core Services**
+   - CNI (Cilium) deployment
+   - DNS configuration
+   - Certificate management
 
-Houses all infrastructure-related configurations:
+3. **Platform Services**
+   - Monitoring stack
+   - Backup solutions
+   - Security tools
 
-- **talos/**: Talos Linux cluster configuration and bootstrap process
-- **netboot/**: Network boot configuration for cluster nodes
-- **sources/**: Helm repository definitions for Flux
+4. **Application Deployment**
+   - Automated via Flux CD
+   - Version controlled
+   - Encrypted secrets
 
-#### Clusters Directory
+## 🛠️ Development
 
-Contains cluster-specific configurations and overlays:
+This project follows GitOps principles:
 
-- **main/**: Production cluster configuration
-  - Defines how applications are deployed
-  - Specifies infrastructure requirements
-  - Controls deployment order through Flux Kustomizations
+1. **All changes through Git**
+   - Infrastructure changes
+   - Application deployments
+   - Configuration updates
 
-### Deployment Flow
+2. **Automated Processes**
+   - CI/CD via GitHub Actions
+   - Automated dependency updates
+   - Continuous monitoring
 
-1. **Bootstrap Process**:
+3. **Security First**
+   - Encrypted secrets
+   - Least privilege access
+   - Regular security updates
 
-   - Talos Linux installation and configuration
-   - Core services deployment via Helmfile
-   - Flux CD installation
+## 📚 Documentation
 
-2. **GitOps Management**:
-   - Flux manages ongoing cluster state
-   - Applications deployed through Helm releases
-   - Infrastructure changes tracked in Git
+- [FluxCD Documentation](https://fluxcd.io/flux/guides/repository-structure/)
+- [Talos Linux Guides](https://www.talos.dev/latest/introduction/getting-started/)
 
-### Key Files
+---
 
-- `infrastructure/talos/talconfig.yaml`: Defines Talos cluster configuration
-- `infrastructure/talos/apps/helmfile.yaml`: Manages bootstrap application deployment
-- `clusters/main/apps/*/kustomization.yaml`: Flux deployment definitions
-- `apps/*/kustomization.yaml`: Application resource definitions
+## 🙏 Gratitude and Thanks
+
+A lot of inspiration and ideas are thanks to the hard work of [hotio.dev](https://hotio.dev) and [linuxserver.io](https://linuxserver.io) contributors.
+
+Many thanks to [onedrop](https://github.com/onedr0p), [kashals](https://github.com/kashalls), [buroa](https://github.com/buroa), and all the fantastic people who donate their time to the [Home Operations](https://discord.gg/home-operations) Discord.
+
+## 🚧 Changelog
+
+See the latest [release](https://github.com/KyteProject/gitops-homelab/releases/latest) notes.
+
+## 📝 License
+
+See [LICENSE](./LICENSE).
