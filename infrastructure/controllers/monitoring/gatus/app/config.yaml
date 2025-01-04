@@ -16,6 +16,62 @@ connectivity:
     target: 1.1.1.1:53
     interval: 1m
 
+endpoints:
+  - name: Status
+    group: Applications
+    url: https://status.omux.io
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://10.1.2.1:53
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: pushover
+        send-on-resolved: true
+
+  - name: Flux webhook
+    group: Services
+    url: https://flux-receiver.omux.io
+    interval: 1m
+    ui:
+      hide-hostname: true
+      hide-url: true
+    client:
+      dns-resolver: tcp://10.1.2.1:53
+    conditions:
+      - "[STATUS] == 404"
+    alerts:
+      - type: pushover
+        send-on-resolved: true
+
+  # - name: Minio
+  #   group: Services
+  #   url: https://minio.omux.io/minio/health/live
+  #   interval: 1m
+  #   ui:
+  #     hide-hostname: true
+  #     hide-url: true
+  #   client:
+  #     dns-resolver: tcp://10.1.2.1:53
+  #   conditions:
+  #     - "[STATUS] == 200"
+  #   alerts:
+  #     - type: pushover
+  #       send-on-resolved: true
+
+  - name: SSO
+    group: Services
+    url: http://authentik.security.svc.cluster.local
+    interval: 1m
+    conditions:
+      - "[STATUS] == 200"
+    alerts:
+      - type: pushover
+        send-on-resolved: true
+
 metrics: true
 
 storage:

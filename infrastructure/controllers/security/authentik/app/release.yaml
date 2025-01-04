@@ -26,15 +26,15 @@ spec:
     global:
       deploymentAnnotations:
         secret.reloader.stakater.com/reload: &secret authentik-secret
+      storageClass: openebs-hostpath
       env:
         - name: AUTHENTIK_SESSION_STORAGE
           value: db
       envFrom:
         - secretRef:
             name: *secret
-
     authentik:
-      log_level: debug
+      log_level: info
       redis:
         host: dragonfly.database.svc.cluster.local
       avatars: "gravatar,initials"
