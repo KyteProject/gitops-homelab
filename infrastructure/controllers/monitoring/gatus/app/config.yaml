@@ -62,15 +62,15 @@ endpoints:
   #     - type: pushover
   #       send-on-resolved: true
 
-  - name: SSO
-    group: Services
-    url: http://authentik.security.svc.cluster.local
-    interval: 1m
-    conditions:
-      - "[STATUS] == 200"
-    alerts:
-      - type: pushover
-        send-on-resolved: true
+  # - name: SSO
+  #   group: Services
+  #   url: http://authentik.security.svc.cluster.local
+  #   interval: 1m
+  #   conditions:
+  #     - "[STATUS] == 200"
+  #   alerts:
+  #     - type: pushover
+  #       send-on-resolved: true
 
 metrics: true
 
