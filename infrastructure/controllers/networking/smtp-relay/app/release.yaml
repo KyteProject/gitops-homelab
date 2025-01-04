@@ -43,10 +43,6 @@ spec:
             envFrom:
               - secretRef:
                   name: smtp-relay-secret
-            volumeMounts:
-              - name: tls-cert
-                mountPath: /tls
-                readOnly: true
             probes:
               liveness:
                 enabled: true
@@ -62,15 +58,6 @@ spec:
               readOnlyRootFilesystem: true
               capabilities:
                 drop: [ALL]
-        volumes:
-          - name: tls-cert
-            secret:
-              secretName: wildcard-tls
-              items:
-                - key: tls.crt
-                  path: tls.crt
-                - key: tls.key
-                  path: tls.key
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -87,11 +74,6 @@ spec:
           - path: /data/maddy.conf
             subPath: maddy.conf
             readOnly: true
-      tls:
-        enabled: true
-        type: secret
-        name: wildcard-tls
-        mountPath: /tls
     service:
       app:
         controller: *app

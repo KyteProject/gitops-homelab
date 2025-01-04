@@ -10,7 +10,6 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: nginx-certificates
     - name: external-secrets-stores
   path: ./infrastructure/controllers/networking/smtp-relay/app
   prune: true
