@@ -12,7 +12,7 @@ resources:
   - external-dns.yaml
   - external-secrets.yaml
   - grafana.yaml
-  - hajimari.yaml
+#  - hajimari.yaml
   - ingress-nginx.yaml
   - intel.yaml
   - jetstack.yaml

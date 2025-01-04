@@ -8,7 +8,7 @@
 - [ ] Setup remote access / VPN
 - [ ] Setup documentation
 - [ ] RSS - TBC?
-- [ ] Remove Hajimari, use Dashboard
+- [_] Setup a lab dashboard
 - [ ] Paperless
 - [ ] Update Readme
 - [ ] IaC setup for truenas server
@@ -19,7 +19,6 @@
 - [ ] Buy IP-KVP solution
 - [ ] Monitoring - Thanos?
 - [ ] Talos Backup service
-- [ ]
 - [ ]
 - [ ]
 - [ ]
