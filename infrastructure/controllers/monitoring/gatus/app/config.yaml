@@ -13,7 +13,7 @@ alerting:
 
 connectivity:
   checker:
-    target: 1.1.1.1:53
+    target: 10.96.0.10:53
     interval: 1m
 
 endpoints:
@@ -25,7 +25,7 @@ endpoints:
       hide-hostname: true
       hide-url: true
     client:
-      dns-resolver: tcp://10.1.2.1:53
+      dns-resolver: tcp://10.96.0.10:53
     conditions:
       - "[STATUS] == 200"
     alerts:
@@ -40,7 +40,7 @@ endpoints:
       hide-hostname: true
       hide-url: true
     client:
-      dns-resolver: tcp://10.1.2.1:53
+      dns-resolver: tcp://10.96.0.10:53
     conditions:
       - "[STATUS] == 404"
     alerts:
@@ -55,7 +55,7 @@ endpoints:
   #     hide-hostname: true
   #     hide-url: true
   #   client:
-  #     dns-resolver: tcp://10.1.2.1:53
+  #     dns-resolver: tcp://10.96.0.10:53
   #   conditions:
   #     - "[STATUS] == 200"
   #   alerts:
