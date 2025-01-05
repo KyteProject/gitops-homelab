@@ -68,7 +68,7 @@
   },
   "machineLearning": {
     "enabled": true,
-    "url": "http://immich-machine-learning.selfhosted:3003",
+    "url": "http://immich-machine-learning.personal:3003",
     "clip": {
       "enabled": true,
       "modelName": "ViT-B-32__openai"
@@ -155,7 +155,7 @@
       "replyTo": "",
       "transport": {
         "ignoreCert": false,
-        "host": "smtp-relay.default.svc.cluster.local",
+        "host": "smtp-relay.networking.svc.cluster.local",
         "port": 587
       }
     }

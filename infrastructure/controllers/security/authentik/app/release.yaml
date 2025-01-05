@@ -39,7 +39,7 @@ spec:
         host: dragonfly.database.svc.cluster.local
       avatars: "gravatar,initials"
       email:
-        host: smtp-relay.default.svc.cluster.local
+        host: smtp-relay.networking.svc.cluster.local
         port: 587
         from: "Access <access@omux.dev>"
       error_reporting:
