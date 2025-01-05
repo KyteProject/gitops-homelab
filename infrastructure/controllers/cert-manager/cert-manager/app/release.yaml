@@ -31,3 +31,11 @@ spec:
       enabled: true
       servicemonitor:
         enabled: true
+        labels:
+          release: kube-prometheus-stack
+        namespace: cert-manager
+        interval: 30s
+        scrapeTimeout: 10s
+        endpoints:
+          - port: tcp
+            path: /metrics
