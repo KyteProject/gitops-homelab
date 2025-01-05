@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: kube-prometheus-stack
-      version: 67.5.0
+      version: 67.7.0
       sourceRef:
         kind: HelmRepository
         name: prometheus-community
@@ -24,6 +24,8 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    crds:
+      enabled: false
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       ingress:
@@ -47,6 +49,10 @@ spec:
       serviceMonitor:
         selector:
           k8s-app: kube-apiserver
+    kubeScheduler:
+      service:
+        selector:
+          k8s-app: kube-scheduler
     kubeControllerManager: &kubeControllerManager
       service:
         selector:
@@ -55,15 +61,12 @@ spec:
       <<: *kubeControllerManager # etcd runs on control plane nodes
     kubeProxy:
       enabled: false
-    kubeScheduler:
-      service:
-        selector:
-          k8s-app: kube-scheduler
     prometheus:
       ingress:
         enabled: true
         ingressClassName: internal
         hosts: ["prometheus.omux.io"]
+        pathType: Prefix
       prometheusSpec:
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
@@ -72,9 +75,6 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         enableAdminAPI: true
         walCompression: true
-        serviceMonitorSelector:
-          matchLabels:
-            release: kube-prometheus-stack
         enableFeatures:
           - memory-snapshot-on-shutdown
         externalUrl: https://prometheus.omux.io
@@ -84,7 +84,7 @@ spec:
           requests:
             cpu: 100m
           limits:
-            memory: 4Gi
+            memory: 2000Mi
         storageSpec:
           volumeClaimTemplate:
             spec:
@@ -101,8 +101,7 @@ spec:
             - action: replace
               regex: (.*)
               replacement: $1
-              sourceLabels:
-                - __meta_kubernetes_pod_node_name
+              sourceLabels: ["__meta_kubernetes_pod_node_name"]
               targetLabel: kubernetes_node
     kube-state-metrics:
       fullnameOverride: kube-state-metrics
