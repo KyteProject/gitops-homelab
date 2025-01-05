@@ -29,13 +29,17 @@ spec:
     dns01RecursiveNameserversOnly: true
     prometheus:
       enabled: true
-      servicemonitor:
+      serviceMonitor:  # Note: capital M
         enabled: true
         labels:
           release: kube-prometheus-stack
-        namespace: cert-manager
         interval: 30s
         scrapeTimeout: 10s
-        endpoints:
-          - port: tcp
-            path: /metrics
+        targetPort: 9402
+        path: /metrics
+    metrics:
+      enabled: true
+      service:
+        port: 9402
+        targetPort: 9402
+        name: metrics  # This is important

@@ -72,6 +72,9 @@ spec:
         scrapeConfigSelectorNilUsesHelmValues: false
         enableAdminAPI: true
         walCompression: true
+        serviceMonitorSelector:
+          matchLabels:
+            release: kube-prometheus-stack
         enableFeatures:
           - memory-snapshot-on-shutdown
         externalUrl: https://prometheus.omux.io
