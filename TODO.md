@@ -13,7 +13,6 @@
 - [ ] Update Readme
 - [ ] IaC setup for truenas server
 - [ ] Minio?
-- [ ] Authentik?
 - [ ] Immich
 - [ ] Buy a UPC + nutexporter
 - [ ] Buy IP-KVP solution

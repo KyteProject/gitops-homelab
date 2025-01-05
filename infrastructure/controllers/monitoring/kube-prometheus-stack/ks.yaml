@@ -11,6 +11,8 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: external-secrets-stores
+    - name: prometheus-operator-crds
+    - name: rook-ceph-cluster
   path: ./infrastructure/controllers/monitoring/kube-prometheus-stack/app
   prune: true
   sourceRef:
