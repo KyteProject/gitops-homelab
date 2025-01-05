@@ -4,4 +4,5 @@ kind: Namespace
 metadata:
   name: personal
   labels:
+    kustomize.toolkit.fluxcd.io/prune: disabled
     kyverno.io/ndots: "true"

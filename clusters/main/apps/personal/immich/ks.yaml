@@ -25,7 +25,7 @@ spec:
     - name: democratic-csi-nfs
   postBuild:
     substitute:
-      APP: *appname
+      APP: *app
       HOSTNAME: photos.omux.io
       APP_UID: "568"
       APP_GID: "568"
