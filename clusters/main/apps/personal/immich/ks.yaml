@@ -19,10 +19,10 @@ spec:
   retryInterval: 1m
   timeout: 5m
   dependsOn:
-    - name: dragonfly-cluster
-    - name: cloudnative-pg-cluster
     - name: external-secrets-stores
     - name: democratic-csi-nfs
+    - name: dragonfly-cluster
+    - name: cloudnative-pg-cluster
   postBuild:
     substitute:
       APP: *app
