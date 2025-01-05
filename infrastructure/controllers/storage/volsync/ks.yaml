@@ -10,10 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: kyverno
-      namespace: kyverno
     - name: snapshot-controller
-      namespace: storage
   path: ./infrastructure/controllers/storage/volsync/app
   prune: true
   sourceRef:
