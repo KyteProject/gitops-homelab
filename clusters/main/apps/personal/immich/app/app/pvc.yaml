@@ -1,27 +1,26 @@
 ---
 apiVersion: v1
-kind: PersistentVolume
+kind: PersistentVolumeClaim
 metadata:
   name: immich-media
+  namespace: personal
 spec:
-  storageClassName: nfs
-  capacity:
-    storage: 1Mi
-  accessModes: ["ReadWriteMany"]
-  persistentVolumeReclaimPolicy: Retain
-  nfs:
-    server: "${NET_TRUENAS_IP}"
-    path: /mnt/tank/talos-applications/immich
-  mountOptions: ["nfsvers=4.2", "nconnect=8", "hard", "noatime"]
+  accessModes:
+    - ReadWriteMany
+  storageClassName: truenas-nfs
+  resources:
+    requests:
+      storage: 500Gi
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-media
+  name: immich-cache
+  namespace: personal
 spec:
-  accessModes: ["ReadWriteMany"]
-  storageClassName: nfs
+  accessModes:
+    - ReadWriteMany
+  storageClassName: truenas-nfs
   resources:
     requests:
-      storage: 1Mi
-  volumeName: immich-media
+      storage: 50Gi  # Adjust based on thumbnail cache needs
