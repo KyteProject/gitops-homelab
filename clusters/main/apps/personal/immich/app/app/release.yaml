@@ -1,5 +1,4 @@
 ---
-# yaml-language-server: $schema=https://raw.githubusercontent.com/bjw-s/helm-charts/main/charts/other/app-template/schemas/helmrelease-helm-v2.schema.json
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
@@ -28,8 +27,8 @@ spec:
         initContainers:
           01-init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16.6
+              repository: ghcr.io/kyteproject/postgres-init
+              tag: 17
               pullPolicy: IfNotPresent
             envFrom:
               - secretRef:
