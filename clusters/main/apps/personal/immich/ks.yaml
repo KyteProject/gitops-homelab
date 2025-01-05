@@ -1,0 +1,31 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app immich
+  namespace: flux-system
+spec:
+  path: ./clusters/main/apps/personal/immich/app
+  targetNamespace: personal
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  prune: true
+  wait: false
+  interval: 30m
+  retryInterval: 1m
+  timeout: 5m
+  dependsOn:
+    - name: dragonfly-cluster
+    - name: cloudnative-pg-cluster
+    - name: external-secrets-stores
+    - name: democratic-csi-nfs
+  postBuild:
+    substitute:
+      APP: *appname
+      HOSTNAME: photos.omux.io
+      APP_UID: "568"
+      APP_GID: "568"

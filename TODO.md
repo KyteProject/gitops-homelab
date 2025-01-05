@@ -2,7 +2,6 @@
 
 - [ ] Finish setting up Alert/Notification pipelines
 - [ ] Fix Gatus monitors
-- [ ] Connect to NAS (democratic-csi?)
 - [ ] Backup Scheules
 - [ ] Setup media apps
 - [ ] Setup remote access / VPN
@@ -13,12 +12,11 @@
 - [ ] Update Readme
 - [ ] IaC setup for truenas server
 - [ ] Minio?
-- [ ] Immich
 - [ ] Buy a UPC + nutexporter
 - [ ] Buy IP-KVP solution
 - [ ] Monitoring - Thanos?
 - [ ] Talos Backup service
-- [ ]
+- [ ] diced/zipline?
 - [ ]
 - [ ]
 - [ ]
