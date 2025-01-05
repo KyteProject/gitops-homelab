@@ -355,8 +355,8 @@ controlPlane:
             allowedRoles:
               - os:admin
             allowedKubernetesNamespaces:
+              - actions-runner-system
               - system-upgrade
-              - kube-system
     - |-
       - op: remove
         path: /cluster/apiServer/admissionControl
