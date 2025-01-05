@@ -23,20 +23,38 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
+  dependsOn:
+    - name: gha-runner-scale-set-controller
+      namespace: actions-runner-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  valuesFrom:
+    - targetPath: githubConfigSecret.github_app_id
+      kind: Secret
+      name: actions-runner-controller-auth-secret
+      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
+    - targetPath: githubConfigSecret.github_app_installation_id
+      kind: Secret
+      name: actions-runner-controller-auth-secret
+      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
+    - targetPath: githubConfigSecret.github_app_private_key
+      kind: Secret
+      name: actions-runner-controller-auth-secret
+      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
-    nameOverride: *app
-    runnerScaleSetName: *app
-    githubConfigUrl: https://github.com/KyteProject/gitops-homelab
+    nameOverride: gha-runner-scale-set
+    runnerScaleSetName: gha-runner-scale-set
+    githubConfigUrl: https://github.com/kyteproject/gitops-homelab
     minRunners: 1
     maxRunners: 3
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
         accessModes: ["ReadWriteOnce"]
+        storageClassName: ceph-block
         resources:
           requests:
             storage: 20Gi
-        storageClassName: ceph-block
     template:
       spec:
         containers:
@@ -65,16 +83,3 @@ spec:
     controllerServiceAccount:
       name: gha-runner-scale-set-controller
       namespace: actions-runner-system
-  valuesFrom:
-    - kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
-      targetPath: githubConfigSecret.github_app_id
-    - kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
-      targetPath: githubConfigSecret.github_app_installation_id
-    - kind: Secret
-      name: actions-runner-controller-auth-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
-      targetPath: githubConfigSecret.github_app_private_key

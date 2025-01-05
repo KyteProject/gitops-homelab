@@ -26,4 +26,5 @@ spec:
       strategy: rollback
       retries: 3
   values:
-    fullnameOverride: *app
+    fullnameOverride: gha-runner-scale-set-controller
+    replicaCount: 1
