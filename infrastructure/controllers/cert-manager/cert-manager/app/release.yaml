@@ -24,22 +24,10 @@ spec:
   values:
     crds:
       enabled: true
-    replicaCount: 2
+    replicaCount: 1
     dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
     dns01RecursiveNameserversOnly: true
     prometheus:
       enabled: true
-      serviceMonitor:  # Note: capital M
+      servicemonitor:
         enabled: true
-        labels:
-          release: kube-prometheus-stack
-        interval: 30s
-        scrapeTimeout: 10s
-        targetPort: 9402
-        path: /metrics
-    metrics:
-      enabled: true
-      service:
-        port: 9402
-        targetPort: 9402
-        name: metrics  # This is important
