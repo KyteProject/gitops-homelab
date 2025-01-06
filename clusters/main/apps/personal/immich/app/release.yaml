@@ -27,7 +27,7 @@ spec:
         initContainers:
             image:
               repository: ghcr.io/onedr0p/postgres-init
-              tag: 16.6
+              tag: 16.5
               pullPolicy: IfNotPresent
             envFrom:
               - secretRef:
