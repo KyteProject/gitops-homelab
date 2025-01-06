@@ -25,7 +25,7 @@ spec:
           secret.reloader.stakater.com/reload: &secret immich-secret
           configmap.reloader.stakater.com/reload: &configmap immich-configmap
         initContainers:
-          01-init-db:
+          init-db:
             image:
               repository: ghcr.io/kyteproject/postgres-init
               tag: 17
