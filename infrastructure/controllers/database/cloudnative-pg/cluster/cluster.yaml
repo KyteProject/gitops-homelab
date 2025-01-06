@@ -6,7 +6,7 @@ metadata:
   name: postgres
 spec:
   instances: 3
-  imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:17.2@sha256:15e1c1472571a05f8d13fffab2ec6b318499ae94d01361da48915a7d8932e15d
+  imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
   primaryUpdateStrategy: unsupervised
   primaryUpdateMethod: switchover
   storage:
