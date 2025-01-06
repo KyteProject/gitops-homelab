@@ -88,21 +88,7 @@
     "enabled": true
   },
   "oauth": {
-    "autoLaunch": true,
-    "autoRegister": true,
-    "buttonText": "Login with Omux",
-    "clientId": "{{ .OIDC_CLIENT_ID }}",
-    "clientSecret": "{{ .OIDC_CLIENT_SECRET }}",
-    "defaultStorageQuota": 0,
     "enabled": false,
-    "issuerUrl": "https://auth.omux.io/application/o/immich/.well-known/openid-configuration",
-    "mobileOverrideEnabled": false,
-    "mobileRedirectUri": "",
-    "scope": "openid email profile",
-    "signingAlgorithm": "RS256",
-    "storageLabelClaim": "preferred_username",
-    "storageQuotaClaim": "immich_quota"
-  },
   "passwordLogin": {
     "enabled": false
   },
