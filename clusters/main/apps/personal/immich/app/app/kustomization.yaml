@@ -7,7 +7,6 @@ resources:
   - gatus.yaml
   - release.yaml
   - pvc.yaml
-  - machine-learning.yaml
 configMapGenerator:
   - name: immich-config-tpl
     files:
