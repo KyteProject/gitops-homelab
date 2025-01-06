@@ -10,4 +10,4 @@ data:
   REDIS_PORT: "6379"
   REDIS_DBINDEX: "3"
   IMMICH_SERVER_URL: http://immich-server.personal.svc.cluster.local:3001
-  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.fileserver.svc.cluster.local:3003
+  IMMICH_MACHINE_LEARNING_URL: http://immich-machine-learning.personal.svc.cluster.local:3003
