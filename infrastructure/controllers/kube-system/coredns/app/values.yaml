@@ -6,7 +6,7 @@ serviceAccount:
   create: true
 service:
   name: kube-dns
-  clusterIP:  10.245.0.10
+  clusterIP: 10.245.0.10
 servers:
   - zones:
       - zone: .
@@ -33,8 +33,6 @@ servers:
         parameters: internal /etc/resolv.conf
       - name: forward
         parameters: omux.io /etc/resolv.conf
-      - name: forward
-        parameters: . /etc/resolv.conf
       - name: forward
         parameters: . tls://1.1.1.1 tls://1.0.0.1
         configBlock: |-
