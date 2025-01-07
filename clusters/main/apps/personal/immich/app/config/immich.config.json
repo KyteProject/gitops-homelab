@@ -88,9 +88,10 @@
     "enabled": true
   },
   "oauth": {
-    "enabled": false,
-  "passwordLogin": {
     "enabled": false
+  },
+  "passwordLogin": {
+    "enabled": true
   },
   "storageTemplate": {
     "enabled": true,
@@ -116,7 +117,7 @@
   },
   "trash": {
     "enabled": true,
-    "days": 7
+    "days": 30
   },
   "theme": {
     "customCss": ""
@@ -148,6 +149,5 @@
   },
   "user": {
     "deleteDelay": 2
-  }
   }
 }
