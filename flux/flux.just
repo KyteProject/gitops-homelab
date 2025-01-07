@@ -38,7 +38,6 @@ export KUBERNETES_DIR := "../clusters"
 
 @sync:
   flux reconcile source git flux-system
-  flux reconcile source helm flux-system
   flux reconcile kustomization flux-system
   flux reconcile kustomization system-controllers
   flux reconcile kustomization apps
