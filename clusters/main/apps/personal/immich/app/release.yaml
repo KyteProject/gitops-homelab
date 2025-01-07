@@ -22,9 +22,8 @@ spec:
       server:
         strategy: RollingUpdate
         annotations:
-          secret.reloader.stakater.com/reload: &secret immich-secret
-          configmap.reloader.stakater.com/reload: &configmap immich-configmap
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
+          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
         initContainers:
           02-init-db:
             image:
@@ -55,9 +54,9 @@ spec:
               tag: v1.123.0
             envFrom:
               - secretRef:
-                  name: *secret
+                  name: &secret immich-secret
               - configMapRef:
-                  name: *configmap
+                  name: &configmap immich-configmap
             env:
               IMMICH_CONFIG_FILE: /config/immich.config.json
               IMMICH_WORKERS_INCLUDE: api
@@ -85,9 +84,8 @@ spec:
       microservices:
         strategy: RollingUpdate
         annotations:
-          secret.reloader.stakater.com/reload: *secret
-          configmap.reloader.stakater.com/reload: *configmap
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
+          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
         pod:
           securityContext:
             runAsUser: 568
@@ -127,8 +125,8 @@ spec:
       machine-learning:
         strategy: RollingUpdate
         annotations:
-          configmap.reloader.stakater.com/reload: *configmap
-          reloader.stakater.com/auto: "true"
+          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
+          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
         pod:
           enableServiceLinks: false
           securityContext:
