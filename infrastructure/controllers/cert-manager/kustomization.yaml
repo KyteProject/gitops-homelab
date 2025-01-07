@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - cert-manager/ks.yaml
+  - truenas-cert-sync/ks.yaml
