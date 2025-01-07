@@ -8,14 +8,14 @@ metadata:
 data:
   config.yaml: |
     endpoints:
-      - name: Photos
+      - name: Immich
         group: Applications
-        url: https://${HOSTNAME}
+        url: https://immich.omux.io
         interval: 1m
         ui:
           hide-hostname: true
           hide-url: true
         client:
-          dns-resolver: tcp://10.1.2.1:53
+          dns-resolver: tcp://192.168.10.1:53
         conditions:
           - "[STATUS] == 200"
