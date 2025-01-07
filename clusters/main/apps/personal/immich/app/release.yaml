@@ -207,12 +207,11 @@ spec:
 
     ingress:
       server:
-        className: "public"
+        className: internal
         hosts:
-          - host: ${HOSTNAME}
+          - host: "{{ .Release.Name }}.omux.io"
             paths:
               - path: /
-                pathType: Prefix
                 service:
                   identifier: server
                   port: http
