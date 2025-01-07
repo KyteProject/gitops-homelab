@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - immich/ks.yaml
   - namespace.yaml
+  - paperless/ks.yaml
