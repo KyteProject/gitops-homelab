@@ -32,7 +32,7 @@ spec:
               pullPolicy: Always
             envFrom:
               - secretRef:
-                  name: *secret
+                  name: &secret immich-secret
         pod:
           securityContext:
             runAsUser: 568
@@ -54,7 +54,7 @@ spec:
               tag: v1.123.0
             envFrom:
               - secretRef:
-                  name: &secret immich-secret
+                  name: *secret
               - configMapRef:
                   name: &configmap immich-configmap
             env:
