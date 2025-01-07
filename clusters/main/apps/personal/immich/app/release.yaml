@@ -22,8 +22,8 @@ spec:
       server:
         strategy: RollingUpdate
         annotations:
-          secret.reloader.stakater.com/reload: &secret "immich-secret,immich-config-secret"
-          configmap.reloader.stakater.com/reload: &configmap "immich-configmap,immich-config-tpl"
+          secret.reloader.stakater.com/reload: &secret "auto"
+          configmap.reloader.stakater.com/reload: &configmap "auto"
           checksum/config: ${sha256sum immich.config.json}
         initContainers:
           02-init-db:
