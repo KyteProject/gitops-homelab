@@ -24,6 +24,7 @@ spec:
         annotations:
           secret.reloader.stakater.com/reload: &secret "immich-secret,immich-config-secret"
           configmap.reloader.stakater.com/reload: &configmap "immich-configmap,immich-config-tpl"
+          checksum/config: ${sha256sum immich.config.json}
         initContainers:
           02-init-db:
             image:
@@ -86,6 +87,7 @@ spec:
         annotations:
           secret.reloader.stakater.com/reload: *secret
           configmap.reloader.stakater.com/reload: *configmap
+          checksum/config: ${sha256sum immich.config.json}
         pod:
           securityContext:
             runAsUser: 568
@@ -126,6 +128,7 @@ spec:
         strategy: RollingUpdate
         annotations:
           configmap.reloader.stakater.com/reload: *configmap
+          checksum/config: ${sha256sum immich.config.json}
         pod:
           enableServiceLinks: false
           securityContext:
