@@ -21,7 +21,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
     - name: dragonfly-cluster
-    - name: security-secret-store
+    - name: external-secret-stores
     - name: democratic-csi-nfs
     - name: volsync
   postBuild:
