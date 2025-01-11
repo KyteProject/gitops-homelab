@@ -35,11 +35,7 @@ spec:
                 echo "Token exists: [$([ ! -z "$TRUENAS_API_TOKEN" ] && echo "YES" || echo "NO")]"
                 echo "Token length: ${#TRUENAS_API_TOKEN}"
 
-<<<<<<< HEAD
                 /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN:?'Token not set'}"
-=======
-                /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN}"
->>>>>>> parent of 6e2b523 (scrript)
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
