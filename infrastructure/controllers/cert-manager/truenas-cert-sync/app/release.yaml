@@ -28,7 +28,6 @@ spec:
         type: cronjob
         cronjob:
           schedule: "0 */12 * * *"
-          timeZone: "Europe/London"
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 2
@@ -80,7 +79,6 @@ spec:
 
     persistence:
       scripts:
-        enabled: true
         type: configMap
         name: truenas-cert-sync-script
         defaultMode: 0755
@@ -88,14 +86,14 @@ spec:
           - path: /scripts
             readOnly: true
       kubectl-bin:
-        enabled: true
         type: emptyDir
-        globalMounts:
-          - path: /shared-bin
-            containerName: copy-kubectl
-          - path: /usr/local/bin/kubectl
-            subPath: kubectl
-            containerName: main
+        advancedMounts:
+          main:
+            main:
+              - path: /usr/local/bin/kubectl
+                subPath: kubectl
+            copy-kubectl:
+              - path: /shared-bin
 
     defaultPodOptions:
       securityContext:
