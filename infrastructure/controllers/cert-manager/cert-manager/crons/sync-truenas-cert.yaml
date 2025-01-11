@@ -55,6 +55,9 @@ spec:
             - name: shared-bin
               mountPath: "/usr/local/bin/kubectl"
               subPath: "kubectl"
+            - name: truenas-token
+              mountPath: "/var/run/secrets/kubernetes.io/truenas"
+              readOnly: true
           volumes:
           - name: scripts
             configMap:
