@@ -33,7 +33,6 @@ spec:
               - |
                 set -xe
 
-                # Explicitly get token from environment
                 TOKEN="${TRUENAS_API_TOKEN}"
 
                 if [ -z "${TOKEN}" ]; then
@@ -43,7 +42,6 @@ spec:
 
                 echo "Token length: ${#TOKEN}"
 
-                # Execute script with explicit token
                 /scripts/sync-truenas-cert.sh "${TOKEN}"
             env:
             - name: TRUENAS_API_TOKEN
