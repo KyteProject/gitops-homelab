@@ -12,7 +12,7 @@ spec:
   dependsOn:
     - name: cert-manager-certificates
     - name: external-secrets-stores
-  path: ./infrastructure/controllers/cert-manager/truenas-cert-sync
+  path: ./infrastructure/controllers/cert-manager/truenas-cert-sync/app
   prune: true
   sourceRef:
     kind: GitRepository
