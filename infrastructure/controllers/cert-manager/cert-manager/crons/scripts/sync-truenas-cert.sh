@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 # Get the certificate from the kubernetes secret
 kubectl get secret -n cert-manager truenas-tls -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/truenas.crt
@@ -7,7 +7,7 @@ kubectl get secret -n cert-manager truenas-tls -o jsonpath='{.data.tls\.key}' | 
 # Copy to TrueNAS using the API
 curl -k -X POST \
   "https://tank.omux.io/api/v2.0/certificate" \
-  -H "Authorization: Bearer YOUR_API_TOKEN" \
+  -H "Authorization: Bearer ${TRUENAS_API_TOKEN}" \
   -H "Content-Type: application/json" \
   -d '{
     "name": "letsencrypt",
