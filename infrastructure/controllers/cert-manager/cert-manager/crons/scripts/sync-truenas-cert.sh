@@ -1,11 +1,13 @@
-#!/bin/sh
+#!/bin/bash
 
-set -x  # Enable debug output
-
-if [ -z "${TRUENAS_API_TOKEN}" ]; then
-    echo "Error: TRUENAS_API_TOKEN is not set"
+# Get token from first argument
+if [ -z "$1" ]; then
+    echo "Error: Token argument is required"
+    echo "Usage: $0 <token>"
     exit 1
 fi
+
+TOKEN="$1"
 
 # Get the certificate from the kubernetes secret
 kubectl get secret -n cert-manager truenas-tls -o jsonpath='{.data.tls\.crt}' | base64 -d > /tmp/truenas.crt
@@ -27,17 +29,16 @@ JSON_DATA=$(cat <<EOF
 EOF
 )
 
-# Show the JSON payload (excluding sensitive data)
 echo "Sending request to TrueNAS API..."
 echo "JSON structure (sensitive data redacted):"
 echo "$JSON_DATA" | sed 's/\("certificate": \)".*"/\1"<REDACTED>"/; s/\("privatekey": \)".*"/\1"<REDACTED>"/'
 
-# Copy to TrueNAS using the API with verbose output
+# Use token from argument
 curl -k -s -S -X POST \
   "https://tank.omux.io/api/v2.0/certificate" \
-  -H "Authorization: Bearer ${TRUENAS_API_TOKEN}" \
+  -H "Authorization: Bearer ${TOKEN}" \
   -H "Content-Type: application/json" \
-  -d "$JSON_DATA" | tee /tmp/response.txt
+  -d "$JSON_DATA"
 
 # Show the response code
 CURL_EXIT=$?
