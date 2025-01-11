@@ -26,32 +26,34 @@ spec:
                 - name: shared-bin
                   mountPath: "/shared-bin/"
           containers:
-          - name: cert-sync
-            image: bitnami/os-shell:12-debian-12-r20
-            command: ["/bin/bash", "-c"]
-            args:
-              - |
-                set -xe
+            - name: cert-sync
+              image: bitnami/os-shell:12-debian-12-r20
+              command: ["/bin/bash", "-c"]
+              args:
+                - |
+                  set -xe
 
-                TOKEN="${TRUENAS_API_TOKEN}"
-                ./scripts/sync-truenas-cert.sh "${TOKEN}"
-            env:
-            - name: TRUENAS_API_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: truenas-api-token
-                  key: token
-            volumeMounts:
-            - name: scripts
-              mountPath: /scripts
-            - name: shared-bin
-              mountPath: "/usr/local/bin/kubectl"
-              subPath: "kubectl"
+                  TOKEN="${TRUENAS_API_TOKEN}"
+                  ./scripts/sync-truenas-cert.sh "${TOKEN}"
+              env:
+                - name: TRUENAS_API_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      name: truenas-api-token
+                      key: token
+              securityContext:
+                privileged: true
+              volumeMounts:
+                - name: scripts
+                  mountPath: /scripts
+                - name: shared-bin
+                  mountPath: "/usr/local/bin/kubectl"
+                  subPath: "kubectl"
           volumes:
-          - name: scripts
-            configMap:
-              name: sync-truenas-cert-script
-              defaultMode: 0755
-          - name: shared-bin
-            emptyDir: {}
+            - name: scripts
+              configMap:
+                name: sync-truenas-cert-script
+                defaultMode: 0755
+            - name: shared-bin
+              emptyDir: {}
           restartPolicy: OnFailure
