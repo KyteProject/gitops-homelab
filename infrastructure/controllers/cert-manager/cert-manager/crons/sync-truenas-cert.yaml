@@ -34,15 +34,7 @@ spec:
                 set -xe
 
                 TOKEN="${TRUENAS_API_TOKEN}"
-
-                if [ -z "${TOKEN}" ]; then
-                  echo "No token found in environment"
-                  exit 1
-                fi
-
-                echo "Token length: ${#TOKEN}"
-
-                /scripts/sync-truenas-cert.sh "${TOKEN}"
+                ./scripts/sync-truenas-cert.sh "${TOKEN}"
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
