@@ -10,8 +10,6 @@ mod flux 'flux/flux.just'
 mod talos 'infrastructure/talos/talos.just'
 mod netboot 'infrastructure/netboot/netboot.just'
 mod bootstrap 'infrastructure/bootstrap/bootstrap.just'
-mod ansible 'infrastructure/ansible/ansible.just'
-mod tank 'clusters/truenas/truenas.just'
 
 # default recipe to display help information
 _default:
@@ -37,6 +35,7 @@ _default:
 # Homelab: Encrypt secrets with SOPS
 @encrypt-secrets:
   sops encrypt --output clusters/main/vars/cluster-secrets.secret.sops.yaml --output-type yaml clusters/main/vars/cluster-secrets.sops.yaml
+  just ansible truenas-secrets-edit
 
 # Homelab: Sync external secrets
 @sync-secrets:

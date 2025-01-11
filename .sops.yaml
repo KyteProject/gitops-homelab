@@ -28,9 +28,8 @@ creation_rules:
       - age:
           - *talos-main
 
-  - path_regex: clusters/truenas/apps/.*(.sops)?\.ya?ml
+  - path_regex: infrastructure/ansible/group_vars/truenas.*\.sops\.ya?ml
     input_type: yaml
-    mac_only_encrypted: true
     key_groups:
       - age:
           - *truenas

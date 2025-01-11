@@ -1,2 +1,0 @@
-ansible>=10.7.0
-docker>=7.0.0

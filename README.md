@@ -30,8 +30,6 @@ The following tools are required to work with this repository:
 
 - `helm-diff`: Helm chart diff tool:
 
-
-
 ```bash
 helm plugin install https://github.com/databus23/helm-diff
 ```
