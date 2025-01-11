@@ -1,0 +1,93 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: truenas-cert-sync
+  namespace: cert-manager
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      cert-sync:
+        type: cronjob
+        cronjob:
+          schedule: "0 */12 * * *"
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 2
+        containers:
+          app:
+            image:
+              repository: bitnami/os-shell
+              tag: 12-debian-12-r20
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                set -xe
+                /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN}"
+            env:
+              TRUENAS_API_TOKEN:
+                valueFrom:
+                  secretKeyRef:
+                    name: truenas-api-token
+                    key: token
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+            volumeMounts:
+              - name: scripts
+                mountPath: /scripts
+                readOnly: true
+              - name: shared-bin
+                mountPath: "/usr/local/bin/kubectl"
+                subPath: "kubectl"
+        initContainers:
+          copy-kubectl:
+            image:
+              repository: bitnami/kubectl
+              tag: 1.30.0-debian-12-r3
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                echo "copying 'kubectl' binary to shared volume..."
+                cp -f "$(which kubectl)" /shared-bin/kubectl
+            volumeMounts:
+              - name: shared-bin
+                mountPath: "/shared-bin/"
+        volumes:
+          - name: scripts
+            configMap:
+              name: truenas-cert-sync-script
+              defaultMode: 0755
+          - name: shared-bin
+            emptyDir: {}
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
