@@ -1,0 +1,9 @@
+---
+networks:
+  apps:
+    external: true
+
+x-common: &common
+  restart: unless-stopped
+  networks:
+    - apps
