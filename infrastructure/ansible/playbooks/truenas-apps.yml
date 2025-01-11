@@ -1,0 +1,45 @@
+---
+- name: Deploy Docker Compose Applications
+  hosts: truenas
+  gather_facts: false
+  collections:
+    - arensb.truenas
+
+  vars:
+    apps_to_deploy: "{{ docker_apps | default([]) }}"
+
+  tasks:
+    - name: Check for apps to deploy
+      ansible.builtin.fail:
+        msg: "No apps defined. Please specify apps using --extra-vars 'docker_apps=[app1,app2]'"
+      when: apps_to_deploy | length == 0
+
+    - name: Get TrueNAS facts
+      truenas_facts:
+
+    - name: Ensure apps directory exists
+      ansible.builtin.file:
+        path: "/tank/docker-apps/{{ item }}"
+        state: directory
+        mode: '0755'
+      loop: "{{ apps_to_deploy }}"
+
+    - name: Copy docker-compose files
+      ansible.builtin.template:
+        src: "{{ playbook_dir }}/../../../clusters/truenas/apps/{{ item }}/docker-compose.yml"
+        dest: "/tank/docker-apps/{{ item }}/docker-compose.yml"
+        mode: '0644'
+      loop: "{{ apps_to_deploy }}"
+
+    - name: Copy decrypted secrets
+      ansible.builtin.copy:
+        content: "{{ lookup('community.sops.sops', playbook_dir + '/../../../clusters/truenas/apps/' + item + '/secrets.sops.yaml') | from_yaml | to_nice_yaml }}"
+        dest: "/tank/docker-apps/{{ item }}/.env"
+        mode: '0600'
+      loop: "{{ apps_to_deploy }}"
+
+    - name: Deploy docker compose apps
+      community.docker.docker_compose_v2:
+        project_src: "/tank/docker-apps/{{ item }}"
+        state: present
+      loop: "{{ apps_to_deploy }}"
