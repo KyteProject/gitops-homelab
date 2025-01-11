@@ -28,10 +28,23 @@ spec:
           containers:
           - name: cert-sync
             image: bitnami/os-shell:12-debian-12-r20
-            command:
-              - "/bin/bash"
-              - "-c"
-              - "/scripts/sync-truenas-cert.sh ${TRUENAS_API_TOKEN}"
+            command: ["/bin/bash", "-c"]
+            args:
+              - |
+                set -xe
+
+                # Explicitly get token from environment
+                TOKEN="${TRUENAS_API_TOKEN}"
+
+                if [ -z "${TOKEN}" ]; then
+                  echo "No token found in environment"
+                  exit 1
+                fi
+
+                echo "Token length: ${#TOKEN}"
+
+                # Execute script with explicit token
+                /scripts/sync-truenas-cert.sh "${TOKEN}"
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
