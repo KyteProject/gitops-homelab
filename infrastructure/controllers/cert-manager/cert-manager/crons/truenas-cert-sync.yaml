@@ -1,0 +1,33 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: truenas-cert-sync
+  namespace: cert-manager
+spec:
+  schedule: "0 */12 * * *"  # Run every 12 hours
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: cert-sync
+            image: bitnami/kubectl:latest
+            command:
+            - /bin/bash
+            - -c
+            - /scripts/sync-truenas-cert.sh
+            env:
+            - name: TRUENAS_API_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: truenas-api-token
+                  key: token
+            volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+          volumes:
+          - name: scripts
+            configMap:
+              name: truenas-cert-sync-script
+              defaultMode: 0755
+          restartPolicy: OnFailure
