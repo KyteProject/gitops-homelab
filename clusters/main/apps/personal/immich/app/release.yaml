@@ -63,10 +63,12 @@ spec:
               IMMICH_WORKERS_INCLUDE: api
             resources:
               requests:
-                cpu: 100m
-                memory: 250Mi
+                gpu.intel.com/i915: 1
+                cpu: 200m
+                memory: 1024Mi
               limits:
-                memory: 2000Mi
+                gpu.intel.com/i915: 1
+                memory: 5000Mi
             probes:
               liveness: &probes
                 enabled: true
@@ -119,11 +121,11 @@ spec:
             resources:
               requests:
                 gpu.intel.com/i915: 1
-                cpu: 100m
-                memory: 250Mi
+                cpu: 200m
+                memory: 1024Mi
               limits:
                 gpu.intel.com/i915: 1
-                memory: 2500Mi
+                memory: 5000Mi
       machine-learning:
         replicas: 3
         strategy: RollingUpdate
@@ -152,10 +154,12 @@ spec:
               tag: v1.124.2
             resources:
               requests:
-                cpu: 100m
-                memory: 250Mi
+                gpu.intel.com/i915: 1
+                cpu: 200m
+                memory: 1024Mi
               limits:
-                memory: 4000Mi
+                gpu.intel.com/i915: 1
+                memory: 5000Mi
             probes:
               liveness: &probes
                 enabled: true
