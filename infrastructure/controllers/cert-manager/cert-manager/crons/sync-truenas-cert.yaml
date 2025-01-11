@@ -31,18 +31,7 @@ spec:
             command:
               - "/bin/bash"
               - "-c"
-              - |
-                TOKEN=$(cat /var/run/secrets/kubernetes.io/truenas/token)
-
-                if [ -z "$TOKEN" ]; then
-                  echo "Error: Token is empty"
-                  exit 1
-                fi
-
-                echo "Token from file exists: [YES]"
-                echo "Token from file length: ${#TOKEN}"
-
-                /scripts/sync-truenas-cert.sh "$TOKEN"
+              - "/scripts/sync-truenas-cert.sh ${TRUENAS_API_TOKEN}"
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
