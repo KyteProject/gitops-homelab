@@ -35,7 +35,7 @@ spec:
                 echo "Token exists: [$([ ! -z "$TRUENAS_API_TOKEN" ] && echo "YES" || echo "NO")]"
                 echo "TRUENAS_API_TOKEN=${TRUENAS_API_TOKEN}"
 
-                /scripts/sync-truenas-cert.sh ${TRUENAS_API_TOKEN}
+                /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN:?'Token not set'}"
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
