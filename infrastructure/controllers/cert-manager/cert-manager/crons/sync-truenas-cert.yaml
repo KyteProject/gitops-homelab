@@ -31,7 +31,9 @@ spec:
             command:
               - "/bin/bash"
               - "-c"
-              - /scripts/sync-truenas-cert.sh
+              - |
+                export TRUENAS_API_TOKEN="${TRUENAS_API_TOKEN}"
+                /scripts/sync-truenas-cert.sh
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
