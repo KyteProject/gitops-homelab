@@ -32,8 +32,10 @@ spec:
               - "/bin/bash"
               - "-c"
               - |
-                export TRUENAS_API_TOKEN="${TRUENAS_API_TOKEN}"
-                /scripts/sync-truenas-cert.sh
+                echo "Token exists: [$([ ! -z "$TRUENAS_API_TOKEN" ] && echo "YES" || echo "NO")]"
+                echo "Token length: ${#TRUENAS_API_TOKEN}"
+
+                /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN}"
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
