@@ -44,4 +44,4 @@ _default:
     | xargs --max-procs=4 -l bash -c 'kubectl --namespace $0 annotate externalsecret $1 force-sync=$(date +%s) --overwrite'
 
 @cert-cron:
-    kubectl create job -n cert-manager --from=cronjob/sync-truenas-cert manual-sync-$(date +%s) && kubectl get pods -n cert-manager -w
+    kubectl create job -n cert-manager --from=cronjob/truenas-cert-sync manual-test-$(date +%s) && kubectl get pods -n cert-manager -w
