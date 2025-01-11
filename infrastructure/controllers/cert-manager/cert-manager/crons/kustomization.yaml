@@ -4,6 +4,7 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - sync-truenas-cert.yaml
+  - rbac.yaml
 configMapGenerator:
   - name: sync-truenas-cert-script
     files:

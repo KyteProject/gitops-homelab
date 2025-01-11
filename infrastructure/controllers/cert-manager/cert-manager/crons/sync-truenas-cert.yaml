@@ -4,18 +4,34 @@ metadata:
   name: sync-truenas-cert
   namespace: cert-manager
 spec:
-  schedule: "0 */12 * * *"  # Run every 12 hours
+  schedule: "0 */12 * * *"
   jobTemplate:
     spec:
       template:
         spec:
+          serviceAccountName: cert-sync
+          # Can't use bitnami on its own due to missing curl
+          # https://github.com/bitnami/containers/issues/48638#issuecomment-2105357029
+          initContainers:
+            - name: copy-kubectl
+              image: bitnami/kubectl:1.30.0-debian-12-r3
+              command:
+                - "/bin/sh"
+                - "-c"
+              args:
+                - |
+                  echo "copying 'kubectl' binary to shared volume...";
+                  cp -f "$(which kubectl)" /shared-bin/kubectl;
+              volumeMounts:
+                - name: shared-bin
+                  mountPath: "/shared-bin/"
           containers:
           - name: cert-sync
-            image: bitnami/kubectl:latest
+            image: bitnami/os-shell:12-debian-12-r20
             command:
-            - /bin/bash
-            - -c
-            - /scripts/sync-truenas-cert.sh
+              - "/bin/bash"
+              - "-c"
+              - /scripts/sync-truenas-cert.sh
             env:
             - name: TRUENAS_API_TOKEN
               valueFrom:
@@ -25,9 +41,14 @@ spec:
             volumeMounts:
             - name: scripts
               mountPath: /scripts
+            - name: shared-bin
+              mountPath: "/usr/local/bin/kubectl"
+              subPath: "kubectl"
           volumes:
           - name: scripts
             configMap:
-              name: sync-truenas-cert-script
+              name: truenas-cert-sync-script
               defaultMode: 0755
+          - name: shared-bin
+            emptyDir: {}
           restartPolicy: OnFailure
