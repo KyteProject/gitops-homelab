@@ -28,9 +28,23 @@ spec:
         type: cronjob
         cronjob:
           schedule: "0 */12 * * *"
+          timeZone: ${TIMEZONE}
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 2
+        serviceAccount:
+          create: false
+          name: cert-sync
+        initContainers:
+          copy-kubectl:
+            image:
+              repository: bitnami/kubectl
+              tag: 1.30.0-debian-12-r3
+            command: ["/bin/sh", "-c"]
+            args:
+              - |
+                echo "copying 'kubectl' binary to shared volume..."
+                cp -f "$(which kubectl)" /shared-bin/kubectl
         containers:
           app:
             image:
@@ -40,6 +54,7 @@ spec:
             args:
               - |
                 set -xe
+                apt-get update && apt-get install -y curl
                 /scripts/sync-truenas-cert.sh "${TRUENAS_API_TOKEN}"
             env:
               TRUENAS_API_TOKEN:
@@ -59,35 +74,27 @@ spec:
               capabilities:
                 drop:
                   - ALL
-            volumeMounts:
-              - name: scripts
-                mountPath: /scripts
-                readOnly: true
-              - name: shared-bin
-                mountPath: "/usr/local/bin/kubectl"
-                subPath: "kubectl"
-        initContainers:
-          copy-kubectl:
-            image:
-              repository: bitnami/kubectl
-              tag: 1.30.0-debian-12-r3
-            command: ["/bin/sh", "-c"]
-            args:
-              - |
-                echo "copying 'kubectl' binary to shared volume..."
-                cp -f "$(which kubectl)" /shared-bin/kubectl
-            volumeMounts:
-              - name: shared-bin
-                mountPath: "/shared-bin/"
-        volumes:
-          - name: scripts
-            configMap:
-              name: truenas-cert-sync-script
-              defaultMode: 0755
-          - name: shared-bin
-            emptyDir: {}
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
+      volumes:
+        - name: scripts
+          configMap:
+            name: truenas-cert-sync-script
+            defaultMode: 0755
+        - name: shared-bin
+          emptyDir: {}
+      volumeMounts:
+        - name: scripts
+          mountPath: /scripts
+          readOnly: true
+          containerName: app
+        - name: shared-bin
+          mountPath: "/usr/local/bin/kubectl"
+          subPath: "kubectl"
+          containerName: app
+        - name: shared-bin
+          mountPath: "/shared-bin/"
+          containerName: copy-kubectl
