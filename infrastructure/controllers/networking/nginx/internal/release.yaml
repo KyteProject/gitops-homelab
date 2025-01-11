@@ -25,7 +25,7 @@ spec:
   values:
     fullnameOverride: *app
     controller:
-      replicaCount: 2
+      replicaCount: 3
       admissionWebhooks:
         objectSelector:
           matchExpressions:
