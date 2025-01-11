@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app chartdb
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      chartdb:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/chartdb/chartdb
+              tag: v1.6.0@sha256:1ea20d3fdbd57deb34599c39def8b2ea84ce486f3c78e2283155b61e8bfcad1f
+            envFrom: *envFrom
+            env:
+              - name: OPENAI_API_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: chartdb-secret
+                    key: OPENAI_API_KEY
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+
+    ingress:
+      app:
+        className: external
+        hosts:
+          - host: "{{ .Release.Name }}.omux.io"
+            paths:
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: 80
+
+    serviceAccount:
+      create: true
+      name: *app
+
+    serviceMonitor:
+      app:
+        serviceName: *app
+        endpoints:
+          - port: http
