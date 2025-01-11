@@ -4,5 +4,5 @@ kind: Kustomization
 resources:
   - configmap.yaml
   - release.yaml
-  - external-secret.yaml
+  - externalsecret.yaml
   - rbac.yaml
