@@ -77,28 +77,28 @@ spec:
               capabilities:
                 drop:
                   - ALL
+            volumeMounts:
+              - name: scripts
+                mountPath: /scripts
+                readOnly: true
+                containerName: main
+              - name: shared-bin
+                mountPath: "/usr/local/bin/kubectl"
+                subPath: "kubectl"
+                containerName: main
+              - name: shared-bin
+                mountPath: "/shared-bin/"
+                containerName: copy-kubectl
 
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
-      volumes:
-        - name: scripts
-          configMap:
-            name: truenas-cert-sync-script
-            defaultMode: 0755
-        - name: shared-bin
-          emptyDir: {}
-      volumeMounts:
-        - name: scripts
-          mountPath: /scripts
-          readOnly: true
-          containerName: main
-        - name: shared-bin
-          mountPath: "/usr/local/bin/kubectl"
-          subPath: "kubectl"
-          containerName: main
-        - name: shared-bin
-          mountPath: "/shared-bin/"
-          containerName: copy-kubectl
+  volumes:
+    - name: scripts
+      configMap:
+        name: truenas-cert-sync-script
+        defaultMode: 0755
+    - name: shared-bin
+      emptyDir: {}
