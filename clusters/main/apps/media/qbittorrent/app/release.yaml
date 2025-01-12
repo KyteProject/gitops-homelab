@@ -78,16 +78,16 @@ spec:
     ingress:
       app:
         className: internal
-        annotations:
-          authentik.home.arpa/enabled: "true"
-          nginx.ingress.kubernetes.io/auth-signin: |-
-            https://qb.omux.io/outpost.goauthentik.io/start?rd=$escaped_request_uri
-          gethomepage.dev/enabled: "true"
-          gethomepage.dev/group: Media
-          gethomepage.dev/name: QBittorrent
-          gethomepage.dev/icon: qbittorrent.svg
-          gethomepage.dev/widget.type: qbittorrent
-          gethomepage.dev/widget.url: http://qbittorrent-app.downloads
+        # annotations:
+        #   authentik.home.arpa/enabled: "true"
+        #   nginx.ingress.kubernetes.io/auth-signin: |-
+        #     https://qb.omux.io/outpost.goauthentik.io/start?rd=$escaped_request_uri
+        #   gethomepage.dev/enabled: "true"
+        #   gethomepage.dev/group: Media
+        #   gethomepage.dev/name: QBittorrent
+        #   gethomepage.dev/icon: qbittorrent.svg
+        #   gethomepage.dev/widget.type: qbittorrent
+        #   gethomepage.dev/widget.url: http://qbittorrent-app.downloads
         hosts:
           - host: "{{ .Release.Name }}.omux.io"
             paths: &paths
