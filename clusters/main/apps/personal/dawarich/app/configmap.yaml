@@ -1,0 +1,11 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: dawarich-configmap
+data:
+  RAILS_ENV: "production"
+  TIME_ZONE: "Europe/London"
+  DATABASE_NAME: "dawarich"
+  REDIS_URL: dragonfly.database.svc.cluster.local
+  DISABLE_TELEMETRY: "true"

@@ -1,0 +1,269 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: dawarich
+spec:
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  interval: 30m
+  install:
+    timeout: 30m
+  upgrade:
+    timeout: 30m
+  values:
+    controllers:
+      server:
+        replicas: 3
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: "dawarich-secret"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/kyteproject/postgres-init
+              tag: 17
+              pullPolicy: Always
+            envFrom:
+              - secretRef:
+                  name: &secret dawarich-secret
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          server:
+            image:
+              repository: docker.io/freikin/dawarich
+              tag: v0.22.1
+            envFrom:
+              - secretRef:
+                  name: *secret
+              - configMapRef:
+                  name: &configmap dawarich-configmap
+            env:
+              DAWARICH_CONFIG_FILE: /config/dawarich.config.json
+              DAWARICH_WORKERS_INCLUDE: api
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 200m
+                memory: 1024Mi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 5000Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/server/ping
+                    port: &serverport 2283
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+              readiness: *probes
+              startup:
+                enabled: false
+      microservices:
+        replicas: 3
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: "dawarich-secret,dawarich-config-secret"
+          configmap.reloader.stakater.com/reload: "dawarich-configmap,dawarich-config-tpl"
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: ${APP}
+                  app.kubernetes.io/component: microservices
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
+        containers:
+          microservices:
+            image:
+              repository: ghcr.io/dawarich-app/dawarich-server
+              tag: v1.124.2
+            envFrom:
+              - secretRef:
+                  name: *secret
+              - configMapRef:
+                  name: *configmap
+            env:
+              DAWARICH_WORKERS_EXCLUDE: api
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 200m
+                memory: 1024Mi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 5000Mi
+      machine-learning:
+        replicas: 3
+        strategy: RollingUpdate
+        annotations:
+          secret.reloader.stakater.com/reload: "dawarich-secret,dawarich-config-secret"
+          configmap.reloader.stakater.com/reload: "dawarich-configmap,dawarich-config-tpl"
+        pod:
+          enableServiceLinks: false
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+          topologySpreadConstraints:
+            - maxSkew: 1
+              topologyKey: kubernetes.io/hostname
+              whenUnsatisfiable: DoNotSchedule
+              labelSelector:
+                matchLabels:
+                  app.kubernetes.io/instance: ${APP}
+                  app.kubernetes.io/component: machine-learning
+        containers:
+          machine-learning:
+            image:
+              repository: ghcr.io/dawarich-app/dawarich-machine-learning
+              tag: v1.124.2
+            resources:
+              requests:
+                gpu.intel.com/i915: 1
+                cpu: 200m
+                memory: 1024Mi
+              limits:
+                gpu.intel.com/i915: 1
+                memory: 5000Mi
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: &mlport 3003
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 5
+              readiness: *probes
+              startup:
+                enabled: false
+
+    service:
+      server:
+        controller: server
+        ports:
+          http:
+            port: *serverport
+          metrics:
+            port: 8081
+      microservices:
+        controller: microservices
+        ports:
+          metrics:
+            port: 8081
+      machine-learning:
+        controller: machine-learning
+        ports:
+          http:
+            port: *mlport
+
+    # serviceMonitor:
+    #   dawarich:
+    #     serviceName: dawarich-server
+    #     endpoints:
+    #       - port: metrics
+    #         scheme: http
+    #         path: /metrics
+    #         interval: 1m
+    #         scrapeTimeout: 30s
+    #   microservices:
+    #     serviceName: dawarich-microservices
+    #     endpoints:
+    #       - port: metrics
+    #         scheme: http
+    #         path: /metrics
+    #         interval: 1m
+    #         scrapeTimeout: 30s
+
+    ingress:
+      server:
+        className: internal
+        hosts:
+          - host: "{{ .Release.Name }}.omux.io"
+            paths:
+              - path: /
+                service:
+                  identifier: server
+                  port: http
+
+    persistence:
+      config:
+        type: secret
+        name: dawarich-config-secret
+        advancedMounts:
+          server:
+            server:
+              - path: /config
+          microservices:
+            microservices:
+              - path: /config
+      library:
+        existingClaim: dawarich-media
+        advancedMounts:
+          server:
+            server:
+              - path: /usr/src/app/upload
+          microservices:
+            microservices:
+              - path: /usr/src/app/upload
+      geocoding-dump:
+        type: emptyDir
+        advancedMounts:
+          server:
+            server:
+              - path: /usr/src/app/.reverse-geocoding-dump
+          microservices:
+            microservices:
+              - path: /usr/src/app/.reverse-geocoding-dump
+      geoname-dump:
+        type: emptyDir
+        advancedMounts:
+          microservices:
+            microservices:
+              - path: /usr/src/app/node_modules/local-reverse-geocoder/geonames_dump
+      transformers-cache:
+        type: emptyDir
+        advancedMounts:
+          server:
+            server:
+              - path: /usr/src/app/.transformers_cache
+          microservices:
+            microservices:
+              - path: /usr/src/app/.transformers_cache
+      model-cache:
+        type: emptyDir
+        advancedMounts:
+          machine-learning:
+            machine-learning:
+              - path: /cache
+      #   # globalMounts:
+      #   #   - path: /config
