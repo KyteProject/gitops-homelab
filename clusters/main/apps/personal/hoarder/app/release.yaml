@@ -24,8 +24,6 @@ spec:
   values:
     controllers:
       hoarder:
-        annotations:
-          reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
@@ -38,11 +36,6 @@ spec:
             envFrom:
               - secretRef:
                   name: &secret hoarder-secret
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 256Mi
             probes:
               liveness: &probes
                 enabled: true
@@ -62,9 +55,7 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
-                drop:
-                  - ALL
-
+                drop: [ALL]
           chrome:
             image:
               repository: gcr.io/zenika-hub/alpine-chrome
@@ -78,18 +69,11 @@ spec:
               - --remote-debugging-address=0.0.0.0
               - --remote-debugging-port=9222
               - --hide-scrollbars
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 256Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
-                drop:
-                  - ALL
-
+                drop: [ALL]
           search:
             image:
               repository: getmeili/meilisearch
@@ -99,32 +83,28 @@ spec:
             envFrom:
               - secretRef:
                   name: *secret
-            resources:
-              requests:
-                cpu: 10m
-              limits:
-                memory: 256Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
-                drop:
-                  - ALL
+                drop: [ALL]
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
 
     service:
       app:
-        controller: hoarder
+        controller: *app
         ports:
           http:
             port: *port
-      chrome:
-        controller: hoarder
-        ports:
           chrome:
             port: 9222
-      search:
-        controller: hoarder
-        ports:
           search:
             port: 7700
 
@@ -132,7 +112,7 @@ spec:
       app:
         className: internal
         hosts:
-          - host: &host "{{ .Release.Name }}.omux.io"
+          - host: "{{ .Release.Name }}.omux.io"
             paths:
               - path: /
                 service:
@@ -152,3 +132,23 @@ spec:
           hoarder:
             search:
               - path: /meili_data
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      run:
+        type: emptyDir
+        globalMounts:
+          - path: /run
+      dbus:
+        type: emptyDir
+        advancedMounts:
+          hoarder:
+            chrome:
+              - path: /var/run/dbus
+      fontconfig:
+        type: emptyDir
+        advancedMounts:
+          hoarder:
+            chrome:
+              - path: /usr/share/fontconfig
