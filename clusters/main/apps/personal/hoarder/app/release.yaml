@@ -14,12 +14,16 @@ spec:
         name: bjw-s
         namespace: flux-system
   install:
-    timeout: 30m
+    remediation:
+      retries: 3
   upgrade:
-    timeout: 30m
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
   values:
     controllers:
-      main:
+      hoarder:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
@@ -34,6 +38,11 @@ spec:
             envFrom:
               - secretRef:
                   name: &secret hoarder-secret
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
             probes:
               liveness: &probes
                 enabled: true
@@ -55,6 +64,7 @@ spec:
               capabilities:
                 drop:
                   - ALL
+
           chrome:
             image:
               repository: gcr.io/zenika-hub/alpine-chrome
@@ -68,12 +78,18 @@ spec:
               - --remote-debugging-address=0.0.0.0
               - --remote-debugging-port=9222
               - --hide-scrollbars
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities:
                 drop:
                   - ALL
+
           search:
             image:
               repository: getmeili/meilisearch
@@ -83,6 +99,11 @@ spec:
             envFrom:
               - secretRef:
                   name: *secret
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 256Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -91,37 +112,43 @@ spec:
                   - ALL
 
     service:
-      main:
-        controller: main
+      app:
+        controller: hoarder
         ports:
           http:
             port: *port
+      chrome:
+        controller: hoarder
+        ports:
           chrome:
             port: 9222
+      search:
+        controller: hoarder
+        ports:
           search:
             port: 7700
 
     ingress:
-      main:
+      app:
         className: internal
         hosts:
           - host: &host "{{ .Release.Name }}.omux.io"
             paths:
               - path: /
                 service:
-                  identifier: main
+                  identifier: app
                   port: http
 
     persistence:
       data:
-        type: pvc
         existingClaim: hoarder-data
+        advancedMounts:
+          hoarder:
+            app:
+              - path: /data
       search:
-        type: pvc
         existingClaim: hoarder-search
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
+        advancedMounts:
+          hoarder:
+            search:
+              - path: /meili_data
