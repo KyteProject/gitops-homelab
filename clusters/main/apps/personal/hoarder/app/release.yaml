@@ -138,10 +138,8 @@ spec:
           - path: /tmp
       run:
         type: emptyDir
-        advancedMounts:
-          hoarder:
-            app:
-              - path: /tmp/run
+        globalMounts:
+          - path: /run
       dbus:
         type: emptyDir
         advancedMounts:
