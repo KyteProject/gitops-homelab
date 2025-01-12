@@ -9,4 +9,4 @@ spec:
   resources:
     requests:
       storage: 10Ti
-  storageClassName: democratic-csi-nfs
+  storageClassName: truenas-nfs
