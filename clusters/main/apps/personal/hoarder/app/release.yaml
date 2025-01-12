@@ -49,6 +49,12 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
           chrome:
             image:
               repository: gcr.io/zenika-hub/alpine-chrome
@@ -62,6 +68,12 @@ spec:
               - --remote-debugging-address=0.0.0.0
               - --remote-debugging-port=9222
               - --hide-scrollbars
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
           search:
             image:
               repository: getmeili/meilisearch
@@ -71,18 +83,23 @@ spec:
             envFrom:
               - secretRef:
                   name: *secret
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                  - ALL
 
     service:
       main:
+        controller: main
         ports:
           http:
-            port: &port 3000
+            port: *port
           chrome:
             port: 9222
-            targetPort: 9222
           search:
             port: 7700
-            targetPort: 7700
 
     ingress:
       main:
@@ -97,13 +114,14 @@ spec:
 
     persistence:
       data:
-        enabled: true
+        type: pvc
         existingClaim: hoarder-data
-        mountPath: /data
       search:
-        enabled: true
+        type: pvc
         existingClaim: hoarder-search
-        mountPath: /meili_data
-        subPath:
-          - path: /meili_data
-            container: search
+
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
