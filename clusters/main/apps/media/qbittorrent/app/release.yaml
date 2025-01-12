@@ -1,0 +1,114 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app qbittorrent
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      qbittorrent:
+        containers:
+          app:
+            image:
+              repository: ghcr.io/kyteproject/qbittorrent
+              tag: 5.0.3@sha256:2bb788a97695b4045f575ba646141b4a4f73069be5a296e7440cf8e96d45d682
+            env:
+              QBT_TORRENTING_PORT: &bittorrentPort 50413
+              QBT_WEBUI_PORT: &port 8080
+              TZ: Europe/London
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  failureThreshold: 30
+                  periodSeconds: 10
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 8Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10000
+        runAsGroup: 10000
+        fsGroup: 10000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [65536]
+    ingress:
+      app:
+        className: internal
+        hosts:
+          - host: "{{ .Release.Name }}.omux.io"
+            paths: &paths
+              - path: /
+                service:
+                  identifier: app
+                  port: http
+          - host: qb.omux.io
+            paths: *paths
+    persistence:
+      config:
+        existingClaim: *app
+      media:
+        type: nfs
+        server: nas.internal
+        path: /volume1/media
+        globalMounts:
+          - path: /media/downloads/torrents
+            subPath: downloads/torrents
+      tmp:
+        type: emptyDir
+    service:
+      app:
+        controller: *app
+        nameOverride: *app
+        ports:
+          http:
+            port: *port
+      bittorrent:
+        controller: *app
+        type: LoadBalancer
+        annotations:
+          lbipam.cilium.io/ips: 192.168.20.2, ::ffff:c0a8:1402
+        ports:
+          bittorrent-tcp:
+            port: *bittorrentPort
+            protocol: TCP
+          bittorrent-udp:
+            port: *bittorrentPort
+            protocol: UDP

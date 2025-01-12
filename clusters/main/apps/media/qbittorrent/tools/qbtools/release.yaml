@@ -1,0 +1,111 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: qbtools
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.1
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    controllers:
+      tagging:
+        type: cronjob
+        cronjob:
+          schedule: "@hourly"
+          timeZone: &timeZone Europe/London
+          concurrencyPolicy: Forbid
+          successfulJobsHistory: 1
+          failedJobsHistory: 1
+        initContainers:
+          tagging: &container
+            image:
+              repository: ghcr.io/buroa/qbtools
+              tag: v0.19.14@sha256:905617dfc1a8aa1510381d8e177cc5581a49bfa9d56f3f05e0574f6c83987d3c
+            args:
+              - tagging
+              - --added-on
+              - --expired
+              - --last-activity
+              - --sites
+              - --unregistered
+            env:
+              QBITTORRENT_HOST: qbittorrent.media.svc.cluster.local
+              QBITTORRENT_PORT: 8080
+              SABNZBD_HOST: sabnzbd.media.svc.cluster.local
+              SABNZBD_PORT: 8080
+              TZ: *timeZone
+            envFrom:
+              - secretRef:
+                  name: qbtools-secret
+            resources:
+              requests:
+                cpu: 10m
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop: [ALL]
+        containers:
+          prune-unregistered:
+            <<: *container
+            args:
+              - prune
+              - --exclude-tag=expired
+              - --exclude-tag=added:1d
+              - --include-tag=unregistered
+              - --with-data
+          prune-expired:
+            <<: *container
+            args:
+              - prune
+              - --exclude-category=manual
+              - --exclude-tag=activity:1d
+              - --include-tag=expired
+              - --with-data
+        pod:
+          restartPolicy: OnFailure
+      reannounce:
+        containers:
+          app:
+            <<: *container
+            args:
+              - reannounce
+      limiter:
+        containers:
+          app:
+            <<: *container
+            args:
+              - limiter
+              - --max-line-speed-mbps=110
+              - --max-percent=0.8
+              - --limit-percent=0.4
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+    persistence:
+      config:
+        type: configMap
+        name: qbtools-configmap
+        globalMounts:
+          - path: /config/config.yaml
+            subPath: config.yaml
+            readOnly: true
