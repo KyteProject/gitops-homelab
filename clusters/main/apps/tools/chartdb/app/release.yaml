@@ -32,11 +32,6 @@ spec:
             envFrom:
               - secretRef:
                   name: chartdb-secret
-            probes:
-              liveness:
-                enabled: true
-              readiness:
-                enabled: true
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
