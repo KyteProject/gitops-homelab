@@ -134,12 +134,8 @@ spec:
               - path: /meili_data
       tmp:
         type: emptyDir
-        globalMounts:
-          - path: /tmp
       run:
         type: emptyDir
-        globalMounts:
-          - path: /tmp/run
       dbus:
         type: emptyDir
         advancedMounts:
