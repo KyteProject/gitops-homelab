@@ -33,13 +33,10 @@ spec:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
               TZ: Europe/London
-              QBT_Preferences__WebUI__LocalHostAuth: false
-              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
-              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
-                10.244.0.0/16, 192.168.10.0/24
-              DOWNLOADS_FOLDER: "/data"
-              INCOMPLETE_FOLDER: "/data/.incomplete"
-              WATCH_FOLDER: "/data/.watch"
+              # QBT_Preferences__WebUI__LocalHostAuth: false
+              # QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              # QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
+              #   10.244.0.0/16, 192.168.10.0/24
             probes:
               liveness: &probes
                 enabled: true
