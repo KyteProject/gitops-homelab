@@ -29,13 +29,9 @@ spec:
             image:
               repository: ghcr.io/chartdb/chartdb
               tag: v1.6.0@sha256:1ea20d3fdbd57deb34599c39def8b2ea84ce486f3c78e2283155b61e8bfcad1f
-            envFrom: *envFrom
-            env:
-              - name: OPENAI_API_KEY
-                valueFrom:
-                  secretKeyRef:
-                    name: chartdb-secret
-                    key: OPENAI_API_KEY
+            envFrom:
+              - secretRef:
+                  name: chartdb-secret
             probes:
               liveness:
                 enabled: true
