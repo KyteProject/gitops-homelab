@@ -134,8 +134,14 @@ spec:
               - path: /meili_data
       tmp:
         type: emptyDir
+        globalMounts:
+          - path: /tmp
       run:
         type: emptyDir
+        advancedMounts:
+          hoarder:
+            app:
+              - path: /tmp/run
       dbus:
         type: emptyDir
         advancedMounts:
