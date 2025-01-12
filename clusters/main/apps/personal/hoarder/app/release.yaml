@@ -1,0 +1,109 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app hoarder
+spec:
+  interval: 30m
+  chart:
+    spec:
+      chart: app-template
+      version: 3.6.0
+      sourceRef:
+        kind: HelmRepository
+        name: bjw-s
+        namespace: flux-system
+  install:
+    timeout: 30m
+  upgrade:
+    timeout: 30m
+  values:
+    controllers:
+      main:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/hoarder-app/hoarder
+              tag: release
+            env:
+              DATA_DIR: /data
+              MEILI_ADDR: http://localhost:7700
+              BROWSER_WEB_URL: http://localhost:9222
+            envFrom:
+              - secretRef:
+                  name: &secret hoarder-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: &port 3000
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+          chrome:
+            image:
+              repository: gcr.io/zenika-hub/alpine-chrome
+              tag: "123"
+            args:
+              - chromium-browser
+              - --headless
+              - --no-sandbox
+              - --disable-gpu
+              - --disable-dev-shm-usage
+              - --remote-debugging-address=0.0.0.0
+              - --remote-debugging-port=9222
+              - --hide-scrollbars
+          search:
+            image:
+              repository: getmeili/meilisearch
+              tag: v1.11.1
+            env:
+              MEILI_NO_ANALYTICS: "true"
+            envFrom:
+              - secretRef:
+                  name: *secret
+
+    service:
+      main:
+        ports:
+          http:
+            port: &port 3000
+          chrome:
+            port: 9222
+            targetPort: 9222
+          search:
+            port: 7700
+            targetPort: 7700
+
+    ingress:
+      main:
+        className: internal
+        hosts:
+          - host: &host "{{ .Release.Name }}.omux.io"
+            paths:
+              - path: /
+                service:
+                  identifier: main
+                  port: http
+
+    persistence:
+      data:
+        enabled: true
+        existingClaim: hoarder-data
+        mountPath: /data
+      search:
+        enabled: true
+        existingClaim: hoarder-search
+        mountPath: /meili_data
+        subPath:
+          - path: /meili_data
+            container: search
