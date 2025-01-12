@@ -33,6 +33,9 @@ spec:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
               TZ: Europe/London
+              DOWNLOADS_FOLDER: "/data"
+              INCOMPLETE_FOLDER: "/data/.incomplete"
+              WATCH_FOLDER: "/data/.watch"
             probes:
               liveness: &probes
                 enabled: true
@@ -85,12 +88,9 @@ spec:
       config:
         existingClaim: *app
       media:
-        type: nfs
-        server: nas.internal
-        path: /volume1/media
-        globalMounts:
-          - path: /media/downloads/torrents
-            subPath: downloads/torrents
+        existingClaim: media-storage
+        mountPath: /data  # Main mount
+        subPath: torrents
       tmp:
         type: emptyDir
     service:
