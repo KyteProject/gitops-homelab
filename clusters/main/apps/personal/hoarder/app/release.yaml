@@ -58,7 +58,7 @@ spec:
           chrome:
             image:
               repository: gcr.io/zenika-hub/alpine-chrome
-              tag: "123"
+              tag: "124"
             args:
               - chromium-browser
               - --headless
