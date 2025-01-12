@@ -33,6 +33,10 @@ spec:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
               TZ: Europe/London
+              QBT_Preferences__WebUI__LocalHostAuth: false
+              QBT_Preferences__WebUI__AuthSubnetWhitelistEnabled: true
+              QBT_Preferences__WebUI__AuthSubnetWhitelist: |-
+                10.244.0.0/16, 192.168.10.0/24
               DOWNLOADS_FOLDER: "/data"
               INCOMPLETE_FOLDER: "/data/.incomplete"
               WATCH_FOLDER: "/data/.watch"
@@ -64,6 +68,7 @@ spec:
               readOnlyRootFilesystem: true
               capabilities:
                 drop: [ALL]
+
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -72,9 +77,20 @@ spec:
         fsGroup: 10000
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [65536]
+
     ingress:
       app:
         className: internal
+        annotations:
+          authentik.home.arpa/enabled: "true"
+          nginx.ingress.kubernetes.io/auth-signin: |-
+            https://qb.omux.io/outpost.goauthentik.io/start?rd=$escaped_request_uri
+          gethomepage.dev/enabled: "true"
+          gethomepage.dev/group: Media
+          gethomepage.dev/name: QBittorrent
+          gethomepage.dev/icon: qbittorrent.svg
+          gethomepage.dev/widget.type: qbittorrent
+          gethomepage.dev/widget.url: http://qbittorrent-app.downloads
         hosts:
           - host: "{{ .Release.Name }}.omux.io"
             paths: &paths
@@ -84,15 +100,18 @@ spec:
                   port: http
           - host: qb.omux.io
             paths: *paths
+
     persistence:
       config:
         existingClaim: *app
       media:
         existingClaim: media-storage
-        mountPath: /data  # Main mount
-        subPath: torrents
+        globalMounts:
+          - path: /data
+            subPath: torrents
       tmp:
         type: emptyDir
+
     service:
       app:
         controller: *app
