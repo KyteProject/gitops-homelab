@@ -36,3 +36,5 @@ spec:
       VOLSYNC_STORAGECLASS: truenas-nfs
       VOLSYNC_SNAPSHOTCLASS: truenas-nfs
       VOLSYNC_TIME: 0 3 * * *
+      VOLSYNC_PUID: "3000"
+      VOLSYNC_PGID: "3000"

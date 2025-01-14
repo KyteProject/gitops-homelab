@@ -15,15 +15,8 @@
   },
   "files.trimTrailingWhitespace": true,
   "material-icon-theme.folders.associations": {
-    // .github
+    ".archive": "archive",
     ".github/workflows": "robot",
-    // namespaces
-    "cert-manager": "guard",
-    "default": "home",
-    "rook-ceph": "base",
-    "storage": "dump",
-    "tools": "tools",
-    "volsync": "aws"
   },
   "vs-kubernetes": {
     "vs-kubernetes.kubeconfig": "./kubeconfig",

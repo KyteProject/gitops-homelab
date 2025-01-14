@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app gha-runner-scale-set
+  name: &app gitops-homelab-runner
 spec:
   interval: 30m
   chart:
@@ -13,8 +13,6 @@ spec:
         kind: HelmRepository
         name: actions-runner-controller
         namespace: flux-system
-  driftDetection:
-    mode: enabled
   install:
     remediation:
       retries: 3
@@ -23,27 +21,20 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  dependsOn:
-    - name: gha-runner-scale-set-controller
-      namespace: actions-runner-system
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   valuesFrom:
     - targetPath: githubConfigSecret.github_app_id
       kind: Secret
-      name: actions-runner-controller-auth-secret
+      name: actions-runner-controller-secret
       valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
     - targetPath: githubConfigSecret.github_app_installation_id
       kind: Secret
-      name: actions-runner-controller-auth-secret
+      name: actions-runner-controller-secret
       valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
     - targetPath: githubConfigSecret.github_app_private_key
       kind: Secret
-      name: actions-runner-controller-auth-secret
+      name: actions-runner-controller-secret
       valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
-    nameOverride: gha-runner-scale-set
-    runnerScaleSetName: gha-runner-scale-set
     githubConfigUrl: https://github.com/kyteproject/gitops-homelab
     minRunners: 1
     maxRunners: 3
@@ -51,15 +42,18 @@ spec:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
         accessModes: ["ReadWriteOnce"]
-        storageClassName: ceph-block
         resources:
           requests:
-            storage: 20Gi
+            storage: 25Gi
+        storageClassName: openebs-hostpath
+    controllerServiceAccount:
+      name: actions-runner-controller
+      namespace: actions-runner-system
     template:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/kyteproject/actions-runner:2.321.0@sha256:e784bf583778c5ffb458dc1ce0b535e9c3c670ac8a22e13221edc9b2831c1d73
+            image: ghcr.io/kyteproject/actions-runner:2.321.0@sha256:340ce3e39a376d603dff198d577dde07533851ea4438b22fd02ec91aa966c953
             command:
               - /home/runner/run.sh
             env:
@@ -73,13 +67,8 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-        securityContext:
-          fsGroup: 123
-        serviceAccountName: actions-runner
+        serviceAccountName: *app
         volumes:
           - name: talos
             secret:
-              secretName: actions-runner
-    controllerServiceAccount:
-      name: gha-runner-scale-set-controller
-      namespace: actions-runner-system
+              secretName: *app
