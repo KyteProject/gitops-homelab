@@ -26,6 +26,8 @@ spec:
     parameters:
       max_connections: "200"
       shared_buffers: 256MB
+      max_prepared_transactions: "100"
+      max_worker_processes: "32"
   resources:
     requests:
       cpu: 500m
