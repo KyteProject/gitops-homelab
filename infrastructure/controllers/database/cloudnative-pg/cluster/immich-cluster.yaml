@@ -40,9 +40,9 @@ spec:
     retentionPolicy: 30d
     barmanObjectStore:
       data:
-        compression: bzip2
+        compression: gzip
       wal:
-        compression: bzip2
+        compression: gzip
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
