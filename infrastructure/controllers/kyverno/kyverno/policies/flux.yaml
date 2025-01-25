@@ -24,7 +24,7 @@ spec:
         generateExisting: true
         apiVersion: notification.toolkit.fluxcd.io/v1beta3
         kind: Provider
-        name: alert-manager
+        name: alertmanager
         namespace: "{{ request.object.metadata.name }}"
         synchronize: true
         data:
@@ -37,13 +37,13 @@ spec:
         generateExisting: true
         apiVersion: notification.toolkit.fluxcd.io/v1beta3
         kind: Alert
-        name: alert-manager
+        name: alertmanager
         namespace: "{{ request.object.metadata.name }}"
         synchronize: true
         data:
           spec:
             providerRef:
-              name: alert-manager
+              name: alertmanager
             eventSeverity: error
             eventSources:
               - { kind: FluxInstance, name: "*" }

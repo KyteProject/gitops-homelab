@@ -10,7 +10,7 @@ metadata:
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Provider
 metadata:
-  name: alert-manager
+  name: alertmanager
   namespace: cert-manager
 spec:
   type: alertmanager
@@ -19,11 +19,11 @@ spec:
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
 metadata:
-  name: alert-manager
+  name: alertmanager
   namespace: cert-manager
 spec:
   providerRef:
-    name: alert-manager
+    name: alertmanager
   eventSeverity: error
   eventSources:
     - kind: HelmRelease
