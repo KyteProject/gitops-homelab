@@ -1,11 +1,11 @@
 ---
 debug: true
 originRequest:
-  originServerName: external.omux.io
+  originServerName: "external.omux.io"
 
 ingress:
-  - hostname: omux.io
-    service: https://nginx-external-controller.networking.svc.cluster.local
+  - hostname: "omux.io"
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
   - hostname: "*.omux.io"
-    service: https://nginx-external-controller.networking.svc.cluster.local
+    service: https://nginx-external-controller.networking.svc.cluster.local:443
   - service: http_status:404
