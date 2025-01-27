@@ -53,7 +53,7 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/kyteproject/actions-runner:2.321.0@sha256:340ce3e39a376d603dff198d577dde07533851ea4438b22fd02ec91aa966c953
+            image: ghcr.io/kyteproject/actions-runner:2.322.0@sha256:92295396923c2fddb5ffa4b9f4d220b55ad902eb577ca9ebfaf34b95724e257b
             command:
               - /home/runner/run.sh
             env:
