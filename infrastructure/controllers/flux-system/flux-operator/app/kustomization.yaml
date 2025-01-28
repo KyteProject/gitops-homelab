@@ -3,10 +3,9 @@ apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 resources:
   - release.yaml
-  - prometheusrule.yaml
 configMapGenerator:
-  - name: cert-manager-helm-values
+  - name: flux-operator-helm-values
     files:
-      - resources/values.yaml
+      - values.yaml=./values.yaml
 configurations:
   - kustomizeconfig.yaml

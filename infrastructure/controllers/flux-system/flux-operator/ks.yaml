@@ -2,14 +2,14 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app dragonfly
-  namespace: &namespace database
+  name: &app flux-operator
+  namespace: &namespace flux-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   interval: 30m
-  path: ./infrastructure/controllers/database/dragonfly/operator
+  path: ./infrastructure/controllers/flux-system/flux-operator/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -22,17 +22,17 @@ spec:
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app dragonfly-cluster
-  namespace: &namespace database
+  name: &app flux-instance
+  namespace: &namespace flux-system
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: dragonfly
+    - name: flux-operator
       namespace: *namespace
   interval: 30m
-  path: ./infrastructure/controllers/database/dragonfly/cluster
+  path: ./infrastructure/controllers/flux-system/flux-operator/instance
   prune: true
   sourceRef:
     kind: GitRepository

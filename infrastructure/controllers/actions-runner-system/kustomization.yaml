@@ -6,14 +6,6 @@ namespace: actions-runner-system
 resources:
   - ./actions-runner-controller/ks.yaml
 components:
-  - ../../../flux/templates/alerts
-  - ../../../flux/templates/sops
-  - ../../../flux/templates/namespace
-patches:
-  - # Add the name to the namespace
-    patch: |
-      - op: add
-        path: /metadata/name
-        value: actions-runner-system
-    target:
-      kind: NamespaceThis is the UI
+  - ../../flux/components/alerts
+  - ../../flux/components/namespace
+  - ../../flux/components/sops
