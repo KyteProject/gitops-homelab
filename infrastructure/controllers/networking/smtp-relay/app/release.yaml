@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/kyteproject/maddy
-              tag: 0.7.1@sha256:17221ee19f4ca7a4d93e268005f02b81c692d2e41cb4abc59acab125c9796a82
+              tag: 0.8.1@sha256:c228551b29bb8c23e754333d9e8e545ba3a2bd07e26cb86f1c788a0d7013196e
             env:
               MADDY_LOG_TARGET: stderr
               MADDY_LOG_DEBUG: "false"
