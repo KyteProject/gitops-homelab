@@ -5,9 +5,9 @@ metadata:
   name: github
 spec:
   type: github
-  address: https://github.com/KyteProject/gitops-homelab
+  address: https://github.com/kyteproject/gitops-homelab
   secretRef:
-    name: flux-github-token
+    name: github-token-secret
 ---
 apiVersion: notification.toolkit.fluxcd.io/v1beta3
 kind: Alert
@@ -19,6 +19,4 @@ spec:
   eventSeverity: info
   eventSources:
     - kind: Kustomization
-      name: "*"
-    - kind: HelmRelease
       name: "*"

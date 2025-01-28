@@ -14,29 +14,7 @@ spec:
           cloudflare:
             email: *email
             apiTokenSecretRef:
-              name: cloudflare-secret
+              name: cloudflare-issuer-secret
               key: CLOUDFLARE_API_TOKEN
         selector:
-          dnsZones:
-            - omux.io
----
-apiVersion: cert-manager.io/v1
-kind: ClusterIssuer
-metadata:
-  name: letsencrypt-staging
-spec:
-  acme:
-    server: https://acme-staging-v02.api.letsencrypt.org/directory
-    email: &email dan@omux.dev
-    privateKeySecretRef:
-      name: letsencrypt-staging
-    solvers:
-      - dns01:
-          cloudflare:
-            email: *email
-            apiTokenSecretRef:
-              name: cloudflare-secret
-              key: CLOUDFLARE_API_TOKEN
-        selector:
-          dnsZones:
-            - omux.io
+          dnsZones: ["omux.io"]
