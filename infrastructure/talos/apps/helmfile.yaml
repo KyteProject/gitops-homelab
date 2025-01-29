@@ -33,7 +33,7 @@ releases:
   - name: coredns
     namespace: kube-system
     chart: coredns/coredns
-    version: 1.37.0
+    version: 1.39.0
     values:
       - ../../controllers/kube-system/coredns/app/values.yaml
     needs:
