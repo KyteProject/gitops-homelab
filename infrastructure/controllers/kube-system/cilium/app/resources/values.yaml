@@ -20,7 +20,6 @@ cluster:
 cni:
   exclusive: false
 devices: eth+
-enableRuntimeDeviceDetection: true
 enableIPv4BIGTCP: true
 endpointRoutes:
   enabled: true
