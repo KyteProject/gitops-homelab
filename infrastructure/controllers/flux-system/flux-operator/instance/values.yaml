@@ -15,6 +15,9 @@ instance:
     url: https://git@github.com/KyteProject/gitops-homelab
     ref: refs/heads/main
     path: ./infrastructure/flux/cluster
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: flux
   kustomize:
     patches:
       - # Add Sops decryption to 'flux-system' Kustomization
