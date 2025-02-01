@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   interval: 30m
-  path: ./infrastructure/controlllers/kube-system/cilium/app
+  path: ./infrastructure/controllers/kube-system/cilium/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -31,7 +31,7 @@ spec:
   dependsOn:
     - name: cilium
   interval: 30m
-  path: ./infrastructure/controlllers/kube-system/cilium/configs
+  path: ./infrastructure/controllers/kube-system/cilium/configs
   prune: true
   sourceRef:
     kind: GitRepository
