@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   interval: 30m
-  path: ./infrastructure/controlllers/kube-system/descheduler/app
+  path: ./infrastructure/controllers/kube-system/descheduler/app
   prune: true
   sourceRef:
     kind: GitRepository
