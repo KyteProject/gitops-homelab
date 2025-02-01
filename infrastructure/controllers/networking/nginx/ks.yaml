@@ -2,65 +2,45 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app nginx-certificates
-  namespace: flux-system
-spec:
-  targetNamespace: networking
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
-  dependsOn:
-    - name: cert-manager-issuers
-  path: ./infrastructure/controllers/networking/nginx/certificates
-  prune: true
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
----
-apiVersion: kustomize.toolkit.fluxcd.io/v1
-kind: Kustomization
-metadata:
   name: &app nginx-external
-  namespace: flux-system
+  namespace: &namespace networking
 spec:
-  targetNamespace: networking
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: nginx-certificates
+    - name: cert-manager-tls
+      namespace: cert-manager
+  interval: 30m
   path: ./infrastructure/controllers/networking/nginx/external
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
+  wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app nginx-internal
-  namespace: flux-system
+  namespace: &namespace networking
 spec:
-  targetNamespace: networking
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: nginx-certificates
+    - name: cert-manager-tls
+      namespace: cert-manager
+  interval: 30m
   path: ./infrastructure/controllers/networking/nginx/internal
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
+  wait: true
