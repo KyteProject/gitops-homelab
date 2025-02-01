@@ -5,5 +5,4 @@ namespace: security
 resources:
   - externalsecret.yaml
   - release.yaml
-  - gatus.yaml
 
