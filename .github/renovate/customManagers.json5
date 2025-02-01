@@ -7,7 +7,7 @@
       fileMatch: [
         "(^|/).taskfiles/.+\\.ya?ml$",
         "(^|/)talos/.+\\.ya?ml$",
-        "(^|/)kubernetes/.+\\.ya?ml$",
+        "(^|/)infrastructure/.+\\.ya?ml$",
       ],
       matchStrings: [
         // # renovate: depName=kubernetes/kubernetes datasource=github-releases
@@ -22,7 +22,7 @@
     {
       customType: "regex",
       description: ["Process any imageName keys in YAML files (cloudnative-pg)"],
-      fileMatch: ["(^|/)kubernetes/.+\\.ya?ml$"],
+      fileMatch: ["(^|/)infrastructure/.+\\.ya?ml$"],
       matchStrings: ["imageName: (?<depName>\\S+):(?<currentValue>\\S+)@(?<currentDigest>\\S+)"],
       datasourceTemplate: "docker",
     },
