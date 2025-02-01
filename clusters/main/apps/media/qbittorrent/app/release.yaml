@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/kyteproject/qbittorrent
-              tag: 5.0.3@sha256:2bb788a97695b4045f575ba646141b4a4f73069be5a296e7440cf8e96d45d682
+              tag: 5.0.3@sha256:0a9cfb8cda43c897bdf8449be5b5f86974914916e060ed081abd4fed5a620b8d
             env:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
