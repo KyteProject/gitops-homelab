@@ -3,18 +3,24 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app kromgo
-  namespace: flux-system
+  namespace: &namespace monitoring
 spec:
-  targetNamespace: monitoring
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../flux/components/gatus
+  interval: 30m
   path: ./infrastructure/controllers/monitoring/kromgo/app
+  postBuild:
+    substitute:
+      APP: *app
+      GATUS_STATUS: "404"
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  wait: true
-  interval: 30m
-  retryInterval: 1m
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
+  wait: true
