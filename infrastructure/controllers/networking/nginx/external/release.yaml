@@ -5,7 +5,6 @@ metadata:
   name: &app nginx-external
 spec:
   interval: 30m
-  timeout: 15m
   chart:
     spec:
       chart: ingress-nginx
@@ -25,7 +24,7 @@ spec:
   values:
     fullnameOverride: *app
     controller:
-      replicaCount: 3
+      replicaCount: 2
       admissionWebhooks:
         objectSelector:
           matchExpressions:
@@ -60,10 +59,8 @@ spec:
         ssl-early-data: true
         ssl-protocols: TLSv1.3 TLSv1.2
         use-forwarded-headers: true
-      publishService:
-        enabled: false  # Explicitly disable publish-service
       extraArgs:
-        default-ssl-certificate: networking/wildcard-tls
+        default-ssl-certificate: cert-manager/omux-io-tls
         publish-status-address: &hostname external.omux.io
       ingressClass: external
       ingressClassResource:
@@ -77,6 +74,8 @@ spec:
           namespace: networking
           namespaceSelector:
             any: true
+      publishService:
+        enabled: false
       resources:
         requests:
           cpu: 100m

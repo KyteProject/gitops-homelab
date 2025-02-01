@@ -57,9 +57,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -68,18 +66,13 @@ spec:
     ingress:
       app:
         className: external
-        annotations:
-          gatus.io/path: *path
         hosts:
-          - host: &host "{{ .Release.Name }}.omux.io"
+          - host: "{{ .Release.Name }}.omux.io"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
     service:
       app:
         controller: *app
