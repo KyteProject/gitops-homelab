@@ -23,7 +23,7 @@ tasks:
       - until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
       - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
     vars:
-      MODEL: '{{.MODEL | default "WD_BLACK_SN850X_2000GB"}}'
+      MODEL: '{{.MODEL | default "WD_BLACK SN850X 2000GB"}}'
       TALOS_CONTROLLER:
         sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
       TALOS_BLOCK_DEVICES_RAW:
@@ -46,7 +46,7 @@ tasks:
       - kubectl config set-cluster {{.TALOS_CONTEXT}} --server https://{{.TALOS_CONTROLLER}}:6443
       - until kubectl wait nodes --for=condition=Ready=False --all --timeout=10m; do sleep 5; done
       - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe inject --in-file {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl | kubectl apply --server-side --filename -
-      - helmfile --quiet --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      - KUBECONFIG={{.KUBERNETES_DIR}}/kubeconfig helmfile --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
       - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
     vars:
       TALOS_CONTEXT:
