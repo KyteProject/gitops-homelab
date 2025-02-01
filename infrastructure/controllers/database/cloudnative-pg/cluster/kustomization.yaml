@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - cluster.yaml
-  - gatus.yaml
   - prometheusrule.yaml
   - scheduledbackup.yaml
   - service.yaml

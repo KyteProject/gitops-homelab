@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: app-template
-      version: 3.6.0
+      version: 3.6.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -30,7 +30,7 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v2.12.0@sha256:3af948dc9a6b51f1cc4ad86f0a3ba5548233baec0f40658a4761af5d4eede830
+              tag: v2.14.1@sha256:9ba73b1793ef332ae9b4b719ef0fc09f231d6276bc7b721cbb47961ed7792961
             env:
               TZ: ${TIMEZONE}
               UP_UNIFI_DEFAULT_ROLE: Unpoller
@@ -53,9 +53,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true

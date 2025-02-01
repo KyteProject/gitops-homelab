@@ -6,6 +6,6 @@ resources:
 configMapGenerator:
   - name: coredns-helm-values
     files:
-      - values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+      - resources/values.yaml
+configurations:
+  - kustomizeconfig.yaml

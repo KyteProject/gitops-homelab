@@ -8,7 +8,7 @@ spec:
   chart:
     spec:
       chart: external-dns
-      version: 1.15.0
+      version: 1.15.1
       sourceRef:
         kind: HelmRepository
         name: external-dns
@@ -41,19 +41,17 @@ spec:
             name: *secret
             key: *name
     extraArgs:
-      - --annotation-filter=external-dns.alpha.kubernetes.io/target
+      - --cloudflare-dns-records-per-page=1000
       - --cloudflare-proxied
       - --ignore-ingress-tls-spec
       - --ingress-class=external
       - --zone-id-filter=$(CF_ZONE_ID)
-      - --cloudflare-dns-records-per-page=1000
+    triggerLoopOnEvent: true
     policy: sync
-    sources:
-      - ingress
+    sources: ["ingress"]
     txtOwnerId: main
     txtPrefix: k8s.
-    domainFilters:
-      - omux.io
+    domainFilters: ["omux.io"]
     serviceMonitor:
       enabled: true
     podAnnotations:
