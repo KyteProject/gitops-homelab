@@ -1,0 +1,93 @@
+---
+helmDefaults:
+  force: true
+  timeout: 600
+  wait: true
+  waitForJobs: true
+
+repositories:
+  - name: cilium
+    url: https://helm.cilium.io
+
+  - name: jetstack
+    url: https://charts.jetstack.io
+
+releases:
+  - name: prometheus-operator-crds
+    namespace: monitoring
+    chart: oci://ghcr.io/prometheus-community/charts/prometheus-operator-crds
+    version: 17.0.2
+
+  - name: cilium
+    namespace: kube-system
+    chart: cilium/cilium
+    version: 1.16.6
+    values:
+      - ../controllers/kube-system/cilium/app/resources/values.yaml
+    hooks:
+      - events: ["postsync"]
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - --namespace=kube-system
+          - --field-manager=kustomize-controller
+          - --kustomize
+          - ../controllers/kube-system/cilium/configs
+    needs:
+      - monitoring/prometheus-operator-crds
+
+  - name: coredns
+    namespace: kube-system
+    chart: oci://ghcr.io/coredns/charts/coredns
+    version: 1.39.0
+    values:
+      - ../controllers/kube-system/coredns/app/resources/values.yaml
+    needs:
+      - kube-system/cilium
+
+  - name: spegel
+    namespace: kube-system
+    chart: oci://ghcr.io/spegel-org/helm-charts/spegel
+    version: v0.0.30
+    values:
+      - ../controllers/kube-system/spegel/app/resources/values.yaml
+    needs:
+      - kube-system/coredns
+
+  - name: cert-manager
+    namespace: cert-manager
+    chart: jetstack/cert-manager
+    version: v1.16.3
+    values:
+      - ../controllers/cert-manager/cert-manager/app/resources/values.yaml
+    needs:
+      - kube-system/spegel
+
+  - name: external-secrets
+    namespace: security
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 0.13.0
+    values:
+      - ../controllers/security/external-secrets/app/resources/values.yaml
+    needs:
+      - cert-manager/cert-manager
+
+  - name: flux-operator
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
+    version: 0.13.0
+    values:
+      - ../controllers/flux-system/flux-operator/app/resources/values.yaml
+    needs:
+      - external-secrets/external-secrets
+
+  - name: flux-instance
+    namespace: flux-system
+    chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-instance
+    version: 0.13.0
+    wait: false
+    values:
+      - ../controllers/flux-system/flux-operator/instance/resources/values.yaml
+    needs:
+      - flux-system/flux-operator

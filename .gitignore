@@ -26,6 +26,6 @@ github-deploy.key
 1password-credentials.json
 1password-connect.sops.yaml
 onepassword-credentials.json
-onepassword-connect.sops.yaml
+onepassword.sops.yaml
 *snapshot.db
 truenas.sops.yml
