@@ -12,7 +12,7 @@ instance:
     - notification-controller
   sync:
     kind: GitRepository
-    url: https://git@github.com/KyteProject/gitops-homelab
+    url: https://github.com/KyteProject/gitops-homelab
     ref: refs/heads/main
     path: ./infrastructure/flux/cluster
   commonMetadata:
