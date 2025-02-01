@@ -33,7 +33,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: external-secrets-stores
+    - name: onepassword-store
     - name: qbittorrent
   path: ./clusters/main/apps/media/qbittorrent/tools
   prune: true

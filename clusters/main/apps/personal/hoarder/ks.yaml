@@ -14,7 +14,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: external-secrets-stores
+    - name: onepassword-store
     - name: rook-ceph-cluster
   prune: true
   wait: false
