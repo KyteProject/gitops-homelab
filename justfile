@@ -7,7 +7,6 @@ KUBERNETES_DIR := "./clusters"
 ROOT_DIR := "."
 
 mod flux 'flux/flux.just'
-mod talos 'infrastructure/talos/talos.just'
 mod netboot 'infrastructure/netboot/netboot.just'
 mod bootstrap 'infrastructure/bootstrap/bootstrap.just'
 

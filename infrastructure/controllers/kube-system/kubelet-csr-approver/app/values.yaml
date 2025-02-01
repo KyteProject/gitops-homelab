@@ -1,3 +1,0 @@
----
-bypassDnsResolution: true
-providerRegex: ^(shiva|ifrit|ramuh)$

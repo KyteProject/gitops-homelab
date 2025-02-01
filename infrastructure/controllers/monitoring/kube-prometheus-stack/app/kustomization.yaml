@@ -5,3 +5,4 @@ resources:
   - alertmanagerconfig.yaml
   - externalsecret.yaml
   - release.yaml
+  - prometheusrule.yaml

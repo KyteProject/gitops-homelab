@@ -1,0 +1,25 @@
+---
+version: '3'
+
+set: [pipefail]
+shopt: [globstar]
+
+vars:
+  KUBERNETES_DIR: '{{.ROOT_DIR}}/infrastructure'
+  TALOS_DIR: '{{.ROOT_DIR}}/talos'
+
+env:
+  KUBECONFIG: '{{.KUBERNETES_DIR}}/kubeconfig'
+  MINIJINJA_CONFIG_FILE: '{{.ROOT_DIR}}/.minijinja.toml'
+  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
+  TALOSCONFIG: '{{.TALOS_DIR}}/clusterconfig/talosconfig'
+
+includes:
+  bootstrap: .taskfiles/bootstrap
+  kubernetes: .taskfiles/kubernetes
+  talos: .taskfiles/talos
+  volsync: .taskfiles/volsync
+
+tasks:
+
+  default: task -l
