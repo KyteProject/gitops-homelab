@@ -23,6 +23,7 @@ spec:
       retries: 3
   dependsOn:
     - name: snapshot-controller
+      namespace: storage
   values:
     controller:
       replicaCount: 2
