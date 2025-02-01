@@ -80,7 +80,7 @@ releases:
     values:
       - ../controllers/flux-system/flux-operator/app/resources/values.yaml
     needs:
-      - external-secrets/external-secrets
+      - security/external-secrets
 
   - name: flux-instance
     namespace: flux-system

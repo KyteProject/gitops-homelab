@@ -3,6 +3,17 @@ version: '3'
 
 tasks:
 
+  kube:
+    desc: Get Kubeconfig
+    cmds:
+      - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
+    vars:
+      TALOS_CONTROLLER:
+        sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
+    preconditions:
+      - talosctl config info
+      - which talosctl
+
   talos:
     desc: Bootstrap Talos [MODEL={{.MODEL}}]
     prompt: Bootstrap Talos ...?
@@ -34,7 +45,7 @@ tasks:
     cmds:
       - kubectl config set-cluster {{.TALOS_CONTEXT}} --server https://{{.TALOS_CONTROLLER}}:6443
       - until kubectl wait nodes --for=condition=Ready=False --all --timeout=10m; do sleep 5; done
-      - op inject --in-file {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl | kubectl apply --server-side --filename -
+      - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe inject --in-file {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl | kubectl apply --server-side --filename -
       - helmfile --quiet --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
       - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
     vars:
@@ -43,8 +54,9 @@ tasks:
       TALOS_CONTROLLER:
         sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
     preconditions:
-      - op user get --me
+      # - op user get --me
+      - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe user get --me
       - talosctl config info
       - test -f {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml
       - test -f {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl
-      - which jq helmfile kubectl op talosctl
+      - which jq helmfile kubectl /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe talosctl
