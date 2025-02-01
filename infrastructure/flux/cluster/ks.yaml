@@ -5,6 +5,10 @@ metadata:
   name: cluster-meta
   namespace: flux-system
 spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   interval: 30m
   path: ./infrastructure/flux/meta
   prune: true
@@ -12,6 +16,9 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  # Flux repositories under this need flux-system hardcoded as namespace for Renovate lookups
+  targetNamespace: flux-system
+  timeout: 5m
   wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -20,6 +27,10 @@ metadata:
   name: cluster-controllers
   namespace: flux-system
 spec:
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
   dependsOn:
     - name: cluster-meta
       namespace: flux-system
@@ -30,4 +41,17 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
+  timeout: 5m
   wait: false
+  patches:
+    - # Add Sops decryption to child Kustomizations
+      patch: |
+        - op: add
+          path: /spec/decryption
+          value:
+            provider: sops
+            secretRef:
+              name: sops-age
+      target:
+        group: kustomize.toolkit.fluxcd.io
+        kind: Kustomization
