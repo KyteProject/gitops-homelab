@@ -12,7 +12,7 @@ spec:
   path: ./clusters/main/apps/tools/wakapi/app
   prune: true
   dependsOn:
-    - name: external-secrets-stores
+    - name: onepassword-store
   sourceRef:
     kind: GitRepository
     name: flux-system
