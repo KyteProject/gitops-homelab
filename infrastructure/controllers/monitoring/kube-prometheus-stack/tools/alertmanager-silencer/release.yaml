@@ -27,7 +27,7 @@ spec:
         type: cronjob
         cronjob:
           schedule: "@daily"
-          timeZone: ${TIMEZONE}
+          timeZone: Europe/London
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 1
