@@ -1,21 +1,64 @@
 ---
-apiVersion: cilium.io/v2alpha1
-kind: CiliumBGPPeeringPolicy
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPAdvertisement
 metadata:
-  name: l3-policy
+  name: control-plane-advertisement
+  labels:
+    advertise: control-plane
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchLabels:
+          io.cilium/lb-ipam-pool: "control-plane-pool"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPAdvertisement
+metadata:
+  name: services-advertisement
+  labels:
+    advertise: services
+spec:
+  advertisements:
+    - advertisementType: "Service"
+      service:
+        addresses:
+          - LoadBalancerIP
+      selector:
+        matchLabels:
+          io.cilium/lb-ipam-pool: "services-pool"
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPPeerConfig
+metadata:
+  name: cilium-bgp-peer-config-ipv4
+spec:
+  families:
+    - afi: ipv4
+      safi: unicast
+      advertisements:
+        matchExpressions:
+          - key: advertise
+            operator: In
+            values: ["control-plane", "services"]
+---
+apiVersion: "cilium.io/v2alpha1"
+kind: CiliumBGPClusterConfig
+metadata:
+  name: cilium-bgp-cluster-config
 spec:
   nodeSelector:
     matchLabels:
       kubernetes.io/os: linux
-  virtualRouters:
-    - localASN: 64514
-      exportPodCIDR: false
-      serviceSelector:
-        matchExpressions:
-          - key: thisFakeSelector
-            operator: NotIn
-            values:
-              - will-match-and-announce-all-services
-      neighbors:
-        - peerAddress: 192.168.1.1/32
+  bgpInstances:
+    - name: "instance-64514"
+      localASN: 64514
+      peers:
+        - name: "peer-64513-ipv4"
           peerASN: 64513
+          peerAddress: "192.168.10.1"
+          peerConfigRef:
+            name: "cilium-bgp-peer-config-ipv4"
