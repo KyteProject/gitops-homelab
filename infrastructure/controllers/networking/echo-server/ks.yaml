@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../flux/components/gatus
+    - ../../../flux/components/gatus/external
   interval: 30m
   path: ./infrastructure/controllers/networking/echo-server/app
   postBuild:
