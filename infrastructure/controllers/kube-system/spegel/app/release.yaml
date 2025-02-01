@@ -3,13 +3,12 @@ apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
   name: spegel
-  namespace: kube-system
 spec:
   interval: 30m
   chart:
     spec:
       chart: spegel
-      version: v0.0.28
+      version: v0.0.30
       sourceRef:
         kind: HelmRepository
         name: spegel
@@ -25,8 +24,3 @@ spec:
   valuesFrom:
     - kind: ConfigMap
       name: spegel-helm-values
-  values:
-    grafanaDashboard:
-      enabled: true
-    serviceMonitor:
-      enabled: true
