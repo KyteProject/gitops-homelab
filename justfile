@@ -6,7 +6,6 @@ set export
 KUBERNETES_DIR := "./clusters"
 ROOT_DIR := "."
 
-mod flux 'flux/flux.just'
 mod netboot 'infrastructure/netboot/netboot.just'
 mod bootstrap 'infrastructure/bootstrap/bootstrap.just'
 
