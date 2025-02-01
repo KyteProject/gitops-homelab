@@ -14,7 +14,6 @@ clusterSvcNets:
   - 10.245.0.0/16
 
 additionalApiServerCertSans: &sans
-  - k8s.internal
   - 127.0.0.1
   - 192.168.10.200
   - ::1
@@ -35,8 +34,8 @@ nodes:
           hardwareAddr: 58:47:ca:78:ea:26
           driver: i40e
         dhcp: true
-        vip:
-          ip: 192.168.10.200
+        # vip:
+        #   ip: 192.168.10.200
         # vlans:
         #   - vlanId: 10
         #     dhcp: false
@@ -77,14 +76,13 @@ nodes:
     controlPlane: true
     installDiskSelector:
       model: "WD_BLACK SN850X 1000GB"
-    # talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
           driver: i40e
         dhcp: true
-        vip:
-          ip: 192.168.10.200
+        # vip:
+        #   ip: 192.168.10.200
         # vlans:
         #   - vlanId: 10
         #     dhcp: false
@@ -125,14 +123,13 @@ nodes:
     controlPlane: true
     installDiskSelector:
       model: "WD_BLACK SN850X 1000GB"
-    # talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:79:7a:50
           driver: i40e
         dhcp: true
-        vip:
-          ip: 192.168.10.200
+        # vip:
+        #   ip: 192.168.10.200
         # vlans:
         #   - vlanId: 10
         #     dhcp: false
@@ -199,6 +196,11 @@ controlPlane:
 
   patches:
     # System Configuration
+    - |-
+      machine:
+        install:
+          image: factory.talos.dev/installer/868330459bde49d152c0b513725fca359f8688b3837e4d9995bcca1acef34b8e:v1.9.3
+
     - |-
       machine:
         time:
@@ -302,14 +304,12 @@ controlPlane:
           nodeIP:
             validSubnets:
               - 192.168.10.0/24
-#
-    # - |-
-    #   machine:
-    #     features:
-    #       kubePrism:
-    #         enabled: true
-    #         port: 7445
-#
+    - |-
+      machine:
+        features:
+          kubePrism:
+            enabled: true
+            port: 7445
     - |-
       cluster:
         allowSchedulingOnControlPlanes: true
