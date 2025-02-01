@@ -3,16 +3,23 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app democratic-csi-nfs
-  namespace: flux-system
+  namespace: &namespace storage
 spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: onepassword-store
+      namespace: security
+    - name: snapshot-controller
+      namespace: storage
+  interval: 30m
   path: ./infrastructure/controllers/storage/democratic-csi/nfs
-  targetNamespace: storage
+  prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
-  prune: true
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
   wait: true
-  dependsOn:
-    - name: external-secrets-stores
-    - name: snapshot-controller
-  interval: 10m
