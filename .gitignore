@@ -29,3 +29,9 @@ onepassword-credentials.json
 onepassword.sops.yaml
 *snapshot.db
 truenas.sops.yml
+*.secret.env
+*.secret.yaml
+*.agekey
+*.pub
+*.pem
+config.xml

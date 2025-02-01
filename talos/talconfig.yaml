@@ -4,9 +4,9 @@ clusterName: &cluster main
 endpoint: https://192.168.10.200:6443
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
-talosVersion: v1.9.1
+talosVersion: v1.9.3
 # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
-kubernetesVersion: v1.32.0
+kubernetesVersion: v1.32.1
 
 clusterPodNets:
   - 10.244.0.0/16
@@ -14,6 +14,7 @@ clusterSvcNets:
   - 10.245.0.0/16
 
 additionalApiServerCertSans: &sans
+  - k8s.internal
   - 127.0.0.1
   - 192.168.10.200
   - ::1
@@ -29,7 +30,6 @@ nodes:
     controlPlane: true
     installDiskSelector:
       serial: 241047FE4737 # CT500T500SSD8 500GB
-    talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:78:ea:26
@@ -77,7 +77,7 @@ nodes:
     controlPlane: true
     installDiskSelector:
       model: "WD_BLACK SN850X 1000GB"
-    talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
+    # talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:7a:52:28
@@ -125,7 +125,7 @@ nodes:
     controlPlane: true
     installDiskSelector:
       model: "WD_BLACK SN850X 1000GB"
-    talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
+    # talosImageURL: factory.talos.dev/installer/2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
     networkInterfaces:
       - deviceSelector:
           hardwareAddr: 58:47:ca:79:7a:50
@@ -169,14 +169,14 @@ nodes:
             metric: 2048
 
 controlPlane:
+  noSchematicValidate: true
+
   nodeLabels:
     topology.kubernetes.io/region: *cluster
 
   schematic:
     customization:
       extraKernelArgs:
-        - talos.platform=metal
-        - reboot=k
         - mitigations=off
         - net.ifnames=0
         - apparmor=0
@@ -185,6 +185,7 @@ controlPlane:
         - intel_iommu=on
         - iommu=pt
         - security=none
+        - talos.auditd.disabled=1
       systemExtensions:
         officialExtensions:
           - siderolabs/binfmt-misc
@@ -192,7 +193,6 @@ controlPlane:
           - siderolabs/intel-ucode
           - siderolabs/iscsi-tools
           - siderolabs/mei
-          - siderolabs/realtek-firmware
           - siderolabs/thunderbolt
           - siderolabs/util-linux-tools
           - siderolabs/v4l-uvc-drivers
@@ -264,15 +264,17 @@ controlPlane:
             enabled: true
             resolveMemberNames: true
             forwardKubeDNSToHost: false
-    - |-
-      cluster:
-        discovery:
-          enabled: true
-          registries:
-            kubernetes:
-              disabled: true
-            service:
-              disabled: false
+#
+    # - |-
+    #   cluster:
+    #     discovery:
+    #       enabled: true
+    #       registries:
+    #         kubernetes:
+    #           disabled: true
+    #         service:
+    #           disabled: false
+#
     - |-
       machine:
         network:
@@ -287,12 +289,12 @@ controlPlane:
     - |-
       machine:
         kubelet:
-          extraArgs:
-            rotate-server-certificates: true
+          extraConfig:
+            maxPods: 150
           extraMounts:
             - destination: /var/openebs/local
-              type: bind
               source: /var/openebs/local
+              type: bind
               options:
                 - rbind
                 - rshared
@@ -300,19 +302,20 @@ controlPlane:
           nodeIP:
             validSubnets:
               - 192.168.10.0/24
-    - |-
-      machine:
-        features:
-          kubePrism:
-            enabled: true
-            port: 7445
+#
+    # - |-
+    #   machine:
+    #     features:
+    #       kubePrism:
+    #         enabled: true
+    #         port: 7445
+#
     - |-
       cluster:
         allowSchedulingOnControlPlanes: true
         apiServer:
           extraArgs:
             enable-aggregator-routing: true
-            feature-gates: AuthorizeNodeWithSelectors=false
         controllerManager:
           extraArgs:
             bind-address: 0.0.0.0

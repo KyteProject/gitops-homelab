@@ -1,6 +1,11 @@
 * text=auto eol=lf
 *.sops.* diff=sopsdiffer
 *.yaml.j2 linguist-language=YAML
+*.yml linguist-detectable=true
+*.yml linguist-language=YAML
+*.yaml linguist-detectable=true
+*.yaml linguist-language=YAML
+*.sops.toml linguist-language=JSON
 
 # Documentation
 *.md linguist-documentation

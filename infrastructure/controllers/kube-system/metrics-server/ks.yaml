@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   interval: 30m
-  path: ./kubernetes/apps/kube-system/metrics-server/app
+  path: ./infrastructure/controlllers/kube-system/metrics-server/app
   prune: true
   sourceRef:
     kind: GitRepository
