@@ -1,18 +1,17 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
-metadata:
-  name: system-controllers
-  labels:
-    kustomize.toolkit.fluxcd.io/prune: disabled
+namespace: kube-system
 resources:
   - cilium/ks.yaml
   - coredns/ks.yaml
   - descheduler/ks.yaml
-  - fstrim/ks.yaml
   - intel-device-plugin/ks.yaml
   - irqbalance/ks.yaml
-  - kubelet-csr-approver/ks.yaml
   - metrics-server/ks.yaml
   - node-feature-discovery/ks.yaml
   - reloader/ks.yaml
   - spegel/ks.yaml
+components:
+  - ../../flux/components/alerts
+  - ../../flux/components/namespace
+  - ../../flux/components/sops

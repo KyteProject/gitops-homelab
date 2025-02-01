@@ -6,8 +6,6 @@ resources:
 configMapGenerator:
   - name: spegel-helm-values
     files:
-      - values.yaml
-generatorOptions:
-  disableNameSuffixHash: true
+      - ./resources/values.yaml
 configurations:
-  - kustomizeconfig.yaml
+  - ./kustomizeconfig.yaml
