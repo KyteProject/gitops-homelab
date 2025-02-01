@@ -2,13 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app onepassword-connect
+  name: &app onepassword
 spec:
-  interval: 10m
+  interval: 30m
   chart:
     spec:
       chart: app-template
-      version: 3.6.0
+      version: 3.6.1
       sourceRef:
         kind: HelmRepository
         name: bjw-s
@@ -23,7 +23,7 @@ spec:
       retries: 3
   values:
     controllers:
-      onepassword-connect:
+      onepassword:
         strategy: RollingUpdate
         annotations:
           reloader.stakater.com/auto: "true"
@@ -40,7 +40,7 @@ spec:
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: onepassword-connect-secret
+                    name: onepassword-secret
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -69,9 +69,7 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop:
-                  - ALL
+              capabilities: { drop: ["ALL"] }
           sync:
             image:
               repository: docker.io/1password/connect-sync
@@ -84,7 +82,7 @@ spec:
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: onepassword-connect-secret
+                    name: onepassword-secret
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -116,15 +114,12 @@ spec:
       app:
         className: internal
         hosts:
-          - host: &host "{{ .Release.Name }}.omux.io"
+          - host: "{{ .Release.Name }}.omux.io"
             paths:
               - path: /
                 service:
                   identifier: app
                   port: http
-        tls:
-          - hosts:
-              - *host
     persistence:
       config:
         type: emptyDir
