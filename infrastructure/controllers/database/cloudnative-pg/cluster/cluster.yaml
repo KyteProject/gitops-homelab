@@ -8,7 +8,6 @@ spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
   primaryUpdateStrategy: unsupervised
-  primaryUpdateMethod: switchover
   storage:
     size: 20Gi
     storageClass: openebs-hostpath
@@ -33,9 +32,6 @@ spec:
       memory: 4Gi
   monitoring:
     enablePodMonitor: true
-  inheritedMetadata:
-    annotations:
-      kyverno.io/exclude: "true"
   backup:
     retentionPolicy: 30d
     barmanObjectStore: &barmanObjectStore
@@ -48,7 +44,7 @@ spec:
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
       # Note: serverName version needs to be inplemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v1
+      serverName: &currentCluster postgres-v2
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -56,16 +52,15 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: AWS_SECRET_ACCESS_KEY
+  # # Note: previousCluster needs to be set to the name of the previous
+  # # cluster when recovering from an existing cnpg cluster
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres-v1
+  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
 
-  # externalClusters:
-  #   - name: *previousCluster
-  #     barmanObjectStore:
-  #       destinationPath: s3://cloudnative-pg/
-  #       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
-  #       s3Credentials:
-  #         accessKeyId:
-  #           name: cloudnative-pg-secret
-  #           key: R2_ACCESS_KEY_ID
-  #         secretAccessKey:
-  #           name: cloudnative-pg-secret
-  #           key: R2_SECRET_ACCESS_KEY
