@@ -7,4 +7,6 @@ metadata:
 spec:
   allowFirstLastIPs: "No"
   blocks:
-    - cidr: 192.168.20.0/24
+    - start: 192.168.20.2
+      stop: 192.168.20.254
+
