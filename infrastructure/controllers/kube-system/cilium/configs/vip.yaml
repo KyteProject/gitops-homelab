@@ -4,8 +4,7 @@ kind: Service
 metadata:
   name: kube-vip
   annotations:
-    io.cilium/lb-ipam-ips: "192.168.10.200"
-    io.cilium/lb-ipam-pool: "control-plane-pool"  # Specify which pool to use
+    io.cilium/lb-ipam-ips: 192.168.20.2
 spec:
   type: LoadBalancer
   externalTrafficPolicy: Cluster
