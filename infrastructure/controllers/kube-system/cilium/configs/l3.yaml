@@ -20,3 +20,9 @@ spec:
       neighbors:
         - peerAddress: 192.168.1.1/32
           peerASN: 64513
+        - peerAddress: 192.168.0.1/32
+          peerASN: 64513
+        - peerAddress: 192.168.10.1/32
+          peerASN: 64513
+        - peerAddress: 192.168.20.1/32
+          peerASN: 64513
