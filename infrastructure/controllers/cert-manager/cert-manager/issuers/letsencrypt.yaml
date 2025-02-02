@@ -14,5 +14,8 @@ spec:
             apiTokenSecretRef:
               name: cloudflare-issuer-secret
               key: CLOUDFLARE_API_TOKEN
+            zoneIDSecretRef:
+              name: cloudflare-issuer-secret
+              key: CLOUDFLARE_ZONE_ID
         selector:
           dnsZones: ["omux.io"]
