@@ -28,8 +28,8 @@ spec:
         addresses:
           - LoadBalancerIP
       selector:
-        matchExpressions:
-          - { key: io.cilium/lb-ipam-pool, operator: NotIn, values: ["control-plane-pool"] }
+        matchLabels:
+          io.cilium/lb-ipam-pool: "services-pool"
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumBGPPeerConfig
