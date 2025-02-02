@@ -3,6 +3,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres
+  namespace: database
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres.omux.io
     io.cilium/lb-ipam-pool: "services-pool"
@@ -21,6 +22,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: postgres-immich
+  namespace: database
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres-immich.omux.io
     io.cilium/lb-ipam-pool: "services-pool"
