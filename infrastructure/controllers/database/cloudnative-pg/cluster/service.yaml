@@ -6,6 +6,7 @@ metadata:
   namespace: database
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres.omux.io
+  label:
     io.cilium/lb-ipam-pool: "services-pool"
 spec:
   type: LoadBalancer
@@ -25,6 +26,7 @@ metadata:
   namespace: database
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres-immich.omux.io
+  label:
     io.cilium/lb-ipam-pool: "services-pool"
 spec:
   type: LoadBalancer
