@@ -8,11 +8,19 @@ spec:
   instances: 3
   imageName: ghcr.io/cloudnative-pg/postgresql:17.2@sha256:9308dcd778be66f56bdce8503916ab820d12420e7d1bc74fff0d663c95e126c3
   primaryUpdateStrategy: unsupervised
+  primaryUpdateMethod: switchover
   storage:
     size: 20Gi
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
+  bootstrap:
+    recovery:
+      source: postgres-v1
+      database: postgres
+      owner: postgres
+      secret:
+        name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
@@ -46,12 +54,7 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: AWS_SECRET_ACCESS_KEY
-  # # Note: previousCluster needs to be set to the name of the previous
-  # # cluster when recovering from an existing cnpg cluster
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v1
-  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
+
   externalClusters:
     - name: *previousCluster
       barmanObjectStore:
