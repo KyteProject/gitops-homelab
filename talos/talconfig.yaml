@@ -1,7 +1,7 @@
 ---
 clusterName: &cluster main
 
-endpoint: https://192.168.10.200:6443
+endpoint: https://192.168.20.200:6443
 
 # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
 talosVersion: v1.9.3
@@ -15,8 +15,7 @@ clusterSvcNets:
 
 additionalApiServerCertSans: &sans
   - 127.0.0.1
-  - 192.168.10.200
-  - ::1
+  - 192.168.20.200
 
 additionalMachineCertSans: *sans
 
@@ -34,9 +33,14 @@ nodes:
           hardwareAddr: 58:47:ca:78:ea:26
           driver: i40e
         dhcp: true
+        mtu: 1500
+        # vlans:
+        #   - vlanId: 20
+        #     dhcp: false
+        #     mtu: 1500
         # vip:
         #   ip: 192.168.10.200
-        # vlans:
+        vlans:
         #   - vlanId: 10
         #     dhcp: false
         #     # addresses:
@@ -47,11 +51,11 @@ nodes:
         #         gateway: 192.168.10.1
         #     vip:
         #       ip: 192.168.10.200
-        #   - vlanId: 20
-        #     dhcp: false
-        #     # addresses:
-        #     #   - 192.168.20.5/24
-        #     mtu: 1500
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - 192.168.20.5/24
+            mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # ifrit
         dhcp: false
@@ -81,9 +85,14 @@ nodes:
           hardwareAddr: 58:47:ca:7a:52:28
           driver: i40e
         dhcp: true
+        mtu: 1500
+        # vlans:
+        #   - vlanId: 20
+        #     dhcp: false
+        #     mtu: 1500
         # vip:
         #   ip: 192.168.10.200
-        # vlans:
+        vlans:
         #   - vlanId: 10
         #     dhcp: false
         #     addresses:
@@ -94,11 +103,11 @@ nodes:
         #         gateway: 192.168.10.1
         #     vip:
         #       ip: 192.168.10.200
-        #   - vlanId: 20
-        #     dhcp: false
-        #     # addresses:
-        #     #   - 192.168.20.6/24
-        #     mtu: 1500
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - 192.168.20.6/24
+            mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # shiva
         dhcp: false
@@ -128,9 +137,14 @@ nodes:
           hardwareAddr: 58:47:ca:79:7a:50
           driver: i40e
         dhcp: true
+        mtu: 1500
+        # vlans:
+        #   - vlanId: 20
+        #     dhcp: false
+        #     mtu: 1500
         # vip:
         #   ip: 192.168.10.200
-        # vlans:
+        vlans:
         #   - vlanId: 10
         #     dhcp: false
         #     addresses:
@@ -141,11 +155,11 @@ nodes:
         #         gateway: 192.168.10.1
         #     vip:
         #       ip: 192.168.10.200
-        #   - vlanId: 20
-        #     dhcp: false
-        #     # addresses:
-        #     #   - 192.168.20.7/24
-        #     mtu: 1500
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - 192.168.20.7/24
+            mtu: 1500
       - deviceSelector:
           busPath: 0-1.0 # ifrit
         dhcp: false
@@ -175,7 +189,6 @@ controlPlane:
     customization:
       extraKernelArgs:
         - mitigations=off
-        - net.ifnames=0
         - apparmor=0
         - init_on_alloc=0
         - init_on_free=0
@@ -195,46 +208,57 @@ controlPlane:
           - siderolabs/v4l-uvc-drivers
 
   patches:
-    # System Configuration
+    # Configure containerd
     - |-
       machine:
-        install:
-          image: factory.talos.dev/installer/868330459bde49d152c0b513725fca359f8688b3837e4d9995bcca1acef34b8e:v1.9.3
+        files:
+          - op: create
+            path: /etc/cri/conf.d/20-customization.part
+            content: |-
+              [plugins."io.containerd.cri.v1.images"]
+                discard_unpacked_layers = false
 
+    # Disable search domain everywhere
     - |-
       machine:
-        time:
-          disabled: false
-          servers:
-            - time.cloudflare.com
+        network:
+          disableSearchDomain: true
+
+    # Enable host dns
     - |-
       machine:
-        sysctls:
-          fs.inotify.max_user_watches: 1048576   # Increase limit for file watching
-          fs.inotify.max_user_instances: 8192    # Prevent "too many open files" errors
-          net.core.default_qdisc: fq             # Fair Queuing for reduced latency
-          net.core.rmem_max: 67108864            # Increase max TCP receive buffer (64MB)
-          net.core.wmem_max: 67108864            # Increase max TCP send buffer (64MB)
-          net.ipv4.tcp_mtu_probing: 1            # Enable MTU probing for optimal packet size
-          net.ipv4.tcp_window_scaling: 1         # Enable large TCP windows (>64KB)
-          net.ipv4.tcp_congestion_control: bbr   # Better congestion control
-          net.ipv4.tcp_fastopen: 3               # Fast TCP handshakes
-          net.ipv4.tcp_rmem: 4096 87380 33554432 # TCP receive buffer: min=4KB, default=85KB, max=32MB
-          net.ipv4.tcp_wmem: 4096 65536 33554432 # TCP send buffer: min=4KB, default=64KB, max=32MB
-          vm.nr_hugepages: 1024                  # ISCI
+        features:
+          hostDNS:
+            enabled: true
+            resolveMemberNames: true
+            forwardKubeDNSToHost: false
+
+    # Configure kubelet
     - |-
       machine:
-        kernel:
-          modules:
-            - name: nbd
-            - name: thunderbolt
-            - name: thunderbolt_net
+        kubelet:
+          extraConfig:
+            maxPods: 150
+          extraMounts:
+            - destination: /var/mnt/extra
+              source: /var/mnt/extra
+              type: bind
+              options:
+                - bind
+                - rshared
+                - rw
+          nodeIP:
+            validSubnets:
+              - 192.168.10.0/24
+
+    # Force nameserver
     - |-
       machine:
-        udev:
-          rules:
-            - ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
-            - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
+        network:
+          nameservers:
+            - 192.168.10.1
+
+    # Configure NFS mount options
     - |
       machine:
         files:
@@ -248,68 +272,53 @@ controlPlane:
               nconnect=16
               noatime=True
 
-    # Container Runtime Configuration
+    # Configure NTP
     - |-
       machine:
-        files:
-          - op: create
-            path: /etc/cri/conf.d/20-customization.part
-            content: |-
-              [plugins."io.containerd.cri.v1.images"]
-                discard_unpacked_layers = false
+        time:
+          disabled: false
+          servers:
+            - time.cloudflare.com
 
-    # Networking Configuration
+    # Custom sysctl settings
     - |-
       machine:
-        features:
-          hostDNS:
-            enabled: true
-            resolveMemberNames: true
-            forwardKubeDNSToHost: false
-#
-    # - |-
-    #   cluster:
-    #     discovery:
-    #       enabled: true
-    #       registries:
-    #         kubernetes:
-    #           disabled: true
-    #         service:
-    #           disabled: false
-#
-    - |-
-      machine:
-        network:
-          disableSearchDomain: true
-    - |-
-      machine:
-        network:
-          nameservers:
-            - 192.168.10.1
+        sysctls:
+          fs.inotify.max_user_watches: 1048576   # Watchdog
+          fs.inotify.max_user_instances: 8192    # Watchdog
+          net.core.default_qdisc: fq             # 10Gb/s
+          net.core.rmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
+          net.core.wmem_max: 67108864            # 10Gb/s | Cloudflared / QUIC
+          net.ipv4.tcp_congestion_control: bbr   # 10Gb/s
+          net.ipv4.tcp_fastopen: 3               # Send and accept data in the opening SYN packet
+          net.ipv4.tcp_mtu_probing: 1            # 10Gb/s | Jumbo frames
+          net.ipv4.tcp_rmem: 4096 87380 33554432 # 10Gb/s
+          net.ipv4.tcp_wmem: 4096 65536 33554432 # 10Gb/s
+          net.ipv4.tcp_window_scaling: 1         # 10Gb/s
+          vm.nr_hugepages: 1024                  # PostgreSQL
 
-    # Kubernetes Configuration
+    # Enable thunderbolt + net
     - |-
       machine:
-        kubelet:
-          extraConfig:
-            maxPods: 150
-          extraMounts:
-            - destination: /var/openebs/local
-              source: /var/openebs/local
-              type: bind
-              options:
-                - rbind
-                - rshared
-                - rw
-          nodeIP:
-            validSubnets:
-              - 192.168.10.0/24
+        kernel:
+          modules:
+            - name: nbd
+            - name: thunderbolt
+            - name: thunderbolt_net
+
+    # Various udev rules
     - |-
       machine:
-        features:
-          kubePrism:
-            enabled: true
-            port: 7445
+        udev:
+          rules:
+            # Thunderbolt
+            - ACTION=="add", SUBSYSTEM=="thunderbolt", ATTR{authorized}=="0", ATTR{authorized}="1"
+            # Intel GPU
+            - SUBSYSTEM=="drm", KERNEL=="renderD*", GROUP="44", MODE="0660"
+            # Coral Edge TPU
+            - SUBSYSTEM=="apex", KERNEL=="apex*", GROUP="44", MODE="0660"
+
+    # Cluster configuration
     - |-
       cluster:
         allowSchedulingOnControlPlanes: true
@@ -349,7 +358,12 @@ controlPlane:
                           topologyKey: kubernetes.io/hostname
                           whenUnsatisfiable: ScheduleAnyway
 
-    # Security Configuration
+    # Disable default API server admission plugins.
+    - |-
+      - op: remove
+        path: /cluster/apiServer/admissionControl
+
+    # Enable K8s Talos API Access
     - |-
       machine:
         features:
@@ -360,6 +374,3 @@ controlPlane:
             allowedKubernetesNamespaces:
               - actions-runner-system
               - system-upgrade
-    - |-
-      - op: remove
-        path: /cluster/apiServer/admissionControl
