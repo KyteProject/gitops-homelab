@@ -1,0 +1,170 @@
+---
+version: '3'
+
+tasks:
+
+  reset:
+    desc: Reset flux installation
+    cmds:
+      - flux uninstall --namespace=flux-system
+      - |
+        kubectl get namespace flux-system -o json | \
+        tr -d "\n" | \
+        sed "s/\"finalizers\": \[[^]]\+\]/\"finalizers\": []/" | \
+        kubectl replace --raw /api/v1/namespaces/flux-system/finalize -f -
+
+  logs:
+    desc: Show flux logs
+    cmd: flux logs -A
+
+  sync:
+    desc: Sync all flux resources
+    cmds:
+      - flux reconcile source git flux-system
+      - flux reconcile kustomization flux-system
+
+  not-ready:
+    desc: Show all Flux objects that are not ready
+    cmd: flux get all -A --status-selector ready=false
+
+  warn:
+    desc: Show flux warning events
+    cmd: kubectl get events -n flux-system --field-selector type=Warning
+
+  sources:
+    desc: Check all sources status
+    cmd: flux get sources all -A
+
+  workloads:
+    desc: Check all kustomizations and helm releases
+    cmds:
+      - flux get kustomizations -A
+      - flux get helmreleases -A
+
+  helm-status:
+    desc: Check detailed helm charts and releases status
+    cmds:
+      - kubectl get helmcharts.source.toolkit.fluxcd.io -A
+      - kubectl get helmreleases.helm.toolkit.fluxcd.io -A
+
+  err:
+    desc: Show controller errors
+    cmd: flux logs --all-namespaces --level=error
+
+  health:
+    desc: Check controllers readiness and versions
+    cmd: flux check
+
+  helm-debug:
+    desc: Get detailed status of a specific helm release
+    cmd: kubectl describe helmrelease {{.RELEASE}} -n {{.NAMESPACE}}
+    requires:
+      vars: [RELEASE, NAMESPACE]
+
+  sources-kubectl:
+    desc: Get all sources with kubectl for deeper inspection
+    cmds:
+      - kubectl get gitrepositories.source.toolkit.fluxcd.io -A
+      - kubectl get helmrepositories.source.toolkit.fluxcd.io -A
+
+  verify:
+    desc: Comprehensive health check of the Flux system
+    cmds:
+      - task: health
+      - task: not-ready
+      - task: sources
+      - task: warn
+      - echo "=== Checking Flux System Pods ==="
+      - kubectl get pods -n {{.FLUX_NAMESPACE}} -o wide
+      - echo "=== Checking Resource Usage ==="
+      - kubectl top pods -n {{.FLUX_NAMESPACE}}
+
+  suspend:
+    desc: Suspend specific Flux resources
+    cmds:
+      - flux suspend kustomization {{.NAME}}
+    requires:
+      vars: [NAME]
+
+  resume:
+    desc: Resume specific Flux resources
+    cmds:
+      - flux resume kustomization {{.NAME}}
+    requires:
+      vars: [NAME]
+
+  wait:
+    desc: Wait for all Flux resources to be ready (with timeout)
+    cmds:
+      - flux get all -A --status-selector ready=false
+      - kubectl wait --for=condition=ready --all pods -n {{.FLUX_NAMESPACE}} --timeout={{.KUBECTL_TIMEOUT}}
+
+  diff:
+    desc: Show differences between deployed and source manifests
+    cmds:
+      - flux diff kustomization {{.NAME}} --path {{.PATH}}
+    requires:
+      vars: [NAME, PATH]
+
+  trace:
+    desc: Trace a Flux resource's reconciliation path
+    cmds:
+      - flux trace {{.KIND}} {{.NAME}} -n {{.NAMESPACE}}
+    requires:
+      vars: [KIND, NAME, NAMESPACE]
+
+  export:
+    desc: Export all Flux resources to a backup directory
+    vars:
+      BACKUP_DIR: '{{.USER_WORKING_DIR}}/flux-backup-{{now | date "2006-01-02-150405"}}'
+    cmds:
+      - mkdir -p {{.BACKUP_DIR}}
+      - flux export source git --all > {{.BACKUP_DIR}}/sources-git.yaml
+      - flux export source helm --all > {{.BACKUP_DIR}}/sources-helm.yaml
+      - flux export kustomization --all > {{.BACKUP_DIR}}/kustomizations.yaml
+      - flux export helmrelease --all > {{.BACKUP_DIR}}/helmreleases.yaml
+      - echo "Backup created in {{.BACKUP_DIR}}"
+
+  metrics:
+    desc: Show Flux controller metrics
+    cmds:
+      - kubectl port-forward -n {{.FLUX_NAMESPACE}} svc/source-controller 8080:8080 &
+      - echo "Metrics available at http://localhost:8080/metrics - Press Ctrl+C to stop"
+      - sleep 2
+      - curl -s http://localhost:8080/metrics | grep ^flux
+
+  clean:
+    desc: Clean up suspended and failed resources
+    cmds:
+      - flux get kustomization -A --status-selector suspended=true
+      - flux get helmrelease -A --status-selector ready=false
+      - echo "Use 'task flux:resume NAME=<resource>' to resume suspended resources"
+
+  events:
+    desc: Show all Flux-related events, sorted by time
+    cmd: kubectl get events --all-namespaces --sort-by='.metadata.creationTimestamp' | grep -i "flux"
+
+  reconcile-all:
+    desc: Force reconciliation of all Flux resources
+    cmds:
+      - flux reconcile source all
+      - flux reconcile helmrelease all
+      - flux reconcile kustomization all
+      - task: wait
+
+  debug-toolkit:
+    desc: Install useful debugging tools in the Flux namespace
+    cmd: |
+      kubectl run flux-debug --namespace={{.FLUX_NAMESPACE}} \
+        --rm -i --tty --image=registry.k8s.io/e2e-test-images/jessie-dnsutils:1.3 \
+        -- bash
+
+  list-images:
+    desc: List all container images managed by Flux
+    cmd: flux get images all -A
+
+  prune:
+    desc: Remove old images based on policy
+    cmds:
+      - flux image update
+      - flux image prune
