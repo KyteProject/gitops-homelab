@@ -34,11 +34,6 @@ spec:
           secretKeyRef:
             name: &secret external-dns-cloudflare-secret
             key: *name
-      - name: &name CF_ZONE_ID
-        valueFrom:
-          secretKeyRef:
-            name: *secret
-            key: *name
     extraArgs:
       - --cloudflare-dns-records-per-page=1000
       - --cloudflare-proxied
@@ -46,7 +41,6 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --ignore-ingress-tls-spec
       - --ingress-class=external
-      - --zone-id-filter=$(CF_ZONE_ID)
     triggerLoopOnEvent: true
     policy: sync
     sources: ["crd", "ingress"]
