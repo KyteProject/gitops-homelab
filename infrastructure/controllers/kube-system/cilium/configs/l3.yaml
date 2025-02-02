@@ -28,8 +28,13 @@ spec:
         addresses:
           - LoadBalancerIP
       selector:
-        matchLabels:
-          io.cilium/lb-ipam-pool: "services-pool"
+        matchExpressions:
+          - key: kubernetes.io/service-type
+            operator: In
+            values: ["LoadBalancer"]
+          - key: io.cilium/lb-ipam-pool
+            operator: NotIn
+            values: ["control-plane-pool"]
 ---
 apiVersion: "cilium.io/v2alpha1"
 kind: CiliumBGPPeerConfig
