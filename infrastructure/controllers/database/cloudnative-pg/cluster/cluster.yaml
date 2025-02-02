@@ -13,12 +13,6 @@ spec:
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
-  bootstrap:
-    initdb:
-      database: postgres
-      owner: postgres
-      secret:
-        name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
@@ -44,7 +38,7 @@ spec:
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
       # Note: serverName version needs to be inplemented
       # when recovering from an existing cnpg cluster
-      serverName: &currentCluster postgres-v2
+      serverName: postgres-v2
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret
@@ -63,4 +57,3 @@ spec:
       barmanObjectStore:
         <<: *barmanObjectStore
         serverName: *previousCluster
-
