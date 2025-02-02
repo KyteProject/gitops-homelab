@@ -5,6 +5,7 @@ metadata:
   name: postgres
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres.omux.io
+    io.cilium/lb-ipam-pool: "services-pool"
 spec:
   type: LoadBalancer
   ports:
@@ -22,6 +23,7 @@ metadata:
   name: postgres-immich
   annotations:
     external-dns.alpha.kubernetes.io/hostname: postgres-immich.omux.io
+    io.cilium/lb-ipam-pool: "services-pool"
 spec:
   type: LoadBalancer
   ports:
