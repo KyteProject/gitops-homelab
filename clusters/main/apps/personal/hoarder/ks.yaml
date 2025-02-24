@@ -3,24 +3,23 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app hoarder
-  namespace: flux-system
+  namespace: &namespace personal
 spec:
-  path: ./clusters/main/apps/personal/hoarder/app
-  targetNamespace: personal
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: onepassword-store
+      namespace: security
     - name: rook-ceph-cluster
-  prune: true
-  wait: false
+      namespace: rook-ceph
   interval: 30m
-  retryInterval: 1m
+  path: ./clusters/main/apps/personal/hoarder/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
   timeout: 5m
-  postBuild:
-    substitute:
-      APP: *app
+  wait: true
