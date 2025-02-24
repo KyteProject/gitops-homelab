@@ -14,7 +14,7 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 30m
-  path: ./clusters/main/apps/business/erpnext/app
+  path: ./clusters/main/apps/personal/erpnext/app
   prune: true
   sourceRef:
     kind: GitRepository
