@@ -2,8 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app wakapi
-  namespace: &namespace tools
+  name: &app erpnext
+  namespace: &namespace personal
 spec:
   commonMetadata:
     labels:
@@ -11,8 +11,10 @@ spec:
   dependsOn:
     - name: onepassword-store
       namespace: security
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   interval: 30m
-  path: ./clusters/main/apps/tools/wakapi/app
+  path: ./clusters/main/apps/business/erpnext/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -21,3 +23,4 @@ spec:
   targetNamespace: *namespace
   timeout: 5m
   wait: true
+

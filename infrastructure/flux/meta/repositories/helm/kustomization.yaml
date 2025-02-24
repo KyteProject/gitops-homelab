@@ -10,6 +10,7 @@ resources:
   - coredns.yaml
   - democratic-csi.yaml
   - descheduler.yaml
+  - erpnext.yaml
   - external-dns.yaml
   - external-secrets.yaml
   - grafana.yaml

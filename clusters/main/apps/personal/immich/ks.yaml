@@ -3,29 +3,33 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: &app immich
-  namespace: flux-system
+  namespace: &namespace personal
 spec:
-  path: ./clusters/main/apps/personal/immich/app
-  targetNamespace: personal
-  sourceRef:
-    kind: GitRepository
-    name: flux-system
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  prune: true
-  wait: false
-  interval: 30m
-  retryInterval: 1m
-  timeout: 5m
   dependsOn:
     - name: onepassword-store
+      namespace: security
     - name: democratic-csi-nfs
+      namespace: storage
     - name: dragonfly-cluster
+      namespace: database
     - name: cloudnative-pg-cluster
+      namespace: database
+  interval: 30m
+  path: ./clusters/main/apps/personal/immich/app
   postBuild:
     substitute:
       APP: *app
       HOSTNAME: photos.omux.io
       APP_UID: "568"
       APP_GID: "568"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: true
