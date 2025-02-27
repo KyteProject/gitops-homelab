@@ -13,6 +13,12 @@ spec:
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret-immich
+  bootstrap:
+    initdb:
+      database: immich
+      owner: postgres
+      secret:
+        name: cloudnative-pg-secret-immich
   enableSuperuserAccess: true
   postgresql:
     shared_preload_libraries: ["vectors.so"]

@@ -13,6 +13,12 @@ spec:
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
+  bootstrap:
+    initdb:
+      database: postgres
+      owner: postgres
+      secret:
+        name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
