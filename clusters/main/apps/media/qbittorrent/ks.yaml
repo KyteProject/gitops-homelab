@@ -12,7 +12,7 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
-      namespace: volsync
+      namespace: storage
   interval: 30m
   path: ./clusters/main/apps/media/qbittorrent/app
   prune: true
