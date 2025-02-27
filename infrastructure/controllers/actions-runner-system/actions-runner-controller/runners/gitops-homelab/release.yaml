@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app gitops-homelab-runner
+  name: &app  gitops-homelab-runner
 spec:
   interval: 30m
   chart:
@@ -21,21 +21,9 @@ spec:
     remediation:
       strategy: rollback
       retries: 3
-  valuesFrom:
-    - targetPath: githubConfigSecret.github_app_id
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_APP_ID
-    - targetPath: githubConfigSecret.github_app_installation_id
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_INSTALLATION_ID
-    - targetPath: githubConfigSecret.github_app_private_key
-      kind: Secret
-      name: actions-runner-controller-secret
-      valuesKey: ACTION_RUNNER_CONTROLLER_GITHUB_PRIVATE_KEY
   values:
     githubConfigUrl: https://github.com/kyteproject/gitops-homelab
+    githubConfigSecret:  gitops-homelab-runner-secret
     minRunners: 1
     maxRunners: 3
     containerMode:
