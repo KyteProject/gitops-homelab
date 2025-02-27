@@ -13,6 +13,13 @@ spec:
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret
+  bootstrap:
+    recovery:
+      source: postgres-v1
+      database: postgres
+      owner: postgres
+      secret:
+        name: cloudnative-pg-secret
   enableSuperuserAccess: true
   postgresql:
     parameters:
@@ -36,8 +43,6 @@ spec:
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
-      # Note: serverName version needs to be inplemented
-      # when recovering from an existing cnpg cluster
       serverName: postgres-v2
       s3Credentials:
         accessKeyId:
@@ -46,14 +51,21 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret
           key: AWS_SECRET_ACCESS_KEY
-  # # Note: previousCluster needs to be set to the name of the previous
-  # # cluster when recovering from an existing cnpg cluster
-  bootstrap:
-    recovery:
-      source: &previousCluster postgres-v1
-  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
   externalClusters:
-    - name: *previousCluster
+    - name: postgres-v1
       barmanObjectStore:
-        <<: *barmanObjectStore
-        serverName: *previousCluster
+        data:
+          compression: bzip2
+        wal:
+          compression: bzip2
+          maxParallel: 8
+        destinationPath: s3://cloudnative-pg/
+        endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
+        serverName: postgres-v1
+        s3Credentials:
+          accessKeyId:
+            name: cloudnative-pg-secret
+            key: AWS_ACCESS_KEY_ID
+          secretAccessKey:
+            name: cloudnative-pg-secret
+            key: AWS_SECRET_ACCESS_KEY
