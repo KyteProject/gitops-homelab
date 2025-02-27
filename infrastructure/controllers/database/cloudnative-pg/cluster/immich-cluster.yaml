@@ -14,12 +14,12 @@ spec:
     storageClass: openebs-hostpath
   superuserSecret:
     name: cloudnative-pg-secret-immich
-  bootstrap:
-    initdb:
-      database: immich
-      owner: postgres
-      secret:
-        name: cloudnative-pg-secret-immich
+  # bootstrap:
+  #   initdb:
+  #     database: immich
+  #     owner: postgres
+  #     secret:
+  #       name: cloudnative-pg-secret-immich
   enableSuperuserAccess: true
   postgresql:
     shared_preload_libraries: ["vectors.so"]
@@ -40,7 +40,7 @@ spec:
       kyverno.io/exclude: "true"
   backup:
     retentionPolicy: 30d
-    barmanObjectStore:
+    barmanObjectStore: &barmanObjectStore
       data:
         compression: gzip
       wal:
@@ -48,7 +48,7 @@ spec:
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
-      serverName: postgres-immich-v1
+      serverName: postgres-immich-v2
       s3Credentials:
         accessKeyId:
           name: cloudnative-pg-secret-immich
@@ -56,3 +56,14 @@ spec:
         secretAccessKey:
           name: cloudnative-pg-secret-immich
           key: AWS_SECRET_ACCESS_KEY
+  # # Note: previousCluster needs to be set to the name of the previous
+  # # cluster when recovering from an existing cnpg cluster
+  bootstrap:
+    recovery:
+      source: &previousCluster postgres-immich-v1
+  # # Note: externalClusters is needed when recovering from an existing cnpg cluster
+  externalClusters:
+    - name: *previousCluster
+      barmanObjectStore:
+        <<: *barmanObjectStore
+        serverName: *previousCluster
