@@ -8,7 +8,6 @@ spec:
   instances: 3
   imageName: ghcr.io/tensorchord/cloudnative-pgvecto.rs:16.5-v0.3.0@sha256:be3f025d79aa1b747817f478e07e71be43236e14d00d8a9eb3914146245035ba
   primaryUpdateStrategy: unsupervised
-  primaryUpdateMethod: switchover
   storage:
     size: 20Gi
     storageClass: openebs-hostpath
@@ -26,19 +25,17 @@ spec:
     requests:
       cpu: 500m
     limits:
-      memory: 2Gi
+      hugepages-2Mi: 2Gi # Requires sysctl set on the host
+      memory: 4Gi
   monitoring:
     enablePodMonitor: true
-  inheritedMetadata:
-    annotations:
-      kyverno.io/exclude: "true"
   backup:
     retentionPolicy: 30d
-    barmanObjectStore:
+    barmanObjectStore: &barmanObjectStore
       data:
-        compression: gzip
+        compression: bzip2
       wal:
-        compression: gzip
+        compression: bzip2
         maxParallel: 8
       destinationPath: s3://cloudnative-pg/
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
@@ -52,32 +49,12 @@ spec:
           key: AWS_SECRET_ACCESS_KEY
   # # Note: previousCluster needs to be set to the name of the previous
   # # cluster when recovering from an existing cnpg cluster
-  bootstrap:
-    recovery:
-      source: &previousImmichCluster postgres-immich-v1
-      database: immich
-      owner: postgres
-      secret:
-        name: cloudnative-pg-secret-immich
-      # If you have a specific backup ID, add it here
-      # recoveryTarget:
-      #   backupID: "YYYYMMDDTHHMMSS"
+  # bootstrap:
+  #   recovery:
+  #     source: &previousCluster postgres-immich-v2
   # # Note: externalClusters is needed when recovering from an existing cnpg cluster
-  externalClusters:
-    - name: *previousImmichCluster
-      barmanObjectStore:
-        data:
-          compression: gzip
-        wal:
-          compression: gzip
-          maxParallel: 8
-        destinationPath: s3://cloudnative-pg/
-        endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
-        serverName: *previousImmichCluster
-        s3Credentials:
-          accessKeyId:
-            name: cloudnative-pg-secret-immich
-            key: AWS_ACCESS_KEY_ID
-          secretAccessKey:
-            name: cloudnative-pg-secret-immich
-            key: AWS_SECRET_ACCESS_KEY
+  # externalClusters:
+  #   - name: *previousCluster
+  #     barmanObjectStore:
+  #       <<: *barmanObjectStore
+  #       serverName: *previousCluster
