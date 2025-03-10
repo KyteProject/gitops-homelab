@@ -67,7 +67,7 @@ releases:
   - name: external-secrets
     namespace: security
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
-    version: 0.13.0
+    version: 0.14.4
     values:
       - ../controllers/security/external-secrets/app/resources/values.yaml
     needs:
