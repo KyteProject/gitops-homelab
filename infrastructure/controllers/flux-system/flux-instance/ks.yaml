@@ -11,6 +11,8 @@ spec:
   dependsOn:
     - name: flux-operator
       namespace: *namespace
+    - name: onepassword
+      namespace: security
   interval: 30m
   path: ./infrastructure/controllers/flux-system/flux-instance/app
   prune: true
