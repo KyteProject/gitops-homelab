@@ -15,26 +15,14 @@ tasks:
       - which talosctl
 
   talos:
-    desc: Bootstrap Talos [MODEL={{.MODEL}}]
+    desc: Bootstrap Talos
     prompt: Bootstrap Talos ...?
     cmds:
-      - for: { var: TALOS_BLOCK_DEVICES }
-        cmd: talosctl --nodes {{.KEY}} wipe disk {{.ITEM}}
       - until talosctl --nodes {{.TALOS_CONTROLLER}} bootstrap; do sleep 10; done
       - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
     vars:
-      MODEL: '{{.MODEL | default "WD_BLACK SN850X 2000GB"}}'
       TALOS_CONTROLLER:
         sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
-      TALOS_BLOCK_DEVICES_RAW:
-        sh: |-
-          talosctl get disks --output json | jq --slurp --compact-output '
-            map(select(.spec.model == "{{.MODEL}}"))
-              | group_by(.node)
-              | map({ (.[0].node): (map(.metadata.id) | join(" ")) })
-              | add'
-      TALOS_BLOCK_DEVICES:
-        ref: fromJson .TALOS_BLOCK_DEVICES_RAW
     preconditions:
       - talosctl config info
       - which talosctl
@@ -45,10 +33,22 @@ tasks:
     cmds:
       - kubectl config set-cluster {{.TALOS_CONTEXT}} --server https://{{.TALOS_CONTROLLER}}:6443
       - until kubectl wait nodes --for=condition=Ready=False --all --timeout=10m; do sleep 5; done
-      - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe inject --in-file {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl | kubectl apply --server-side --filename -
-      - KUBECONFIG={{.KUBERNETES_DIR}}/kubeconfig helmfile --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
+      - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe inject --in-file {{.KUBERNETES_DIR}}/bootstrap/resources.yaml.tpl | kubectl apply --server-side --filename -
+      - for: { var: TALOS_BLOCK_DEVICES }
+        cmd: talosctl --nodes {{.KEY}} wipe disk {{.ITEM}}
+      - helmfile --quiet --file {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml apply --skip-diff-on-install --suppress-diff
       - talosctl kubeconfig --nodes {{.TALOS_CONTROLLER}} --force {{.KUBERNETES_DIR}}
     vars:
+      ROOK_DISK: '{{.ROOK_DISK | default "WD_BLACK SN850X 2000GB"}}'
+      TALOS_BLOCK_DEVICES_RAW:
+        sh: |-
+          talosctl get disks --output json | jq --slurp --compact-output '
+            map(select(.spec.model == "{{.ROOK_DISK}}"))
+              | group_by(.node)
+              | map({ (.[0].node): (map(.metadata.id) | join(" ")) })
+              | add'
+      TALOS_BLOCK_DEVICES:
+        ref: fromJson .TALOS_BLOCK_DEVICES_RAW
       TALOS_CONTEXT:
         sh: talosctl config info --output json | jq --raw-output '.context'
       TALOS_CONTROLLER:
@@ -58,5 +58,5 @@ tasks:
       - /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe user get --me
       - talosctl config info
       - test -f {{.KUBERNETES_DIR}}/bootstrap/helmfile.yaml
-      - test -f {{.KUBERNETES_DIR}}/bootstrap/templates/resources.yaml.tpl
+      - test -f {{.KUBERNETES_DIR}}/bootstrap/resources.yaml.tpl
       - which jq helmfile kubectl /mnt/c/Users/Dan/AppData/Local/Microsoft/WinGet/Links/op.exe talosctl
