@@ -3,8 +3,6 @@ originRequest:
   originServerName: external.omux.io
 
 ingress:
-  - hostname: omux.io
-    service: https://nginx-external-controller.networking.svc.cluster.local
-  - hostname: "*.omux.io"
-    service: https://nginx-external-controller.networking.svc.cluster.local
-  - service: http_status:404
+  - { hostname: omux.io, service: https://cilium-gateway-external.kube-system.svc.cluster.local }
+  - { hostname: "*.omux.io", service: https://cilium-gateway-external.kube-system.svc.cluster.local }
+  - { service: http_status:404 }

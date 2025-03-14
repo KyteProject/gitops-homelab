@@ -5,8 +5,8 @@ resources:
   - release.yaml
   - prometheusrule.yaml
 configMapGenerator:
-  - name: cert-manager-helm-values
+  - name: cert-manager-values
     files:
       - resources/values.yaml
 configurations:
-  - kustomizeconfig.yaml
+  - resources/kustomizeconfig.yaml

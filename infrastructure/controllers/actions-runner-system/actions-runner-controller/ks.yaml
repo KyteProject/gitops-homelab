@@ -36,6 +36,8 @@ spec:
   dependsOn:
     - name: actions-runner-controller
       namespace: *namespace
+    - name: onepassword
+      namespace: security
     - name: openebs
       namespace: storage
   interval: 30m
