@@ -81,6 +81,6 @@ releases:
     version: 0.17.0
     wait: false
     values:
-      - ../controllers/flux-system/flux-operator/instance/resources/values.yaml
+      - ../controllers/flux-system/flux-instance/resources/values.yaml
     needs:
       - flux-system/flux-operator
