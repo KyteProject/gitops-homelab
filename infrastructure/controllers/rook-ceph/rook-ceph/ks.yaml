@@ -43,11 +43,6 @@ spec:
       kind: CephCluster
       name: rook-ceph
       namespace: *namespace
-  healthCheckExprs:
-    - apiVersion: ceph.rook.io/v1
-      kind: CephCluster
-      failed: status.ceph.health == 'HEALTH_ERR'
-      current: status.ceph.health in ['HEALTH_OK', 'HEALTH_WARN']
   interval: 30m
   path: ./infrastructure/controllers/rook-ceph/rook-ceph/cluster
   prune: true
