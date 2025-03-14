@@ -24,4 +24,6 @@ includes:
 
 tasks:
 
-  default: task -l
+  default:
+    cmd: task --list
+    silent: true
