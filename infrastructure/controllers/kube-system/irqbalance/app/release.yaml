@@ -29,7 +29,7 @@ spec:
           app:
             image:
               repository: ghcr.io/kyteproject/irqbalance
-              tag: 1.9.4@sha256:2cfb398ea6a74ef65737a20abd93652d7effb6a11eda6840195f8c998417a9a6
+              tag: 1.9.4@sha256:1d72c39c84c8511ce5429b9d430630d9a138007d36677a8894b3a1610a3e4e14
             env:
               IRQBALANCE_BANNED_CPULIST: 12-19 # 12-19 are E-cores
             resources:
