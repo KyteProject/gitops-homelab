@@ -4,15 +4,11 @@ kind: HelmRelease
 metadata:
   name: &app cloudflared
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.6.1
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -32,24 +28,19 @@ spec:
           app:
             image:
               repository: docker.io/cloudflare/cloudflared
-              tag: 2025.1.1@sha256:bc2b3edd9eb0257a1a1fc58113e97426afe524e04b898173cd7df01442bcb4b3
+              tag: 2025.2.1@sha256:03737f27c38ecfb257a55664953cac510727cf27052c51ddb7c8ff1a2b9969e1
             args:
               - tunnel
-              - --config
-              - /etc/cloudflared/config/config.yaml
               - run
-              - $(TUNNEL_ID)
             env:
               NO_AUTOUPDATE: true
-              TUNNEL_CRED_FILE: /etc/cloudflared/creds/credentials.json
               TUNNEL_METRICS: 0.0.0.0:2000
               TUNNEL_ORIGIN_ENABLE_HTTP2: true
-              TUNNEL_TRANSPORT_PROTOCOL: http2
-              TUNNEL_ID:
-                valueFrom:
-                  secretKeyRef:
-                    name: cloudflared-secret
-                    key: CLOUDFLARE_TUNNEL_ID
+              TUNNEL_POST_QUANTUM: true
+              TUNNEL_TRANSPORT_PROTOCOL: quic
+            envFrom:
+              - secretRef:
+                  name: cloudflared-secret
             probes:
               liveness: &probes
                 enabled: true
@@ -82,15 +73,8 @@ spec:
         type: configMap
         name: cloudflared-configmap
         globalMounts:
-          - path: /etc/cloudflared/config/config.yaml
+          - path: /etc/cloudflared/config.yaml
             subPath: config.yaml
-            readOnly: true
-      creds:
-        type: secret
-        name: cloudflared-secret
-        globalMounts:
-          - path: /etc/cloudflared/creds/credentials.json
-            subPath: credentials.json
             readOnly: true
     service:
       app:
