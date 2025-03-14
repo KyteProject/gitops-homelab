@@ -10,11 +10,15 @@
   "editor.stickyScroll.enabled": false,
   "explorer.autoReveal": false,
   "files.associations": {
+    "*.json5": "json5",
     "**/*justfile": "just",
     "**/*.just": "just"
   },
   "files.trimTrailingWhitespace": true,
   "material-icon-theme.folders.associations": {
+    "helmfile.yaml": "helm",
+    "kubeconfig": "kubernetes",
+    "talosconfig": "kubernetes",
     ".archive": "archive",
     ".github/workflows": "robot",
   },
@@ -23,5 +27,9 @@
     "vs-kubernetes.knownKubeconfigs": ["./kubeconfig"]
   },
   "sops.defaults.ageKeyFile": "age.key",
-  "yaml.schemaStore.enable": true
+  "yaml.schemaStore.enable": true,
+  "yaml.schemas": {
+    "kubernetes": "./infrastructure/**/*.yaml",
+    "clusters": "./clusters/**/*.yaml"
+  }
 }
