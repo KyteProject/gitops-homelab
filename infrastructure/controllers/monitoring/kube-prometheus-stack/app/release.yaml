@@ -4,32 +4,36 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: kube-prometheus-stack
-      version: 68.4.4
-      sourceRef:
-        kind: HelmRepository
-        name: prometheus-community
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: kube-prometheus-stack
+    namespace: monitoring
   install:
-    crds: Skip
     remediation:
       retries: 3
   upgrade:
     cleanupOnFail: true
-    crds: Skip
     remediation:
       strategy: rollback
       retries: 3
   values:
+    crds:
+      enabled: true
+      upgradeJob:
+        enabled: true
+        forceConflicts: true
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts: ["am.omux.io"]
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - am.omux.io
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       alertmanagerSpec:
         alertmanagerConfiguration:
           name: alertmanager
@@ -43,27 +47,22 @@ spec:
               resources:
                 requests:
                   storage: 1Gi
-    kubeApiServer:
-      serviceMonitor:
-        selector:
-          k8s-app: kube-apiserver
-    kubeControllerManager: &kubeControllerManager
+    kubeEtcd:
       service:
         selector:
-          k8s-app: kube-controller-manager
-    kubeEtcd:
-      <<: *kubeControllerManager # etcd runs on control plane nodes
+          component: kube-apiserver # etcd runs on control plane nodes
     kubeProxy:
       enabled: false
-    kubeScheduler:
-      service:
-        selector:
-          k8s-app: kube-scheduler
     prometheus:
-      ingress:
-        enabled: true
-        ingressClassName: internal
-        hosts: ["prometheus.omux.io"]
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - prometheus.omux.io
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
       prometheusSpec:
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false

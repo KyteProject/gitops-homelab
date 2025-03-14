@@ -4,15 +4,11 @@ kind: HelmRelease
 metadata:
   name: &app gatus
 spec:
-  interval: 30m
-  chart:
-    spec:
-      chart: app-template
-      version: 3.6.1
-      sourceRef:
-        kind: HelmRepository
-        name: bjw-s
-        namespace: flux-system
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
   install:
     remediation:
       retries: 3
@@ -38,7 +34,7 @@ spec:
             dependsOn: init-db
             image:
               repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.29.1@sha256:42002d66ddb3ba46db5ae44b8511cfe07f292eab038e2dad68d9c23de972a29f
+              tag: 1.30.2@sha256:cdb361e67b1b5c4945b6e943fbf5909badaaeb51595eaf75fb7493b3abbbe10f
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -56,7 +52,7 @@ spec:
           app:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.15.0@sha256:45686324db605e57dfa8b0931d8d57fe06298f52685f06aa9654a1f710d461bb
+              tag: v5.16.0@sha256:bb738c87cf2e2a08b8fff180cfc433e7b8b87bb1779c1fb1b00f8b748673e3c3
             env:
               GATUS_WEB_PORT: &port 80
               GATUS_CONFIG_PATH: /config
@@ -86,18 +82,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
-    ingress:
-      app:
-        className: external
-        hosts:
-          - host: "{{ .Release.Name }}.omux.io"
-            paths: &paths
-              - path: /
-                service:
-                  identifier: app
-                  port: http
-          - host: status.omux.io
-            paths: *paths
     persistence:
       config:
         type: emptyDir
@@ -108,6 +92,19 @@ spec:
           - path: /config/config.yaml
             subPath: config.yaml
             readOnly: true
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - status.ktwo.io
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
     service:
       app:
         controller: *app
