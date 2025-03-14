@@ -6,6 +6,4 @@ resources:
   - cert-manager/ks.yaml
   # - truenas-cert-sync/ks.yaml
 components:
-  - ../../flux/components/alerts
-  - ../../flux/components/namespace
-  - ../../flux/components/sops
+  - ../../flux/components/common

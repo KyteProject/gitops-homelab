@@ -5,6 +5,4 @@ namespace: media
 resources: []
   # - qbittorrent/ks.yaml
 components:
-  - ../../../../infrastructure/flux/components/alerts
-  - ../../../../infrastructure/flux/components/namespace
-  - ../../../../infrastructure/flux/components/sops
+  - ../../../../infrastructure/flux/components/common

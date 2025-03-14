@@ -11,6 +11,4 @@ resources:
   - nginx/ks.yaml
   - smtp-relay/ks.yaml
 components:
-  - ../../flux/components/alerts
-  - ../../flux/components/namespace
-  - ../../flux/components/sops
+  - ../../flux/components/common
