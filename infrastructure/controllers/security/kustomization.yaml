@@ -4,7 +4,5 @@ kind: Kustomization
 namespace: security
 resources:
   - authentik/ks.yaml
-  - external-secrets/ks.yaml
-  - onepassword/ks.yaml
 components:
   - ../../flux/components/common

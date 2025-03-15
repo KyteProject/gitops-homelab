@@ -10,7 +10,7 @@ spec:
   ingress:
     - fromEndpoints:
         - matchLabels:
-            io.kubernetes.pod.namespace: security
+            io.kubernetes.pod.namespace: external-secrets
         - matchLabels:
             io.kubernetes.pod.namespace: monitoring
       toPorts:

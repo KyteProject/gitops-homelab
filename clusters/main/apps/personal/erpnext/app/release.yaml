@@ -96,21 +96,19 @@ spec:
         limits:
           memory: 256Mi
 
-    ingress:
-      enabled: true
-      className: nginx
-      annotations:
-        cert-manager.io/cluster-issuer: letsencrypt-production
-      hosts:
-        - host: erp.${SECRET_DOMAIN}
-          paths:
-            - path: /
-              pathType: Prefix
-      tls:
-        - secretName: erpnext-tls
-          hosts:
-            - erp.${SECRET_DOMAIN}
-
     # Site configuration
     siteName: erp.${SECRET_DOMAIN}
     adminPassword: "${ERPNEXT_ADMIN_PASSWORD}"
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - port: http
+                name: app

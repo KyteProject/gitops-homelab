@@ -9,8 +9,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword-store
-      namespace: security
+    - name: onepassword
+      namespace: external-secrets
     - name: snapshot-controller
       namespace: storage
   interval: 30m

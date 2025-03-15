@@ -9,8 +9,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword-store
-      namespace: security
+    - name: onepassword
+      namespace: external-secrets
     - name: democratic-csi-nfs
       namespace: storage
     - name: dragonfly-cluster

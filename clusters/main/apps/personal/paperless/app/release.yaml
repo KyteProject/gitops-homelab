@@ -113,6 +113,18 @@ spec:
         ports:
           http:
             port: *port
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - port: http
+                name: app
     ingress:
       app:
         className: internal

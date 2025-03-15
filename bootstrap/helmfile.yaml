@@ -19,7 +19,7 @@ repositories:
           - --namespace=kube-system
           - --field-manager=kustomize-controller
           - --kustomize
-          - ../kubernetes/apps/kube-system/cilium/config
+          - ../infrastructure/controllers/kube-system/cilium/config
         showlogs: true
 
   - name: coredns
@@ -44,10 +44,10 @@ repositories:
     needs: ["kube-system/spegel"]
 
   - name: external-secrets
-    namespace: security
+    namespace: external-secrets
     chart: oci://ghcr.io/external-secrets/charts/external-secrets
     version: 0.14.4
-    values: ["../controllers/security/external-secrets/app/resources/values.yaml"]
+    values: ["../controllers/external-secrets/external-secrets/app/helm/values.yaml"]
     needs: ["cert-manager/cert-manager"]
 
   - name: flux-operator
