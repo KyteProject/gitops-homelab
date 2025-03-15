@@ -45,23 +45,25 @@ spec:
         runAsUser: 568
         runAsGroup: 568
 
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: "{{ .Release.Name }}.omux.io"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: &port 8080
 
     service:
       app:
         controller: *app
         ports:
           http:
-            port: 8080
+            port: *port
 
     serviceAccount:
       create: true
