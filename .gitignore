@@ -14,6 +14,7 @@ deps/
 *.key
 age.key
 keys.txt
+Brewfile.lock.json
 .env
 **/*.env
 **/*.env.yaml
@@ -37,3 +38,5 @@ truenas.sops.yml
 config.xml
 .task
 `talsecret.sops.yaml
+.crt
+.decrypted~*
