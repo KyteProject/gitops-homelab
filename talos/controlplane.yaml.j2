@@ -38,7 +38,7 @@ machine:
       - mitigations=off         # Less security, faster puter
       - security=none           # Less security, faster puter
       - talos.auditd.disabled=1 # Less security, faster puter
-    image: factory.talos.dev/installer-secureboot/c4656257d36b75c5459a556bd4613c94badd08aaecd39734b2901637b5c93b0b:{{ ENV.TALOS_VERSION }}
+    image: factory.talos.dev/installer/5c4ffaa4563207274b7d28e1c6477e0abf5338c250a8e679f7ea75d295cc6c3d:{{ ENV.TALOS_VERSION }}
     wipe: false
   files:
     - op: create
