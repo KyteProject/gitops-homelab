@@ -9,8 +9,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword-store
-      namespace: security
+    - name: onepassword
+      namespace: external-secrets
   interval: 30m
   path: ./clusters/main/apps/tools/wakapi/app
   prune: true

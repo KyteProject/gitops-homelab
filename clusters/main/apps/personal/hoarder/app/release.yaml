@@ -111,3 +111,16 @@ spec:
           meilisearch:
             meilisearch:
               - path: /meili_data
+
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - port: http
+                name: app

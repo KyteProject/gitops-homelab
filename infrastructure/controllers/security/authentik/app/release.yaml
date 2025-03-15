@@ -68,18 +68,6 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
-      ingress:
-        enabled: true
-        ingressClassName: external
-        annotations:
-          external-dns.alpha.kubernetes.io/target: external.omux.io
-        hosts:
-          - &host id.omux.io
-        paths:
-          - /
-        tls:
-          - hosts:
-              - *host
     worker:
       replicas: 1
       resources:
@@ -93,3 +81,15 @@ spec:
     prometheus:
       rules:
         enabled: true
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: external
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - port: http
+                name: app

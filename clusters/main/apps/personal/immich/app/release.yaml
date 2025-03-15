@@ -213,16 +213,18 @@ spec:
     #         interval: 1m
     #         scrapeTimeout: 30s
 
-    ingress:
-      server:
-        className: internal
-        hosts:
-          - host: "{{ .Release.Name }}.omux.io"
-            paths:
-              - path: /
-                service:
-                  identifier: server
-                  port: http
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - port: http
+                name: app
 
     persistence:
       config:
