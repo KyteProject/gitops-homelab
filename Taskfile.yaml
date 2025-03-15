@@ -19,7 +19,8 @@ includes:
   bootstrap: .taskfiles/bootstrap
   flux: .taskfiles/flux
   kubernetes: .taskfiles/kubernetes
-  talos: .taskfiles/talos
+  workstation: .taskfiles/workstation/Taskfile.yaml
+  talos: .taskfiles/talos/Taskfile.yaml
   volsync: .taskfiles/volsync
 
 tasks:

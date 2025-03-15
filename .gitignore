@@ -35,3 +35,5 @@ truenas.sops.yml
 *.pub
 *.pem
 config.xml
+.task
+`talsecret.sops.yaml

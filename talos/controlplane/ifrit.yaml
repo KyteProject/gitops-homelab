@@ -1,0 +1,30 @@
+---
+machine:
+  install:
+    diskSelector:
+      model: WD_BLACK SN850X 1000GB
+  network:
+    hostname: ifrit
+    interfaces:
+      - # node
+        deviceSelector: { hardwareAddr: 58:47:ca:7a:52:28, driver: i40e }
+        dhcp: true
+        mtu: 1500
+        vlans:
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - 192.168.20.6/24
+            mtu: 1500
+      - # shiva
+        deviceSelector: { busPath: 0-1.0 }
+        dhcp: false
+        mtu: 65520
+        addresses: [169.254.255.11/32]
+        routes: [{ network: 169.254.255.10/32, metric: 2048 }]
+      - # ramuh
+        deviceSelector: { busPath: 1-1.0 }
+        dhcp: false
+        mtu: 65520
+        addresses: [169.254.255.11/32]
+        routes: [{ network: 169.254.255.12/32, metric: 2048 }]

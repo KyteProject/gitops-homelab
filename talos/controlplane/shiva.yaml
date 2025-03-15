@@ -1,0 +1,30 @@
+---
+machine:
+  install:
+    diskSelector:
+      serial: 241047FE4737 # CT500T500SSD8 500GB
+  network:
+    hostname: shiva
+    interfaces:
+      - # node
+        deviceSelector: { hardwareAddr: 58:47:ca:78:ea:26, driver: i40e }
+        dhcp: true
+        mtu: 1500
+        vlans:
+          - vlanId: 20
+            dhcp: false
+            addresses:
+              - 192.168.20.6/24
+            mtu: 1500
+      - # ifrit
+        deviceSelector: { busPath: 0-1.0 }
+        dhcp: false
+        mtu: 65520
+        addresses: [169.254.255.10/32]
+        routes: [{ network: 169.254.255.11/32, metric: 2048 }]
+      - # ramuh
+        deviceSelector: { busPath: 1-1.0 }
+        dhcp: false
+        mtu: 65520
+        addresses: [169.254.255.10/32]
+        routes: [{ network: 169.254.255.12/32, metric: 2048 }]
