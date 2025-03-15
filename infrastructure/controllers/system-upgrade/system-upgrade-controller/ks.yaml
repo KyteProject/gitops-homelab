@@ -35,7 +35,7 @@ spec:
   path: ./infrastructure/controllers/system-upgrade/system-upgrade-controller/plans
   postBuild:
     substitute:
-      # TALOS_SCHEMATIC_ID: 2429a38dd7dd15e11e25b676ce491a89680a72a6fadfa1586e6ec629ae03de8b
+      TALOS_SCHEMATIC_ID: 868330459bde49d152c0b513725fca359f8688b3837e4d9995bcca1acef34b8e
       # renovate: depName=ghcr.io/siderolabs/installer datasource=docker
       TALOS_VERSION: v1.9.5
       # renovate: depName=ghcr.io/siderolabs/kubelet datasource=docker
