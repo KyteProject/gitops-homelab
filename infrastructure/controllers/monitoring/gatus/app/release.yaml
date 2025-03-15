@@ -96,7 +96,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
-          - status.ktwo.io
+          - status.omux.io
         parentRefs:
           - name: external
             namespace: kube-system

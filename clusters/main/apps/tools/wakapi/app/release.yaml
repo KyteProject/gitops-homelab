@@ -45,7 +45,7 @@ spec:
               - name: ENVIRONMENT
                 value: "production"
               - name: WAKAPI_PORT
-                value: 80
+                value: &port 80
               - name: WAKAPI_LISTEN_IPV4
                 value: "0.0.0.0"
               - name: WAKAPI_BASE_PATH
@@ -108,16 +108,18 @@ spec:
         runAsUser: 568
         runAsGroup: 568
 
-    ingress:
+    route:
       app:
-        className: external
-        hosts:
-          - host: "{{ .Release.Name }}.omux.io"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
 
     service:
       app:

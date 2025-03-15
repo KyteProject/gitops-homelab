@@ -110,21 +110,23 @@ spec:
         runAsNonRoot: true
         runAsUser: 999
         runAsGroup: 999
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: "{{ .Release.Name }}.omux.io"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
     persistence:
       config:
         type: emptyDir
         globalMounts:
           - path: *configDir
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: &apiPort
     service:
       app:
         controller: *app
