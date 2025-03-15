@@ -10,6 +10,7 @@
   "editor.stickyScroll.enabled": false,
   "explorer.autoReveal": false,
   "files.associations": {
+    "**/*.j2": "yaml",
     "*.json5": "json5",
     "**/*justfile": "just",
     "**/*.just": "just"
