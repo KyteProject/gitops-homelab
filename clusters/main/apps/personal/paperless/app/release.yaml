@@ -123,18 +123,9 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - port: http
-                name: app
-    ingress:
-      app:
-        className: internal
-        hosts:
-          - host: &host "{{ .Release.Name }}.omux.io"
-            paths:
-              - path: /
-                service:
-                  identifier: app
-                  port: http
+              - port: *port
+                name: *app
+
     persistence:
       library:
         existingClaim: ${VOLSYNC_CLAIM}
