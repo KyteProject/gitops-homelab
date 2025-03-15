@@ -42,7 +42,7 @@ spec:
               - --source=gateway-httproute
               - --txt-owner-id=k8s
               - --txt-prefix=k8s.
-              - --zone-id-filter=$(CLOUDFLARE_ZONE_ID)
+              - --zone-id-filter=$(CF_ZONE_ID)
             envFrom:
               - secretRef:
                   name: external-dns-cloudflare-secret
