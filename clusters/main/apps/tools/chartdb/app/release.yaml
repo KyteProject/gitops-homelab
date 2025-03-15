@@ -28,7 +28,7 @@ spec:
           app:
             image:
               repository: ghcr.io/kyteproject/chartdb
-              tag: 1.6.1@sha256:6d6c3abac41f18c8cace6e0df2961211909784c2405a905a2ac0dd3f39e2ead2
+              tag: 1.9.0@sha256:d9cc39dc60589d34c451c99483e7c657d9c20850b4ab1c251c19977a80a45450
             envFrom:
               - secretRef:
                   name: chartdb-secret
