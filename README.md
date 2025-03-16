@@ -160,6 +160,7 @@ This project follows GitOps principles:
 
 - [FluxCD Documentation](https://fluxcd.io/flux/guides/repository-structure/)
 - [Talos Linux Guides](https://www.talos.dev/latest/introduction/getting-started/)
+- [MS-01 Thunderbolt Setup](https://gist.github.com/gavinmcfall/ea6cb1233d3a300e9f44caf65a32d519)
 
 ---
 
