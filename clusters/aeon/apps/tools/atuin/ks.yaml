@@ -2,19 +2,19 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app hoarder
-  namespace: &namespace personal
+  name: &app atuin
+  namespace: &namespace tools
 spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: cloudnative-pg-cluster
+      namespace: database
     - name: onepassword
       namespace: external-secrets
-    - name: rook-ceph-cluster
-      namespace: rook-ceph
   interval: 30m
-  path: ./clusters/main/apps/personal/hoarder/app
+  path: ./clusters/aeon/apps/tools/atuin/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -23,3 +23,4 @@ spec:
   targetNamespace: *namespace
   timeout: 5m
   wait: true
+
