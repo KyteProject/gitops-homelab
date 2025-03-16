@@ -55,7 +55,7 @@ spec:
       namespace: cert-manager
     - name: cilium
       namespace: *namespace
-    - name: cilium-config
+    - name: cilium-configs
       namespace: *namespace
   interval: 30m
   path: ./infrastructure/controllers/kube-system/cilium/gateway
