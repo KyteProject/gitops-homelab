@@ -4,7 +4,7 @@ machine:
     diskSelector:
       model: "WD_BLACK SN850X 1000GB"
   network:
-    hostname: ramuh
+    hostname: ramuh.aeon.lan
     interfaces:
       - # node
         deviceSelector: { hardwareAddr: 58:47:ca:79:7a:50, driver: i40e }

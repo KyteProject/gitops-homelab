@@ -12,6 +12,76 @@ env:
 
 tasks:
 
+  init-node:
+    desc: Apply initial Talos config to a node without requiring a context [NODE=required] [IP=required] [MODE=auto]
+    cmd: |-
+      minijinja-cli {{.TALOS_DIR}}/controlplane.yaml.j2 | op inject \
+        | talosctl --nodes {{.IP}} --endpoints {{.IP}} apply-config \
+          --insecure \
+          --mode {{.MODE}} \
+          --config-patch @{{.TALOS_DIR}}/controlplane/{{.NODE}}.yaml \
+          --file /dev/stdin
+    vars:
+      MODE: '{{.MODE | default "auto"}}'
+    requires:
+      vars: [NODE, IP]
+    preconditions:
+      - op user get --me
+      - test -f {{.TALOS_DIR}}/controlplane.yaml.j2
+      - test -f {{.TALOS_DIR}}/controlplane/{{.NODE}}.yaml
+      - which minijinja-cli op talosctl
+
+  init-all:
+    desc: Apply initial Talos config to all nodes without requiring a context
+    prompt: Apply initial configuration to all nodes ... continue?
+    cmds:
+      - task: init-node
+        vars: { NODE: shiva, IP: 192.168.10.10 }
+      - task: init-node
+        vars: { NODE: ifrit, IP: 192.168.10.11 }
+      - task: init-node
+        vars: { NODE: ramuh, IP: 192.168.10.12 }
+      - echo "All nodes configured. Waiting for nodes to be ready (30s)..."
+      - sleep 30
+      - echo "Generating talosconfig..."
+      - talosctl --talosconfig={{.TALOS_DIR}}/talosconfig \
+          config endpoint 192.168.10.10 192.168.10.11 192.168.10.12
+      - talosctl --talosconfig={{.TALOS_DIR}}/talosconfig \
+          config nodes 192.168.10.10 192.168.10.11 192.168.10.12
+      - echo "Talos configuration complete. You can now run 'task bootstrap:talos' to bootstrap the cluster."
+    preconditions:
+      - op user get --me
+      - test -f {{.TALOS_DIR}}/controlplane.yaml.j2
+      - test -f {{.TALOS_DIR}}/controlplane/shiva.yaml
+      - test -f {{.TALOS_DIR}}/controlplane/ifrit.yaml
+      - test -f {{.TALOS_DIR}}/controlplane/ramuh.yaml
+      - which minijinja-cli op talosctl
+
+  apply-node:
+    desc: Apply Talos config to a node [NODE=required] [MODE=auto]
+    cmd: |-
+      minijinja-cli {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2 | op inject \
+        | talosctl --nodes {{.NODE}} apply-config \
+          --mode {{.MODE}} \
+          --config-patch @{{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml \
+          --file /dev/stdin {{if .INSECURE}}--insecure{{end}}
+    vars:
+      MODE: '{{.MODE | default "auto"}}'
+      INSECURE:
+        sh: talosctl --nodes {{.NODE}} get machineconfig &> /dev/null || echo true
+      MACHINE_TYPE:
+        sh: |-
+          talosctl --nodes {{.NODE}} get machinetypes --output=jsonpath='{.spec}' 2> /dev/null \
+            || basename $(find '{{.TALOS_DIR}}' -name '{{.NODE}}.yaml' -printf '%h')
+    requires:
+      vars: [NODE]
+    preconditions:
+      - op user get --me
+      - talosctl config info
+      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2
+      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml
+      - which minijinja-cli op talosctl
+
   upgrade-node:
     desc: Upgrade Talos on a single node [NODE=required]
     cmd: talosctl --nodes {{.NODE}} upgrade --image={{.TALOS_IMAGE}} --timeout=10m
@@ -96,42 +166,6 @@ tasks:
       - talosctl config info
       - talosctl --nodes {{.RANDOM_CONTROLLER}} get machineconfig
       - which jq talosctl
-
-  apply-node:
-    desc: Apply Talos config to a node [NODE=required] [MODE=auto]
-    cmd: |-
-      minijinja-cli {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2 | op inject \
-        | talosctl --nodes {{.NODE}} apply-config \
-          --mode {{.MODE}} \
-          --config-patch @{{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml \
-          --file /dev/stdin {{if .INSECURE}}--insecure{{end}}
-    vars:
-      MODE: '{{.MODE | default "auto"}}'
-      INSECURE:
-        sh: talosctl --nodes {{.NODE}} get machineconfig &> /dev/null || echo true
-      MACHINE_TYPE:
-        sh: |-
-          talosctl --nodes {{.NODE}} get machinetypes --output=jsonpath='{.spec}' 2> /dev/null \
-            || basename $(find '{{.TALOS_DIR}}' -name '{{.NODE}}.yaml' -printf '%h')
-    requires:
-      vars: [NODE]
-    preconditions:
-      - op user get --me
-      - talosctl config info
-      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2
-      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml
-      - which minijinja-cli op talosctl
-
-  generate-secret:
-    desc: Generate Talos secret
-    prompt: This will overwrite the existing secret ... continue?
-    dir: '{{.TALOS_DIR}}'
-    cmds:
-      - talhelper gensecret > {{.TALOS_DIR}}/talsecret.sops.yaml
-      - sops --encrypt --in-place {{.TALOS_DIR}}/talsecret.sops.yaml
-    preconditions:
-      - talosctl config info
-      - which talosctl talhelper sops
 
   debug:template:
     desc: Debug Talos template rendering [NODE=shiva]
