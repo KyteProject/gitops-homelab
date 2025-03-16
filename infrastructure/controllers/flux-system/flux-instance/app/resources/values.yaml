@@ -13,7 +13,7 @@ instance:
   sync:
     kind: GitRepository
     url: https://github.com/KyteProject/gitops-homelab
-    ref: refs/heads/main
+    ref: refs/heads/aeon
     path: ./infrastructure/flux/cluster
   commonMetadata:
     labels:

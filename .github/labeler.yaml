@@ -29,9 +29,9 @@ area/taskfile:
           - Taskfile.yaml
 
 # Clusters
-cluster/main:
+cluster/aeon:
   - changed-files:
-    - any-glob-to-any-file: "clusters/main/**/*"
+    - any-glob-to-any-file: "clusters/aeon/**/*"
 
 # Types
 type/documentation:

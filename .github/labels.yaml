@@ -15,7 +15,7 @@
   color: "0e8a16"
 
 # Clusters
-- name: cluster/main
+- name: cluster/aeon
   color: "5319e7"
   description: Changes affecting the main cluster
 

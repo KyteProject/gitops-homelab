@@ -14,7 +14,7 @@ spec:
     - name: volsync
       namespace: storage
   interval: 30m
-  path: ./clusters/main/apps/media/qbittorrent/app
+  path: ./clusters/aeon/apps/media/qbittorrent/app
   prune: true
   sourceRef:
     kind: GitRepository
@@ -39,7 +39,7 @@ spec:
     - name: qbittorrent
       namespace: *namespace
   interval: 30m
-  path: ./clusters/main/apps/media/qbittorrent/tools
+  path: ./clusters/aeon/apps/media/qbittorrent/tools
   prune: true
   sourceRef:
     kind: GitRepository

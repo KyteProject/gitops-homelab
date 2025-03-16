@@ -2,7 +2,7 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app immich
+  name: &app hoarder
   namespace: &namespace personal
 spec:
   commonMetadata:
@@ -11,20 +11,10 @@ spec:
   dependsOn:
     - name: onepassword
       namespace: external-secrets
-    - name: democratic-csi-nfs
-      namespace: storage
-    - name: dragonfly-cluster
-      namespace: database
-    - name: cloudnative-pg-cluster
-      namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   interval: 30m
-  path: ./clusters/main/apps/personal/immich/app
-  postBuild:
-    substitute:
-      APP: *app
-      HOSTNAME: photos.omux.io
-      APP_UID: "568"
-      APP_GID: "568"
+  path: ./clusters/aeon/apps/personal/hoarder/app
   prune: true
   sourceRef:
     kind: GitRepository

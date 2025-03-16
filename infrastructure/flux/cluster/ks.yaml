@@ -72,7 +72,7 @@ spec:
 #     - name: cluster-controllers
 #       namespace: flux-system
 #   interval: 30m
-#   path: ./clusters/main/apps
+#   path: ./clusters/aeon/apps
 #   prune: true
 #   sourceRef:
 #     kind: GitRepository
