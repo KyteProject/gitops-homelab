@@ -24,8 +24,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/kyteproject/irqbalance
-              tag: 1.9.4@sha256:2cfb398ea6a74ef65737a20abd93652d7effb6a11eda6840195f8c998417a9a6
+              repository: ghcr.io/buroa/irqbalance
+              tag: 1.9.4@sha256:534bd629fba5bf76d780cb67baac3fd53d902cf2e25cf7028a0779ee38ea7bd8
             env:
               IRQBALANCE_BANNED_CPULIST: 12-19 # 12-19 are E-cores
             resources:
