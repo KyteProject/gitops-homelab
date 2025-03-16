@@ -14,7 +14,7 @@ spec:
     - name: cloudnative-pg-cluster
       namespace: database
   interval: 30m
-  path: ./infrastructure/controllers/security/authentik/app
+  path: ./clusters/aeon/apps/security/authentik/app
   prune: true
   sourceRef:
     kind: GitRepository
