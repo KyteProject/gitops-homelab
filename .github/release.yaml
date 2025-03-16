@@ -27,7 +27,3 @@ changelog:
       - "flux[bot]"
       - "bot-dan"
       - "bot-cactuar"
-    # Exclude certain types of changes
-    labels:
-      - "type/dependency"    # Skip dependency updates
-      - "area/github"        # Skip GitHub workflow changes
