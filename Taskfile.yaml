@@ -15,16 +15,24 @@ env:
   SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
   TALOSCONFIG: '{{.TALOS_DIR}}/clusterconfig/talosconfig'
   FLUX_NAMESPACE: 'flux-system'
+  CLUSTER_NAME: aeon
 
 includes:
   bootstrap: .taskfiles/bootstrap
   flux: .taskfiles/flux
   kubernetes: .taskfiles/kubernetes
-  workstation: .taskfiles/workstation/Taskfile.yaml
+  r2: .taskfiles/r2
   talos: .taskfiles/talos/Taskfile.yaml
+  workstation: .taskfiles/workstation/Taskfile.yaml
   volsync: .taskfiles/volsync
 
 tasks:
+
+  k9s:
+    desc: Open K9s for the current cluster
+    cmd: k9s --kubeconfig {{.KUBECONFIG}} --context {{.CLUSTER_NAME}}
+    preconditions:
+      - which k9s
 
   default:
     cmd: task --list

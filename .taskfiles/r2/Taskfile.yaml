@@ -1,0 +1,42 @@
+version: '3'
+
+# https://developers.cloudflare.com/r2/examples/aws/aws-cli/
+
+vars:
+  ENDPOINT_PATH: 'op://homelab/cloudflare/R2_ENDPOINT_URL'
+  PROFILE: 'aeon'
+
+tasks:
+  cli-configure:
+    desc: Configure the AWS CLI
+    cmds:
+      - aws configure --profile {{.PROFILE}}
+    preconditions:
+      - which aws
+
+  ls:
+    desc: List the contents of a bucket
+    cmds:
+      - aws s3 ls --profile {{.PROFILE}} --endpoint-url {{.ENDPOINT}}
+    vars:
+      ENDPOINT:
+        sh: op read {{.ENDPOINT_PATH}}
+    preconditions:
+      - op user get --me
+      - which aws op
+
+  empty:
+    desc: Empty a bucket (dry-run by default, use --force to actually delete) [BUCKET=required]
+    prompt: |
+      WARNING: This will permanently delete all objects in bucket '{{.BUCKET}}'.
+      Are you sure you want to continue?
+    cmds:
+      - aws s3 rm s3://{{.BUCKET}} --profile {{.PROFILE}} --endpoint-url {{.ENDPOINT}} --recursive
+    vars:
+      ENDPOINT:
+        sh: op read {{.ENDPOINT_PATH}}
+    requires:
+      vars: [BUCKET]
+    preconditions:
+      - op user get --me
+      - which aws op
