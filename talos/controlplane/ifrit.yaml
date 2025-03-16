@@ -4,7 +4,7 @@ machine:
     diskSelector:
       model: WD_BLACK SN850X 1000GB
   network:
-    hostname: ifrit
+    hostname: ifrit.aeon.lan
     interfaces:
       - # node
         deviceSelector: { hardwareAddr: 58:47:ca:7a:52:28, driver: i40e }

@@ -7,9 +7,9 @@ spec:
   version: ${TALOS_VERSION}
   concurrency: 1
   exclusive: true
-  serviceAccountName: system-upgrade
+  serviceAccountName: system-upgrade-controller
   secrets:
-    - name: system-upgrade
+    - name: system-upgrade-controller
       path: /var/run/secrets/talos.dev
       ignoreUpdates: true
   nodeSelector:
@@ -18,12 +18,7 @@ spec:
         operator: In
         values: ["linux"]
   upgrade:
-    image: ghcr.io/jfroy/tnu:0.3.0
-    envs:
-      - name: NODE
-        valueFrom:
-          fieldRef:
-            fieldPath: spec.nodeName
+    image: ghcr.io/jfroy/tnu:0.4.0
     args:
-      - --node=$(NODE)
+      - --node=$(SYSTEM_UPGRADE_NODE_NAME)
       - --tag=$(SYSTEM_UPGRADE_PLAN_LATEST_VERSION)

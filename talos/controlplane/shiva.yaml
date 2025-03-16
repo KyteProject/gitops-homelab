@@ -4,7 +4,7 @@ machine:
     diskSelector:
       serial: 241047FE4737 # CT500T500SSD8 500GB
   network:
-    hostname: shiva
+    hostname: shiva.aeon.lan
     interfaces:
       - # node
         deviceSelector: { hardwareAddr: 58:47:ca:78:ea:26, driver: i40e }

@@ -34,9 +34,9 @@ spec:
     - name: onepassword
       namespace: external-secrets
     - name: openebs
-      namespace: openebs-system
+      namespace: storage
   interval: 1h
-  path: ./kubernetes/apps/actions-runner-system/actions-runner-controller/runners
+  path: ./infrastructure/controllers/actions-runner-system/actions-runner-controller/runners
   prune: true
   sourceRef:
     kind: GitRepository
