@@ -10,7 +10,7 @@ spec:
       app.kubernetes.io/name: *app
   dependsOn:
     - name: onepassword
-      namespace: *namespace
+      namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: database
   interval: 30m
