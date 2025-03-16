@@ -40,3 +40,4 @@ config.xml
 `talsecret.sops.yaml
 .crt
 .decrypted~*
+.envrc
