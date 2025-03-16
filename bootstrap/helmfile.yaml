@@ -4,7 +4,7 @@ helmDefaults:
   wait: true
   waitForJobs: true
 
-repositories:
+releases:
   - name: cilium
     namespace: kube-system
     chart: oci://ghcr.io/buroa/charts-mirror/cilium
