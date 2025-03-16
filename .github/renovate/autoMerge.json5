@@ -2,42 +2,40 @@
   $schema: "https://docs.renovatebot.com/renovate-schema.json",
   packageRules: [
     {
-      description: [
-        "Auto-merge container digests updates for trusted containers",
-      ],
+      description: "Auto-merge trusted container digests",
       matchDatasources: ["docker"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["digest"],
       matchPackagePatterns: [
         "ghcr.io/buroa",
-        "ghcr.io/bjw-s",
-        "ghcr.io/onedr0p",
-        "ghcr.io/KyteProject"
+        "ghcr.io/KyteProject",
+        "/buroa/",
+        "/KyteProject/"
       ],
+      ignoreTests: true,
     },
     {
-      description: ["Auto-merge GitHub Actions for minor, patch, and digest"],
+      description: "Auto-merge GitHub Actions",
       matchManagers: ["github-actions"],
-      matchDatasources: ["github-tags"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch", "digest"],
+      minimumReleaseAge: "3 days",
+      ignoreTests: true,
     },
     {
-      description: "Auto merge pre-commits",
-      matchDatasources: ["github-releases", "github-tags"],
+      description: "Auto-merge GitHub Releases",
+      matchDatasources: ["github-releases"],
       automerge: true,
       automergeType: "branch",
       matchUpdateTypes: ["minor", "patch"],
       matchPackageNames: [
-        "sirosen/texthooks",
-        "gruntwork-io/pre-commit",
-        "zricethezav/gitleaks",
-        "Lucas-C/pre-commit-hooks",
-        "adrienverge/yamllint",
-        "pre-commit/pre-commit-hooks",
+        "/external-dns/",
+        "/gateway-api/",
+        "/prometheus-operator/",
       ],
+      ignoreTests: true,
     },
   ],
 }

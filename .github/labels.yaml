@@ -1,29 +1,18 @@
 ---
 # Areas
-- name: area/apps
+- name: area/bootstrap
   color: "0e8a16"
-  description: Changes to application deployments
-- name: area/flux
-  color: "0e8a16"
-  description: Changes to Flux CD configuration
 - name: area/github
   color: "0e8a16"
   description: Changes to GitHub workflows and configuration
 - name: area/infrastructure
   color: "0e8a16"
   description: Changes to infrastructure components
-- name: area/monitoring
-  color: "0e8a16"
-  description: Changes to monitoring stack
-- name: area/security
-  color: "0e8a16"
-  description: Changes related to security
-- name: area/storage
-  color: "0e8a16"
-  description: Changes to storage configuration
 - name: area/talos
   color: "0e8a16"
   description: Changes to Talos configuration
+- name: area/taskfile
+  color: "0e8a16"
 
 # Clusters
 - name: cluster/main
