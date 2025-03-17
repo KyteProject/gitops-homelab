@@ -9,9 +9,9 @@
       matchUpdateTypes: ["digest"],
       matchPackagePatterns: [
         "ghcr.io/buroa",
-        "ghcr.io/KyteProject",
+        "ghcr.io/kyteproject",
         "/buroa/",
-        "/KyteProject/"
+        "/kyteproject/"
       ],
       ignoreTests: true,
     },
