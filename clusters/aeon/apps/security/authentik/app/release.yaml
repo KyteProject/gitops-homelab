@@ -85,6 +85,8 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - auth.omux.io
+          - id.omux.io
         parentRefs:
           - name: external
             namespace: kube-system
