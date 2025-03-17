@@ -6,6 +6,7 @@
     "redhat.ansible",
     "redhat.vscode-yaml",
     "signageos.signageos-vscode-sops",
-    "tudoudou.json5-for-vscode"
+    "blueglassblock.better-json5",
+    "irongeek.vscode-env"
   ]
 }
