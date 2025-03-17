@@ -31,7 +31,7 @@ spec:
       retries: 3
   values:
     githubConfigUrl: https://github.com/kyteproject/gitops-homelab
-    githubConfigSecret:  gitops-homelab-runner-secret
+    githubConfigSecret: gitops-homelab-runner-secret
     minRunners: 1
     maxRunners: 3
     containerMode:
