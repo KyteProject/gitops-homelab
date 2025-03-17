@@ -35,7 +35,7 @@ spec:
           app:
             image:
               repository: docker.io/n1try/wakapi
-              tag: v2.12.3@sha256:d04a98102dcde30c48c708b4fb8fa04973a3258c13f4cecc52c0e3450d63f9a8
+              tag: v2.13.1@sha256:3f54a3e0f876d7f8182694527d5f50eafd4eb296820f96201ee509a9f9334910
             envFrom: *envFrom
             env:
               - name: ENVIRONMENT
