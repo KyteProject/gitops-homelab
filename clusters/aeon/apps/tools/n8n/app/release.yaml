@@ -57,6 +57,7 @@ spec:
 
       # Additional configuration
       N8N_HIDE_USAGE_PAGE: "true"
+      N8N_RUNNERS_ENABLED: "true"
 
       # Reference secrets from the ExternalSecret
       DB_POSTGRESDB_USER:
