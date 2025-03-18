@@ -98,11 +98,11 @@ data:
                 href: https://grafana.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 siteMonitor: https://grafana.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 icon: grafana.png
-                widget:
-                  type: grafana
-                  url: http://grafana.monitoring.svc.cluster.local:3000
-                  username: https://grafana.{{HOMEPAGE_VAR_GRAFANA_USERNAME}}
-                  password: https://grafana.{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}
+                # widget:
+                #   type: grafana
+                #   url: http://grafana.monitoring.svc.cluster.local:3000
+                #   username: https://grafana.{{HOMEPAGE_VAR_GRAFANA_USERNAME}}
+                #   password: https://grafana.{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}
             - Alert Manager:
                 href: https://am.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 siteMonitor: https://am.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
