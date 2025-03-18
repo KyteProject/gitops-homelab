@@ -1,0 +1,105 @@
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta2
+kind: OCIRepository
+metadata:
+  name: &app n8n
+spec:
+  interval: 1h
+  layerSelector:
+    mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
+    operation: copy
+  ref:
+    tag: 1.0.4
+  url: oci://8gears.container-registry.com/library/n8n
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: *app
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: *app
+  install:
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  values:
+    deploymentStrategy:
+      type: Recreate
+    image:
+      repository: n8nio/n8n
+      tag: 1.81.4
+      pullPolicy: IfNotPresent
+
+    # Configure persistence
+    persistence:
+      enabled: true
+      storageClass: "ceph-block"
+      size: 1Gi
+
+    # Configure PostgreSQL database
+    postgresql:
+      enabled: false # Disable built-in PostgreSQL as we're using external database
+
+    # Configure environment variables for n8n
+    env:
+      # Database configuration
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres-rw.databases.svc.cluster.local
+      DB_POSTGRESDB_PORT: "5432"
+      DB_POSTGRESDB_DATABASE: n8n
+
+      # Additional configuration
+      N8N_HIDE_USAGE_PAGE: "true"
+
+      # Reference secrets from the ExternalSecret
+      DB_POSTGRESDB_USER:
+        valueFrom:
+          secretKeyRef:
+            name: n8n-secret
+            key: DB_POSTGRESDB_USER
+      DB_POSTGRESDB_PASSWORD:
+        valueFrom:
+          secretKeyRef:
+            name: n8n-secret
+            key: DB_POSTGRESDB_PASSWORD
+
+    # Enable service monitor for Prometheus
+    serviceMonitor:
+      enabled: true
+
+    # Resource limits
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi
+
+    # Configure routing via Gateway API
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: &port 80
+
+    # Service configuration
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
