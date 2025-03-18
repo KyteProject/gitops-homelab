@@ -85,6 +85,10 @@ spec:
     persistence:
       config:
         existingClaim: *app
+        advancedMounts:
+          changedetection:
+            app:
+              - path: /datastore
     route:
       app:
         hostnames:
