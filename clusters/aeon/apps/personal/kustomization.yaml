@@ -5,6 +5,7 @@ namespace: personal
 resources:
   # - erpnext/ks.yaml
   - hoarder/ks.yaml
+  - homepage/ks.yaml
   # - immich/ks.yaml
   # - paperless/ks.yaml
 components:
