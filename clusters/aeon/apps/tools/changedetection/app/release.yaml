@@ -80,6 +80,8 @@ spec:
           changedetection:
             app:
               - path: /datastore
+            browser:
+              - path: /tmp
     route:
       app:
         hostnames:
