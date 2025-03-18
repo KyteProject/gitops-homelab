@@ -71,33 +71,6 @@ data:
 
   services.yaml: |
     - Administration:
-        - Proxmox:
-            href: https://ares.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:8006
-            siteMonitor: https://ares.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:8006
-            icon: proxmox.png
-        - KVM:
-            href: https://pikvm.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}
-            siteMonitor: https://pikvm.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}
-            icon: pikvm.png
-        - AdGuard Home (Artemis):
-            href: https://artemis.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-            siteMonitor: https://artemis.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-            widget:
-              type: adguard
-              url: https://artemis.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-              username: {{HOMEPAGE_VAR_ADGUARD_USERNAME}}
-              password: {{HOMEPAGE_VAR_ADGUARD_PASSWORD}}
-        - AdGuard Home (Titan):
-            href: https://titan.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-            siteMonitor: https://titan.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-            widget:
-              type: adguard
-              url: https://titan.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}:1443
-              username: {{HOMEPAGE_VAR_ADGUARD_USERNAME}}
-              password: {{HOMEPAGE_VAR_ADGUARD_PASSWORD}}
-        - Maddy:
-            href: https://{{HOMEPAGE_VAR_MADDY}}/admin
-            icon: maddy.png
         - DMARC Reports:
             href: https://dmarc-report.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             siteMonitor: https://dmarc-report.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
@@ -114,12 +87,12 @@ data:
             href: https://dash.cloudflare.com/
             icon: cloudflare-zero-trust.png
             description: Cloudflared Tunnel Status
-            widget:
-              type: cloudflared
-              accountid: {{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}
-              tunnelid: {{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}
-              key: {{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}
-              fields: ["status"]
+            # widget:
+            #   type: cloudflared
+            #   accountid: {{HOMEPAGE_VAR_CLOUDFLARED_ACCOUNTID}}
+            #   tunnelid: {{HOMEPAGE_VAR_CLOUDFLARED_TUNNELID}}
+            #   key: {{HOMEPAGE_VAR_CLOUDFLARED_API_TOKEN}}
+            #   fields: ["status"]
     - Cluster:
         - Monitoring:
             - Grafana:
@@ -132,8 +105,8 @@ data:
                   username: https://grafana.{{HOMEPAGE_VAR_GRAFANA_USERNAME}}
                   password: https://grafana.{{HOMEPAGE_VAR_GRAFANA_PASSWORD}}
             - Alert Manager:
-                href: https://alerts.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                siteMonitor: https://alerts.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                href: https://am.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                siteMonitor: https://am.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 icon: alertmanager.png
             - Prometheus:
                 href: https://prometheus.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}/alerts?state=pending&state=firing&showEmptyGroups=0
@@ -147,10 +120,10 @@ data:
                 href: https://status.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 siteMonitor: https://status.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 icon: gatus.png
-            - Change Detection:
-                href: https://changedetection.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                siteMonitor: https://changedetection.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                icon: changedetection-io.png
+            - Karma:
+                href: https://karma.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                siteMonitor: https://karma.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                icon: karma.png
         - Storage:
             - TrueNAS:
                 href: https://ragnar.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}
@@ -160,22 +133,19 @@ data:
                 href: https://rook.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 siteMonitor: https://rook.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 icon: rook.png
-            - Hades:
-                href: https://hades.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}
-                siteMonitor: https://hades.{{HOMEPAGE_VAR_SECRET_TECH_DOMAIN_NAME}}
-                icon: synology-dsm.png
-            - pgAdmin:
-                href: https://pgadmin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                siteMonitor: https://pgadmin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                icon: pgadmin.png
             - EMQX:
                 href: https://emqx.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 siteMonitor: https://emqx.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
                 icon: emqx.
-            - Rook (Staging):
-                href: https://rook.test.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                siteMonitor: https://rook.test.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-                icon: rook.png
+            - PostgreSQL:
+                href: https://pgadmin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                siteMonitor: https://pgadmin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                icon: pgadmin.png
+            - Dragonfly:
+                href: https://dragonfly.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                siteMonitor: https://dragonfly.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+                icon: dragonfly.png
+
     - Media:
         - Overseerr:
             href: https://overseerr.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
@@ -263,14 +233,6 @@ data:
             href: https://wiki.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}/recipes/index
             siteMonitor: https://wiki.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}/recipes/index
             icon: wikijs.png
-        - OwnCloud:
-            href: https://files.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-            siteMonitor: https://files.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-            icon: owncloud.png
-        - Excalidraw:
-            href: https://excalidraw.com
-            siteMonitor: https://excalidraw.com
-            icon: excalidraw.png
         - Shlink:
             href: https://shlink.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             siteMonitor: https://shlink.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
@@ -283,10 +245,6 @@ data:
             href: https://pdf-tool.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             siteMonitor: https://pdf-tool.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             icon: https://raw.githubusercontent.com/Stirling-Tools/Stirling-PDF/main/docs/stirling.png
-        - BirdNet:
-            href: https://birdnet.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-            siteMonitor: https://birdnet.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
-            icon: netbird.png
         - Home Code:
             href: https://ha-code.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             siteMonitor: https://ha-code.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
@@ -295,23 +253,31 @@ data:
             href: https://dashy-code.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             siteMonitor: https://dashy-code.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
             icon: etcd.png
-
-    - Calendar:
-        - Agenda:
-            widget:
-              type: calendar
-              view: agenda # optional - possible values monthly, agenda
-              maxEvents: 5 # optional - defaults to 10
-              integrations: # optional
-                - type: sonarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr>
-                  service_group: Media # group name where widget exists
-                  service_name: Sonarr # service name for that widget
-                - type: radarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr>
-                  service_group: Media # group name where widget exists
-                  service_name: Radarr # service name for that widget
-                - type: radarr # active widget type that is currently enabled on homepage - possible values: radarr, sonarr>
-                  service_group: Media # group name where widget exists
-                  service_name: Radarr-4k # service name for that widget
+    - Tools:
+        - Atuin:
+            href: https://atuin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://atuin.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: atuin.png
+        - Change Detection:
+            href: https://changedetection.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://changedetection.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: changedetection-io.png
+        - ChartDB:
+            href: https://chartdb.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://chartdb.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: chartdb.png
+        - ERPNext:
+            href: https://erpnext.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://erpnext.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: erpnext.png
+        - N8n:
+            href: https://n8n.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://n8n.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: n8n.png
+        - Wakapi:
+            href: https://wakapi.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            siteMonitor: https://wakapi.{{HOMEPAGE_VAR_SECRET_DOMAIN_NAME}}
+            icon: wakapi.png
 
   bookmarks.yaml: |
     - Communicate:
@@ -341,6 +307,10 @@ data:
         - home-ops:
             - icon: github.png
               href: 'https://github.com/kyteproject/gitops-homelab'
+    - Tools:
+        - Excalidraw:
+            - icon: excalidraw.png
+              href: 'https://excalidraw.com'
 
   docker.yaml: ""
 
