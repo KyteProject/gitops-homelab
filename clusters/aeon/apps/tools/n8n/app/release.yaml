@@ -2,7 +2,7 @@
 apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: OCIRepository
 metadata:
-  name: &app n8n
+  name: n8n
 spec:
   interval: 1h
   layerSelector:
@@ -15,7 +15,7 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: *app
+  name: &app n8n
 spec:
   interval: 1h
   chartRef:
