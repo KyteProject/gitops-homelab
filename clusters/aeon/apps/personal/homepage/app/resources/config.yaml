@@ -19,10 +19,6 @@ data:
       showSearchSuggestions: true
       hideVisitURL: true
     layout:
-      Calendar:
-        style: column
-        icon: mdi-calendar
-        initiallyCollapsed: false
       Administration:
         style: column
         icon: mdi-network
@@ -35,6 +31,9 @@ data:
       Home:
         style: column
         icon: home-assistant
+      Tools:
+        style: column
+        icon: mdi-tools
 
   widgets.yaml: |
     - search:
