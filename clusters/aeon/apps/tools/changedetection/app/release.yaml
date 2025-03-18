@@ -37,9 +37,6 @@ spec:
               PORT: &port 5000
               USE_X_SETTINGS: 1
               PLAYWRIGHT_DRIVER_URL: ws://localhost:3000/?stealth=1&--disable-web-security=true&--user-data-dir=~/browserless-cache-123
-            envFrom:
-              - secretRef:
-                  name: changedetection-secret
             probes:
               liveness: &probes
                 enabled: true
