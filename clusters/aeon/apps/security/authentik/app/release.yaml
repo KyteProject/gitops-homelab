@@ -41,7 +41,7 @@ spec:
       email:
         host: smtp-relay.networking.svc.cluster.local
         port: 587
-        from: "Access <access@omux.dev>"
+        from: "Access <access@omux.io>"
       error_reporting:
         enable: false
         send_pii: false
@@ -82,16 +82,16 @@ spec:
       rules:
         enabled: true
     route:
-      app:
+      internal:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
           - auth.omux.io
           - id.omux.io
         parentRefs:
-          - name: external
+          - name: internal
             namespace: kube-system
             sectionName: https
         rules:
           - backendRefs:
-              - port: http
-                name: app
+              - name: *app
+                port: 80
