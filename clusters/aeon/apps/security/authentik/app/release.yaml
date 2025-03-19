@@ -53,19 +53,19 @@ spec:
         serviceMonitor:
           enabled: true
       route:
-        internal:
+        external:
           hostnames:
             - "{{ .Release.Name }}.omux.io"
             - auth.omux.io
             - id.omux.io
           parentRefs:
-            - name: internal
+            - name: external
               namespace: kube-system
               sectionName: https
           rules:
             - backendRefs:
                 - name: *app
-                  port: http
+                  port: 80
     worker:
       replicas: 1
       resources:
