@@ -4,10 +4,9 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - release.yaml
-  - networkpolicy.yaml
 configMapGenerator:
   - name: smtp-relay-configmap
     files:
-      - config/maddy.conf
+      - ./config/maddy.conf
 generatorOptions:
   disableNameSuffixHash: true
