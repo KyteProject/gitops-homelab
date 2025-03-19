@@ -13,6 +13,8 @@ spec:
       namespace: external-secrets
     - name: cloudnative-pg-cluster
       namespace: database
+    - name: dragonfly-cluster
+      namespace: database
   interval: 30m
   path: ./clusters/aeon/apps/security/authentik/app
   prune: true

@@ -4,11 +4,10 @@ kind: HelmRelease
 metadata:
   name: &app authentik
 spec:
-  interval: 30m
   chart:
     spec:
       chart: authentik
-      version: 2024.12.1
+      version: 2025.2.2
       sourceRef:
         kind: HelmRepository
         name: authentik
@@ -20,35 +19,20 @@ spec:
     cleanupOnFail: true
     remediation:
       retries: 3
+  interval: 30m
+  maxHistory: 3
   uninstall:
     keepHistory: false
   values:
     global:
       deploymentAnnotations:
         secret.reloader.stakater.com/reload: &secret authentik-secret
-      storageClass: openebs-hostpath
       env:
         - name: AUTHENTIK_SESSION_STORAGE
           value: db
       envFrom:
         - secretRef:
             name: *secret
-    authentik:
-      log_level: info
-      redis:
-        host: dragonfly.database.svc.cluster.local
-      avatars: "gravatar,initials"
-      email:
-        host: smtp-relay.networking.svc.cluster.local
-        port: 587
-        from: "Access <access@omux.io>"
-      error_reporting:
-        enable: false
-        send_pii: false
-      outposts:
-        container_image_base: ghcr.io/goauthentik/%(type)s:%(version)s
-      # https://github.com/goauthentik/authentik/pull/7118
-      # https://github.com/goauthentik/authentik/issues/1285
     server:
       replicas: 1
       initContainers:
@@ -68,6 +52,20 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      route:
+        internal:
+          hostnames:
+            - "{{ .Release.Name }}.omux.io"
+            - auth.omux.io
+            - id.omux.io
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+          rules:
+            - backendRefs:
+                - name: *app
+                  port: http
     worker:
       replicas: 1
       resources:
@@ -76,22 +74,14 @@ spec:
           memory: 500Mi
         limits:
           memory: 1200Mi
+    authentik:
+      log_level: info
+      redis:
+        host: dragonfly.database.svc.cluster.local
+      error_reporting:
+        enable: false
     geoip:
       enabled: false
     prometheus:
       rules:
         enabled: true
-    route:
-      internal:
-        hostnames:
-          - "{{ .Release.Name }}.omux.io"
-          - auth.omux.io
-          - id.omux.io
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: 80
