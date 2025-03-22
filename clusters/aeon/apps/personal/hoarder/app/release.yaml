@@ -108,4 +108,4 @@ spec:
         rules:
           - backendRefs:
               - port: *port
-                name: *app
+                name: hoarder-web
