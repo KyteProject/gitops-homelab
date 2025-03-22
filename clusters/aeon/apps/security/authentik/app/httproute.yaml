@@ -9,7 +9,7 @@ spec:
   - "auth.omux.io"
   - "id.omux.io"
   parentRefs:
-  - name: external
+  - name: internal
     namespace: kube-system
     sectionName: https
   rules:
