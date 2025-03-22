@@ -89,7 +89,7 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: internal
+          - name: external
             namespace: kube-system
             sectionName: https
         rules:
