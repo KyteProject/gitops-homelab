@@ -95,7 +95,7 @@ spec:
         rules:
           - backendRefs:
               - name: *app
-                port: &port 5678
+                port: &port 80
 
     # Service configuration
     service:
