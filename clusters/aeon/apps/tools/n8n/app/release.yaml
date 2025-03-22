@@ -83,24 +83,10 @@ spec:
       limits:
         memory: 1Gi
 
-    # Configure routing via Gateway API
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.omux.io"
-        parentRefs:
-          - name: external
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: &port 5678
-
     # Service configuration
     service:
       app:
         controller: *app
         ports:
           http:
-            port: *port
+            port: 5678
