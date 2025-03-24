@@ -24,6 +24,21 @@ spec:
   uninstall:
     keepHistory: false
   values:
+    additionalObjects:
+      route:
+        server:
+          hostnames:
+            - "{{ .Release.Name }}.omux.io"
+            - auth.omux.io
+            - id.omux.io
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
+          rules:
+            - backendRefs:
+                - name: authentik-server
+                  port: 443
     global:
       deploymentAnnotations:
         secret.reloader.stakater.com/reload: &secret authentik-secret
