@@ -3,7 +3,7 @@ auth:
     enabled: false
   openid:
     enabled: true
-    redirecturl: https://vik.omux.io/
+    redirecturl: https://vik.omux.io/auth/openid/
     providers:
       - name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
