@@ -11,5 +11,5 @@ spec:
     staticConfig:
       static:
         - unifi.internal
-        - tank.omux.io
+        - tank.lan
         # - zigbee-controller.internal

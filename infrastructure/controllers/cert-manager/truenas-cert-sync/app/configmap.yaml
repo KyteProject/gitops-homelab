@@ -38,7 +38,7 @@ data:
 
     # Send to TrueNAS API
     curl -k -s -S -X POST \
-      "https://tank.omux.io/api/v2.0/certificate" \
+      "https://tank.lan/api/v2.0/certificate" \
       -H "Authorization: Bearer ${TOKEN}" \
       -H "Content-Type: application/json" \
       -d "$JSON_DATA"
