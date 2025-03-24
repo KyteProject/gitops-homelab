@@ -71,7 +71,7 @@ spec:
         name: vikunja-configmap
         globalMounts:
           - path: /app/vikunja/config.yml
-            subPath: config.yaml
+            subPath: config.yml
             readOnly: true
       files:
         existingClaim: *app
