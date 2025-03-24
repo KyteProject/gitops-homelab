@@ -5,3 +5,9 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - release.yaml
+configMapGenerator:
+  - name: vikunja-configmap
+    files:
+      - resources/config.yml
+generatorOptions:
+  disableNameSuffixHash: true
