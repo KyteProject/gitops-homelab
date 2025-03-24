@@ -33,11 +33,4 @@ cluster/aeon:
   - changed-files:
     - any-glob-to-any-file: "clusters/aeon/**/*"
 
-# Types
-type/documentation:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "**/*.md"
-      - "docs/**/*"
-
 # Size labels are automatically handled by GitHub Actions
