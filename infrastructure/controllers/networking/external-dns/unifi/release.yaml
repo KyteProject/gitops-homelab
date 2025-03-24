@@ -71,7 +71,7 @@ spec:
               - --events
               - --interval=1m
               - --log-format=text
-              - --log-level=info
+              - --log-level=debug
               - --policy=sync
               - --provider=webhook
               - --registry=txt
