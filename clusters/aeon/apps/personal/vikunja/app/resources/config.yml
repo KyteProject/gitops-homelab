@@ -4,8 +4,7 @@ auth:
   openid:
     enabled: true
     providers:
-      authentik:
-        name: authentik
+      - name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
         logouturl: https://auth.omux.io/application/o/vikunja/end-session/
         clientid: vikunja
