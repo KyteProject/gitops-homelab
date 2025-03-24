@@ -7,5 +7,9 @@ auth:
       authentik:
         name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
+        logouturl: https://auth.omux.io/application/o/vikunja/end-session/
+        clientid: vikunja
+        clientsecret: vikunja
+        scope: openid profile email
   ldap:
     enabled: false
