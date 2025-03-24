@@ -41,8 +41,9 @@ spec:
               sectionName: https
           rules:
             - backendRefs:
-              - name: authentik-server
-                port: 80
+                - name: authentik-server
+                  namespace: security
+                  port: 80
     global:
       deploymentAnnotations:
         secret.reloader.stakater.com/reload: &secret authentik-secret
