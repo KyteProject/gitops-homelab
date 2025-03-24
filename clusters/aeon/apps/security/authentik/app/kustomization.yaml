@@ -4,5 +4,5 @@ kind: Kustomization
 namespace: security
 resources:
   - externalsecret.yaml
-  - httproute.yaml
+  # - httproute.yaml
   - release.yaml
