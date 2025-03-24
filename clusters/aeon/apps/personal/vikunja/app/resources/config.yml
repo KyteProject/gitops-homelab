@@ -4,9 +4,8 @@ auth:
   openid:
     enabled: true
     providers:
-      - name: authentik
+      authentik:
+        name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
-        clientid: ${VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTID}
-        clientsecret: ${VIKUNJA_AUTH_OPENID_PROVIDERS_AUTHENTIK_CLIENTSECRET}
   ldap:
     enabled: false
