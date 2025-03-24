@@ -3,8 +3,10 @@ auth:
     enabled: false
   openid:
     enabled: true
+    redirecturl: https://vik.omux.io/
     providers:
-      - name: authentik
+      authentik:
+        name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
         logouturl: https://auth.omux.io/application/o/vikunja/end-session/
         scope: openid profile email
