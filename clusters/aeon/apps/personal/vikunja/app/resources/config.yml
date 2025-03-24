@@ -5,11 +5,10 @@ auth:
     enabled: true
     redirecturl: https://vik.omux.io/auth/openid/
     providers:
-      - name: authentik
+      authentik:
+        name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
         logouturl: https://auth.omux.io/application/o/vikunja/end-session/
-        clientid: ""
-        clientsecret: ""
         scope: openid profile email
   ldap:
     enabled: false

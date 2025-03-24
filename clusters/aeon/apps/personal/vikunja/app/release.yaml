@@ -39,7 +39,7 @@ spec:
           app:
             image:
               repository: vikunja/vikunja
-              tag: 0.24.6
+              tag: 0.24.1-954-2e11c55e9e
             env:
               VIKUNJA_REDIS_ENABLED: "1"
               VIKUNJA_CACHE_ENABLED: "1"
