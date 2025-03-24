@@ -3,33 +3,61 @@
   packageRules: [
     {
       description: "Auto-merge trusted container digests",
-      matchDatasources: ["docker"],
-      automerge: true,
-      automergeType: "branch",
-      matchUpdateTypes: ["digest"],
-      matchPackagePatterns: [
-        "ghcr.io/buroa",
-        "ghcr.io/kyteproject",
-        "/buroa/",
-        "/kyteproject/"
+      matchDatasources: [
+        "docker"
       ],
-      ignoreTests: true,
+      automerge: true,
+      automergeType: "pr",
+      matchUpdateTypes: [
+        "digest"
+      ],
+      matchPackageNames: [
+        "/home-operations/"
+      ],
+      ignoreTests: false,
+    },
+    {
+      description: "Auto-merge OCI Charts",
+      matchDatasources: [
+        "docker"
+      ],
+      automerge: true,
+      automergeType: "pr",
+      matchUpdateTypes: [
+        "minor",
+        "patch"
+      ],
+      matchPackageNames: [
+        "/kube-prometheus-stack/"
+      ],
+      ignoreTests: false,
     },
     {
       description: "Auto-merge GitHub Actions",
-      matchManagers: ["github-actions"],
+      matchManagers: [
+        "github-actions"
+      ],
       automerge: true,
       automergeType: "branch",
-      matchUpdateTypes: ["minor", "patch", "digest"],
+      matchUpdateTypes: [
+        "minor",
+        "patch",
+        "digest"
+      ],
       minimumReleaseAge: "3 days",
       ignoreTests: true,
     },
     {
       description: "Auto-merge GitHub Releases",
-      matchDatasources: ["github-releases"],
+      matchDatasources: [
+        "github-releases"
+      ],
       automerge: true,
       automergeType: "branch",
-      matchUpdateTypes: ["minor", "patch"],
+      matchUpdateTypes: [
+        "minor",
+        "patch"
+      ],
       matchPackageNames: [
         "/external-dns/",
         "/gateway-api/",
