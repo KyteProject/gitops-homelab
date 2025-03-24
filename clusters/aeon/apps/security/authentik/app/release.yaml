@@ -52,6 +52,16 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
+      route:
+        main:
+          enabled: true
+          hostnames:
+            - "{{ .Release.Name }}.omux.io"
+            - tasks.omux.io
+          parentRefs:
+            - name: internal
+              namespace: kube-system
+              sectionName: https
     worker:
       replicas: 1
       resources:
