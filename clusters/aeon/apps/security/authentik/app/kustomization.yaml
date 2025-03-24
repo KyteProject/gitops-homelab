@@ -5,3 +5,4 @@ namespace: security
 resources:
   - externalsecret.yaml
   - release.yaml
+  - httproute.yaml
