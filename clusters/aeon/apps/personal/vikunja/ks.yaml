@@ -1,0 +1,26 @@
+---
+# yaml-language-server: $schema=https://homelab-schemas-epg.pages.dev/kustomize.toolkit.fluxcd.io/kustomization_v1.json
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app vikunja
+  namespace: &namespace personal
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  components:
+    - ../../../../../../infrastructure/flux/components/volsync
+  dependsOn:
+    - name: onepassword
+      namespace: external-secrets
+  interval: 30m
+  path: ./clusters/aeon/apps/personal/vikunja/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
+  timeout: 5m
+  wait: true
