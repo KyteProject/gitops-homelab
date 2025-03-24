@@ -32,19 +32,19 @@
   ],
   flux: {
     fileMatch: [
-      "(^|/)infrastructure/.+\\.ya?ml$",
+      "(^|/)infrastructure/controllers/.+\\.ya?ml$",
       "(^|/)clusters/.+\\.ya?ml$"
     ],
   },
   "helm-values": {
     fileMatch: [
-      "(^|/)infrastructure/.+\\.ya?ml$",
+      "(^|/)infrastructure/controllers/.+\\.ya?ml$",
       "(^|/)clusters/.+\\.ya?ml$"
     ],
   },
   kubernetes: {
     fileMatch: [
-      "(^|/)infrastructure/.+\\.ya?ml$",
+      "(^|/)infrastructure/controllers/.+\\.ya?ml$",
       "(^|/)clusters/.+\\.ya?ml$"
     ],
   },
