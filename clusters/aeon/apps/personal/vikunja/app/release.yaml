@@ -1,0 +1,91 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app vikunja
+spec:
+  interval: 1h
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  maxHistory: 3
+  install:
+    createNamespace: true
+    remediation:
+      retries: 3
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      strategy: rollback
+      retries: 3
+  uninstall:
+    keepHistory: false
+  values:
+    controllers:
+      vikunja:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/kyteproject/postgres-init
+              tag: 17.4
+              pullPolicy: IfNotPresent
+            envFrom: &envFrom
+              - secretRef:
+                  name: vikunja-secret
+        containers:
+          app:
+            image:
+              repository: vikunja/vikunja
+              tag: 0.24.5
+            env:
+              VIKUNJA_REDIS_ENABLED: "1"
+              VIKUNJA_CACHE_ENABLED: "1"
+              VIKUNJA_SERVICE_PUBLICURL: "https://vikunja.omux.io"
+              VIKUNJA_SERVICE_ENABLECALDAV: "true"
+              VIKUNJA_SERVICE_INTERFACE: ":3456"
+              VIKUNJA_SERVICE_TIMEZONE: Europe/London
+            envFrom: *envFrom
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: &port 3456
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - "tasks.omux.io"
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
+    persistence:
+      files:
+        existingClaim: *app
+        advancedMounts:
+          vikunja:
+            app:
+              - path: /app/vikunja/files
