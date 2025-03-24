@@ -65,25 +65,6 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
-    service:
-      app:
-        controller: *app
-        ports:
-          http:
-            port: &port 3456
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.omux.io"
-          - "tasks.omux.io"
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     persistence:
       files:
         existingClaim: *app
@@ -91,3 +72,22 @@ spec:
           vikunja:
             app:
               - path: /app/vikunja/files
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - tasks.omux.io
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: &port 3456
+    service:
+      app:
+        controller: *app
+        ports:
+          http:
+            port: *port
