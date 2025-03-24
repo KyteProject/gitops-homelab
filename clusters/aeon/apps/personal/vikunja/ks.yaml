@@ -12,10 +12,18 @@ spec:
   components:
     - ../../../../../../infrastructure/flux/components/volsync
   dependsOn:
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
     - name: onepassword
       namespace: external-secrets
-  interval: 30m
+    - name: volsync
+      namespace: storage
+  interval: 1h
   path: ./clusters/aeon/apps/personal/vikunja/app
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 10Gi
   prune: true
   sourceRef:
     kind: GitRepository
