@@ -1,0 +1,9 @@
+auth:
+  local:
+    enabled: false
+  openid:
+    enabled: true
+    providers:
+      - name: authentik
+  ldap:
+    enabled: false

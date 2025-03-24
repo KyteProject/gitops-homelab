@@ -66,6 +66,13 @@ spec:
         runAsUser: 568
         runAsGroup: 568
     persistence:
+      config:
+        type: configMap
+        name: kromgo-configmap
+        globalMounts:
+          - path: /app/vikunja/config.yml
+            subPath: config.yaml
+            readOnly: true
       files:
         existingClaim: *app
         advancedMounts:
