@@ -4,8 +4,12 @@
     {
       description: "1Password Connect Group",
       groupName: "1Password Connnect",
-      matchPackageNames: ["/1password/"],
-      matchDatasources: ["docker"],
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/1password/"
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -13,8 +17,65 @@
     {
       description: "Actions Runner Controller Group",
       groupName: "Actions Runner Controller",
-      matchPackageNames: ["/gha-runner-scale-set/"],
-      matchDatasources: ["docker", "helm"],
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/gha-runner-scale-set-controller/",
+        "/gha-runner-scale-set/",
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Cert-Manager Group",
+      groupName: "Cert-Manager",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/cert-manager/"
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Cilium Group",
+      groupName: "Cilium",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/cilium/"
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "CoreDNS Group",
+      groupName: "CoreDNS",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/coredns/"
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "External Secrets Operator Group",
+      groupName: "External Secrets Operator",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/external-secrets/"
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -22,8 +83,13 @@
     {
       description: "Flux Operator Group",
       groupName: "Flux Operator",
-      matchPackageNames: ["/flux-instance/", "/flux-operator/"],
-      matchDatasources: ["docker"],
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/flux-operator/",
+        "/flux-instance/"
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -31,8 +97,13 @@
     {
       description: "Intel Device Plugins Group",
       groupName: "Intel-Device-Plugins",
-      matchPackageNames: ["/intel-device-plugins/"],
-      matchDatasources: ["helm"],
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/intel-device-plugins-operator/",
+        "/intel-device-plugins-gpu/",
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
@@ -40,8 +111,26 @@
     {
       description: "Rook-Ceph Group",
       groupName: "Rook-Ceph",
-      matchPackageNames: ["/rook.ceph/"],
-      matchDatasources: ["helm"],
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/rook-ceph/",
+        "/rook-ceph-cluster/"
+      ],
+      group: {
+        commitMessageTopic: "{{{groupName}}} group",
+      },
+    },
+    {
+      description: "Spegel Group",
+      groupName: "Spegel",
+      matchDatasources: [
+        "docker"
+      ],
+      matchPackageNames: [
+        "/spegel/"
+      ],
       group: {
         commitMessageTopic: "{{{groupName}}} group",
       },
