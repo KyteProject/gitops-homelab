@@ -4,7 +4,7 @@ kind: HelmRelease
 metadata:
   name: qbtools
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
@@ -31,7 +31,7 @@ spec:
           tagging: &container
             image:
               repository: ghcr.io/buroa/qbtools
-              tag: v0.19.14@sha256:905617dfc1a8aa1510381d8e177cc5581a49bfa9d56f3f05e0574f6c83987d3c
+              tag: v0.19.16@sha256:2b90924170f62083cf01646e41bda92319ad641e7627add59e15b2b21c6f8cd1
             args:
               - tagging
               - --added-on
@@ -42,12 +42,7 @@ spec:
             env:
               QBITTORRENT_HOST: qbittorrent.media.svc.cluster.local
               QBITTORRENT_PORT: 8080
-              SABNZBD_HOST: sabnzbd.media.svc.cluster.local
-              SABNZBD_PORT: 8080
               TZ: *timeZone
-            envFrom:
-              - secretRef:
-                  name: qbtools-secret
             resources:
               requests:
                 cpu: 10m
@@ -56,8 +51,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop: [ALL]
+              capabilities: { drop: ["ALL"] }
         containers:
           prune-unregistered:
             <<: *container
@@ -83,15 +77,6 @@ spec:
             <<: *container
             args:
               - reannounce
-      limiter:
-        containers:
-          app:
-            <<: *container
-            args:
-              - limiter
-              - --max-line-speed-mbps=110
-              - --max-percent=0.8
-              - --limit-percent=0.4
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
