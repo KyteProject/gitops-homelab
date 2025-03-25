@@ -29,6 +29,11 @@ spec:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
               TZ: Europe/London
+              QBT_WEBUI_USERNAME: admin
+              QBT_WEBUI_PASSWORD: admin
+              QBT_DEBUG: "true"
+              QBT_LOG_LEVEL: "debug"
+            terminationGracePeriodSeconds: 120
             probes:
               liveness: &probes
                 enabled: true
@@ -41,6 +46,7 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
+                  successThreshold: 1
               readiness: *probes
               startup:
                 enabled: true
