@@ -26,8 +26,8 @@ spec:
               repository: ghcr.io/home-operations/qbittorrent
               tag: 5.0.4@sha256:ffb02dfa7f017a55efc2718853689216ef2a85746b95981e575e29ef34234c75
             env:
-              QBT_TORRENTING_PORT: &bittorrentPort 50413
-              QBT_WEBUI_PORT: &port 8080
+              QBT_WEBUI_PORT: &port 80
+              QBT_TORRENTING_PORT: &torrentPort 50413
               TZ: Europe/London
               QBT_DEBUG: "true"
               QBT_LOG_LEVEL: "debug"
@@ -37,6 +37,12 @@ spec:
               QBT_WEBUI_SERVER_DOMAINS: "*"
               QBT_WEBUI_CSRF_PROTECTION: "false"
               QBT_WEBUI_HOST_HEADER_VALIDATION: "false"
+            terminationGracePeriodSeconds: 120
+            command: ["/bin/sh"]
+            args: ["-c", "/scripts/entrypoint.sh"]
+            volumeMounts:
+              - name: scripts
+                mountPath: /scripts
             probes:
               liveness: &probes
                 enabled: true
@@ -76,6 +82,11 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+        volumes:
+          - name: scripts
+            configMap:
+              name: qbittorrent-config
+              defaultMode: 0755
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -123,5 +134,5 @@ spec:
           lbipam.cilium.io/ips: 192.168.20.82, ::ffff:192.168.20.82
         ports:
           bittorrent-tcp:
-            port: *bittorrentPort
+            port: *torrentPort
             protocol: TCP
