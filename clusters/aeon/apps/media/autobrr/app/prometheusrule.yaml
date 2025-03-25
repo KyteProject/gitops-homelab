@@ -1,0 +1,18 @@
+---
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: autobrr
+spec:
+  groups:
+    - name: autobrr.rules
+      rules:
+        - alert: AutobrrNetworkUnmonitored
+          expr: |
+            autobrr_irc_channel_enabled_total != autobrr_irc_channel_monitored_total
+          for: 5m
+          annotations:
+            summary: >-
+              {{ $labels.network }} has unmonitored IRC channels
+          labels:
+            severity: critical
