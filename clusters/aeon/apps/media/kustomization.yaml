@@ -8,7 +8,7 @@ resources:
   # - ./cross-seed/ks.yaml
   # - ./jellyseerr/ks.yaml
   - ./plex/ks.yaml
-  # - ./prowlarr/ks.yaml
+  - ./prowlarr/ks.yaml
   # - ./qbittorrent/ks.yaml
   - ./radarr/ks.yaml
   # - ./recyclarr/ks.yaml
