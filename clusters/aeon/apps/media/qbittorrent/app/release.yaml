@@ -29,6 +29,14 @@ spec:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
               TZ: Europe/London
+              QBT_DEBUG: "true"
+              QBT_LOG_LEVEL: "debug"
+              QBT_WEBUI_USERNAME: admin
+              QBT_WEBUI_PASSWORD: admin
+              QBT_WEBUI_LOCALHOST_AUTH: "false"
+              QBT_WEBUI_SERVER_DOMAINS: "*"
+              QBT_WEBUI_CSRF_PROTECTION: "false"
+              QBT_WEBUI_HOST_HEADER_VALIDATION: "false"
             probes:
               liveness: &probes
                 enabled: true
@@ -37,16 +45,28 @@ spec:
                   httpGet:
                     path: /api/v2/app/version
                     port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
+                    httpHeaders:
+                      - name: Authorization
+                        value: Basic YWRtaW46YWRtaW4=
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                  timeoutSeconds: 5
                   failureThreshold: 3
+                  successThreshold: 1
               readiness: *probes
               startup:
                 enabled: true
                 spec:
                   failureThreshold: 30
                   periodSeconds: 10
+                  timeoutSeconds: 5
+                  successThreshold: 1
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                    httpHeaders:
+                      - name: Authorization
+                        value: Basic YWRtaW46YWRtaW4=
             resources:
               requests:
                 cpu: 100m
