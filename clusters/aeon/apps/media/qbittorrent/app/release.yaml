@@ -38,7 +38,7 @@ spec:
               QBT_WEBUI_CSRF_PROTECTION: "false"
               QBT_WEBUI_HOST_HEADER_VALIDATION: "false"
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
@@ -53,20 +53,34 @@ spec:
                   timeoutSeconds: 5
                   failureThreshold: 3
                   successThreshold: 1
-              readiness: *probes
-              startup:
+              readiness:
                 enabled: true
+                custom: true
                 spec:
-                  failureThreshold: 30
-                  periodSeconds: 10
-                  timeoutSeconds: 5
-                  successThreshold: 1
                   httpGet:
                     path: /api/v2/app/version
                     port: *port
                     httpHeaders:
                       - name: Authorization
                         value: Basic YWRtaW46YWRtaW4=
+                  initialDelaySeconds: 60
+                  periodSeconds: 30
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+                  successThreshold: 1
+              startup:
+                enabled: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                    httpHeaders:
+                      - name: Authorization
+                        value: Basic YWRtaW46YWRtaW4=
+                  failureThreshold: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  successThreshold: 1
             resources:
               requests:
                 cpu: 100m
@@ -75,7 +89,8 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities:
+                drop: ["ALL"]
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -96,19 +111,6 @@ spec:
             subPath: .
       tmp:
         type: emptyDir
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.omux.io"
-          - qb.omux.io
-        parentRefs:
-          - name: internal
-            namespace: kube-system
-            sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     service:
       app:
         controller: *app
@@ -125,3 +127,16 @@ spec:
           bittorrent-tcp:
             port: *torrentPort
             protocol: TCP
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - qb.omux.io
+        parentRefs:
+          - name: internal
+            namespace: kube-system
+            sectionName: https
+        rules:
+          - backendRefs:
+              - name: *app
+                port: *port
