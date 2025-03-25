@@ -20,16 +20,6 @@ spec:
   values:
     controllers:
       qbittorrent:
-        initContainers:
-          fix-permissions:
-            image: busybox
-            command: ["/bin/sh", "-c", "chown -R 568:568 /config && chmod -R 755 /config"]
-            securityContext:
-              runAsUser: 0
-              runAsGroup: 0
-            volumeMounts:
-              - name: config
-                mountPath: /config
         containers:
           app:
             image:
@@ -38,8 +28,6 @@ spec:
             env:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
-              QBT_WEBUI_USERNAME: admin
-              QBT_WEBUI_PASSWORD: admin
               TZ: Europe/London
             probes:
               liveness: &probes
@@ -49,10 +37,7 @@ spec:
                   httpGet:
                     path: /api/v2/app/version
                     port: *port
-                    httpHeaders:
-                      - name: Authorization
-                        value: Basic YWRtaW46YWRtaW4=
-                  initialDelaySeconds: 30
+                  initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
