@@ -15,6 +15,6 @@ resources:
   # - ./sabnzbd/ks.yaml
   - ./sonarr/ks.yaml
   # - ./tautulli/ks.yaml
-  # - ./unpackerr/ks.yaml
+  - ./unpackerr/ks.yaml
 components:
   - ../../../../infrastructure/flux/components/common
