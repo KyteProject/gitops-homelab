@@ -8,13 +8,19 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../../../infrastructure/flux/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
       namespace: storage
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/media/qbittorrent/app
+  postBuild:
+    substitute:
+      APP: *app
+      VOLSYNC_CAPACITY: 2Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -34,11 +40,9 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword
-      namespace: external-secrets
     - name: qbittorrent
       namespace: *namespace
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/media/qbittorrent/tools
   prune: true
   sourceRef:
