@@ -28,6 +28,8 @@ spec:
             env:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 8080
+              QBT_WEBUI_USERNAME: admin
+              QBT_WEBUI_PASSWORD: admin
               TZ: Europe/London
             probes:
               liveness: &probes
@@ -37,7 +39,10 @@ spec:
                   httpGet:
                     path: /api/v2/app/version
                     port: *port
-                  initialDelaySeconds: 0
+                    httpHeaders:
+                      - name: Authorization
+                        value: Basic YWRtaW46YWRtaW4=
+                  initialDelaySeconds: 30
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 3
@@ -67,13 +72,13 @@ spec:
     persistence:
       config:
         existingClaim: *app
-      # media:
-      #   type: nfs
-      #   server: tank.lan
-      #   path: /mnt/tank/Media/torrents
-      #   globalMounts:
-      #     - path: /torrents
-      #       subPath: .
+      media:
+        type: nfs
+        server: tank.lan
+        path: /mnt/tank/Media/torrents
+        globalMounts:
+          - path: /torrents
+            subPath: .
       tmp:
         type: emptyDir
     route:
