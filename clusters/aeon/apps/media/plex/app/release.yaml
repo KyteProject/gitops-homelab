@@ -18,6 +18,16 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    initContainers:
+      - name: fix-permissions
+        image: busybox
+        command: ["/bin/sh", "-c", "chown -R 568:568 /config && chmod -R 755 /config"]
+        securityContext:
+          runAsUser: 0
+          runAsGroup: 0
+        volumeMounts:
+          - name: config
+            mountPath: /config
     controllers:
       plex:
         containers:
