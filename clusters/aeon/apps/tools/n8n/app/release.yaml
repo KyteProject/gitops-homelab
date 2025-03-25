@@ -51,7 +51,7 @@ spec:
     env:
       # Database configuration
       DB_TYPE: postgresdb
-      DB_POSTGRESDB_HOST: postgres-rw.databases.svc.cluster.local
+      DB_POSTGRESDB_HOST: postgres-rw.database.svc.cluster.local
       DB_POSTGRESDB_PORT: "5432"
       DB_POSTGRESDB_DATABASE: n8n
 
