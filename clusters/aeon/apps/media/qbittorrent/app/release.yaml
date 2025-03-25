@@ -37,12 +37,6 @@ spec:
               QBT_WEBUI_SERVER_DOMAINS: "*"
               QBT_WEBUI_CSRF_PROTECTION: "false"
               QBT_WEBUI_HOST_HEADER_VALIDATION: "false"
-            terminationGracePeriodSeconds: 120
-            command: ["/bin/sh"]
-            args: ["-c", "/scripts/entrypoint.sh"]
-            volumeMounts:
-              - name: scripts
-                mountPath: /scripts
             probes:
               liveness: &probes
                 enabled: true
