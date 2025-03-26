@@ -69,8 +69,10 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [65536, 65537, 65538, 10000]
     persistence:
+      # config:
+      #   existingClaim: *app
       config:
-        existingClaim: *app
+        type: emptyDir
       # media:
       #   type: nfs
       #   server: tank.lan
