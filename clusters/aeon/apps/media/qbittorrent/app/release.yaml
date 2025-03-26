@@ -73,13 +73,12 @@ spec:
         existingClaim: qbittorrent-config
         globalMounts:
           - path: /config
-      # media:
-      #   type: nfs
-      #   server: tank.lan
-      #   path: /mnt/tank/Media/torrents
-      #   globalMounts:
-      #     - path: /torrents
-      #       subPath: .
+      media:
+        type: nfs
+        server: tank.lan
+        path: /mnt/tank/Media/torrents
+        globalMounts:
+          - path: /torrents
       tmp:
         type: emptyDir
     route:
