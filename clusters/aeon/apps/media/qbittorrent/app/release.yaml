@@ -67,12 +67,12 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [65536, 65537, 65538, 10000]
+        supplementalGroups: [65537]
     persistence:
-      # config:
-      #   existingClaim: *app
       config:
-        type: emptyDir
+        existingClaim: qbittorrent-config
+        globalMounts:
+          - path: /config
       # media:
       #   type: nfs
       #   server: tank.lan
