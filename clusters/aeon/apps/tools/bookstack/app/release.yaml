@@ -31,7 +31,7 @@ spec:
               tag: v24.05.4-ls166
             env:
               TZ: Europe/London
-              APP_URL: https://bookstack.omux.io
+              APP_URL: https://docs.omux.io
               DB_PORT: 3306
             envFrom:
               - secretRef:
@@ -57,6 +57,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - docs.omux.io
         parentRefs:
           - name: internal
             namespace: kube-system
