@@ -45,4 +45,6 @@ spec:
         existingClaim: *app
     initdbScripts:
       create-bookstack.sql: |
+        CREATE DATABASE IF NOT EXISTS bookstackapp;
+        CREATE USER IF NOT EXISTS 'bookstack'@'%' IDENTIFIED BY '${BOOKSTACK_MARIADB_PASSWORD}';
         GRANT ALL PRIVILEGES ON bookstackapp.* to 'bookstack'@'%';
