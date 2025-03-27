@@ -31,10 +31,10 @@ spec:
               tag: v24.05.4-ls166
             env:
               TZ: Europe/London
-              APP_URL: https://docs.omux.io
-              DB_PORT: 3306
               PUID: 1000
               PGID: 1000
+              APP_URL: https://docs.omux.io
+              DB_PORT: 3306
             envFrom:
               - secretRef:
                   name: bookstack-secret
