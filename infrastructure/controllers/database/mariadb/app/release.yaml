@@ -31,26 +31,8 @@ spec:
       retries: 3
   values:
     auth:
-      rootPassword:
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: mariadb-root-password
-      database:
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_DB
-      username:
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_USER
-      password:
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_PASSWORD
+        usePasswordFiles: false
+        existingSecret: mariadb-secret
     metrics:
       enabled: true
       resourcesPreset: small
@@ -61,24 +43,6 @@ spec:
       persistence:
         enabled: true
         existingClaim: *app
-    extraEnvVars:
-      - name: MARIADB_ROOT_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: mariadb-root-password
-      - name: MARIADB_DATABASE
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_DB
-      - name: MARIADB_USER
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_USER
-      - name: MARIADB_PASSWORD
-        valueFrom:
-          secretKeyRef:
-            name: mariadb-secret
-            key: BOOKSTACK_MARIADB_PASSWORD
+    initdbScripts:
+      create-bookstack.sql: |
+        GRANT ALL PRIVILEGES ON bookstackapp.* to 'bookstack'@'%';
