@@ -31,11 +31,26 @@ spec:
       retries: 3
   values:
     auth:
-      usePasswordFiles: false
-      existingSecret: mariadb-secret
-      database: ${BOOKSTACK_MARIADB_DB}
-      username: ${BOOKSTACK_MARIADB_USER}
-      password: ${BOOKSTACK_MARIADB_PASSWORD}
+      rootPassword:
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: mariadb-root-password
+      database:
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_DB
+      username:
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_USER
+      password:
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_PASSWORD
     metrics:
       enabled: true
       resourcesPreset: small
