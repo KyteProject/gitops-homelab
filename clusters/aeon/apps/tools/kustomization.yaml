@@ -4,9 +4,10 @@ kind: Kustomization
 namespace: tools
 resources:
   - atuin/ks.yaml
+  - bookstack/ks.yaml
   - changedetection/ks.yaml
   - chartdb/ks.yaml
-  # - n8n/ks.yaml
+  - n8n/ks.yaml
   - wakapi/ks.yaml
 components:
   - ../../../../infrastructure/flux/components/common
