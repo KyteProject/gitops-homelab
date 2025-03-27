@@ -46,8 +46,24 @@ spec:
       persistence:
         enabled: true
         existingClaim: *app
-    initdbScripts:
-      create-bookstack.sql: |
-        CREATE DATABASE IF NOT EXISTS ${BOOKSTACK_MARIADB_DB};
-        CREATE USER IF NOT EXISTS '${BOOKSTACK_MARIADB_USER}'@'%' IDENTIFIED BY '${BOOKSTACK_MARIADB_PASSWORD}';
-        GRANT ALL PRIVILEGES ON ${BOOKSTACK_MARIADB_DB}.* to '${BOOKSTACK_MARIADB_USER}'@'%';
+    extraEnvVars:
+      - name: MARIADB_ROOT_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: mariadb-root-password
+      - name: MARIADB_DATABASE
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_DB
+      - name: MARIADB_USER
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_USER
+      - name: MARIADB_PASSWORD
+        valueFrom:
+          secretKeyRef:
+            name: mariadb-secret
+            key: BOOKSTACK_MARIADB_PASSWORD

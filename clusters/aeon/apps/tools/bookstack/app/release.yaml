@@ -34,7 +34,6 @@ spec:
               PUID: 1000
               PGID: 1000
               APP_URL: https://docs.omux.io
-              DB_PORT: 3306
             envFrom:
               - secretRef:
                   name: bookstack-secret
