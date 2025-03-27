@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/flux/components/volsync
+    - ../../../flux/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
