@@ -33,6 +33,9 @@ spec:
     auth:
       usePasswordFiles: false
       existingSecret: mariadb-secret
+      database: ${BOOKSTACK_MARIADB_DB}
+      username: ${BOOKSTACK_MARIADB_USER}
+      password: ${BOOKSTACK_MARIADB_PASSWORD}
     metrics:
       enabled: true
       resourcesPreset: small
