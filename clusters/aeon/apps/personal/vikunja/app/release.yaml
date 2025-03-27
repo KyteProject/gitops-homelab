@@ -39,8 +39,7 @@ spec:
           app:
             image:
               repository: vikunja/vikunja
-              tag: unstable
-              digest: sha256:0801dd464af4d85744a732a81bef9a973f01d3bfcd4ea62c9e150f069fc5ff10
+              tag: unstable@sha256:0801dd464af4d85744a732a81bef9a973f01d3bfcd4ea62c9e150f069fc5ff10
             env:
               VIKUNJA_REDIS_ENABLED: "1"
               VIKUNJA_CACHE_ENABLED: "1"
