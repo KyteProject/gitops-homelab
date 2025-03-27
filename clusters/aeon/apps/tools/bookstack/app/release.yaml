@@ -33,30 +33,17 @@ spec:
               TZ: Europe/London
               APP_URL: https://docs.omux.io
               DB_PORT: 3306
+              PUID: 1000
+              PGID: 1000
             envFrom:
               - secretRef:
                   name: bookstack-secret
-            securityContext:
-              allowPrivilegeEscalation: true
-              readOnlyRootFilesystem: false
-              capabilities:
-                add:
-                  - SETUID
-                  - SETGID
-                drop:
-                  - ALL
             resources:
               requests:
                 cpu: 10m
                 memory: 50Mi
               limits:
                 memory: 256Mi
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: false
-        runAsUser: 0
-        runAsGroup: 0
-        fsGroup: 0
     route:
       app:
         hostnames:
