@@ -9,8 +9,8 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.16.5
-  url: oci://ghcr.io/kyteproject/homelab-charts/rook-ceph
+    tag: v1.16.6
+  url: oci://ghcr.io/rook/rook-ceph
   verify:
     provider: cosign
 ---
