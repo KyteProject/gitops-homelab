@@ -25,3 +25,11 @@ metadata:
   namespace: flux-system
 stringData:
   age.agekey: op://homelab/sops/SOPS_PRIVATE_KEY
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: cloudflare-tunnel-id-secret
+  namespace: networking
+stringData:
+  CLOUDFLARE_TUNNEL_ID: op://homelab/cloudflare/CLOUDFLARE_TUNNEL_ID
