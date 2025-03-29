@@ -29,7 +29,7 @@ spec:
               tag: v2.14.1@sha256:9ba73b1793ef332ae9b4b719ef0fc09f231d6276bc7b721cbb47961ed7792961
             env:
               TZ: Europe/London
-              UP_UNIFI_DEFAULT_ROLE: Unpoller
+              UP_UNIFI_DEFAULT_ROLE: homelab
               UP_UNIFI_DEFAULT_URL: https://192.168.1.1
               UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:80
               UP_UNIFI_DEFAULT_VERIFY_SSL: false
