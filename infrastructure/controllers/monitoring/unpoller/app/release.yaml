@@ -30,7 +30,7 @@ spec:
             env:
               TZ: Europe/London
               UP_UNIFI_DEFAULT_ROLE: Unpoller
-              UP_UNIFI_DEFAULT_URL: https://unifi.internal
+              UP_UNIFI_DEFAULT_URL: http://unifi.internal
               UP_UNIFI_DEFAULT_VERIFY_SSL: false
               UP_INFLUXDB_DISABLE: true
             envFrom:
