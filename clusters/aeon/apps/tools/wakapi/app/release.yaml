@@ -133,6 +133,7 @@ spec:
         serviceName: *app
         endpoints:
           - port: http
+            path: /api/metrics
         selector:
           matchLabels:
             app.kubernetes.io/name: *app
