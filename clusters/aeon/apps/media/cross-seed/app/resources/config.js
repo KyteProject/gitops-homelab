@@ -10,13 +10,17 @@ module.exports = {
   includeNonVideos: true,
   includeSingleEpisodes: true,
   linkCategory: "cross-seed",
-  linkDirs: ["/media/downloads/torrents/complete/cross-seed"],
+  linkDirs: [
+    "/media/torrents/anime",
+    "/media/torrents/movies",
+    "/media/torrents/tv"
+  ],
   linkType: "hardlink",
   matchMode: "partial",
   outputDir: "/tmp",
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
   skipRecheck: true,
-  torznab: [], // Only using announcements from autobrr
+  torznab: [], // Using autobrr for announcements
   useClientTorrents: true,
 };
