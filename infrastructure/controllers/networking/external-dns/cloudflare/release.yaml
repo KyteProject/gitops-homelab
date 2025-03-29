@@ -43,6 +43,11 @@ spec:
               - --txt-owner-id=k8s
               - --txt-prefix=k8s.
               - --zone-id-filter=$(CF_ZONE_ID)
+              - --managed-record-types=A
+              - --managed-record-types=AAAA
+              - --managed-record-types=CNAME
+              - --managed-record-types=NS
+              - --managed-record-types=TXT
             envFrom:
               - secretRef:
                   name: external-dns-cloudflare-secret
