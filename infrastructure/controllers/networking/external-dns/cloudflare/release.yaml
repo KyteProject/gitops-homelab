@@ -59,7 +59,6 @@ spec:
       - --crd-source-kind=DNSEndpoint
       - --gateway-name=external
       - --zone-id-filter=$(CF_ZONE_ID)
-      - --interval=1m
       - --events
     triggerLoopOnEvent: true
     policy: sync
