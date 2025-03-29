@@ -89,13 +89,14 @@ tasks:
       MACHINE_TYPE:
         sh: talosctl --nodes {{.NODE}} get machinetypes --output=jsonpath='{.spec}'
       TALOS_IMAGE:
-        sh: minijinja-cli {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2 | yq '.machine.install.image'
+        sh: |-
+          talosctl --nodes {{.NODE}} get machineconfig --output=jsonpath='{.spec}' \
+            | yq '.machine.install.image'
     requires:
       vars: [NODE]
     preconditions:
       - talosctl config info
       - talosctl --nodes {{.NODE}} get machineconfig
-      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2
       - which minijinja-cli talosctl yq
 
   upgrade-k8s:
