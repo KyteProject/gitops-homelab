@@ -10,7 +10,6 @@ spec:
       app.kubernetes.io/name: *app
   components:
     - ../../../../../../infrastructure/flux/components/volsync
-    - ../../../../../../infrastructure/flux/components/gatus/guarded
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -25,8 +24,6 @@ spec:
   postBuild:
     substitute:
       APP: *app
-      GATUS_SUBDOMAIN: *app
-      GATUS_NAMESPACE: *namespace
       VOLSYNC_CAPACITY: 1Gi
   prune: true
   sourceRef:
