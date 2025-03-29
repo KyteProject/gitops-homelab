@@ -11,11 +11,3 @@ configMapGenerator:
       - config.yaml=./resources/config.yaml
 generatorOptions:
   disableNameSuffixHash: true
-vars:
-  - name: TUNNEL_ID
-    objref:
-      kind: Secret
-      name: cloudflare-tunnel-id-secret
-      apiVersion: v1
-    fieldref:
-      fieldpath: data.CLOUDFLARE_TUNNEL_ID
