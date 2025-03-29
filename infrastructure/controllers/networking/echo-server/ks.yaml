@@ -16,6 +16,7 @@ spec:
     substitute:
       APP: *app
       GATUS_PATH: /healthz
+      GATUS_NAMESPACE: *namespace
   prune: true
   sourceRef:
     kind: GitRepository

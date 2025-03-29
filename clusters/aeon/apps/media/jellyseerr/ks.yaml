@@ -24,6 +24,7 @@ spec:
     substitute:
       APP: *app
       GATUS_PATH: /api/v1/status
+      GATUS_NAMESPACE: *namespace
       VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
