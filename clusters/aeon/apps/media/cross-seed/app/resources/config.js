@@ -11,8 +11,13 @@ module.exports = {
   includeSingleEpisodes: true,
   linkCategory: "cross-seed",
   linkDirs: [
+    "/media/torrents/audiobooks",
     "/media/torrents/anime",
+    "/media/torrents/books",
+    "/media/torrents/games",
     "/media/torrents/movies",
+    "/media/torrents/music",
+    "/media/torrents/software",
     "/media/torrents/tv"
   ],
   linkType: "hardlink",
