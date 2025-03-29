@@ -5,8 +5,5 @@ endpoints:
     interval: 1m
     client:
       dns-resolver: tcp://1.1.1.1:53
-      insecure: true
-      headers:
-        User-Agent: "Gatus/1.0"
     conditions:
       - "[STATUS] == ${GATUS_STATUS:=200}"
