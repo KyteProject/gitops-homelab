@@ -4,13 +4,13 @@ kind: OCIRepository
 metadata:
   name: cert-manager
 spec:
-  interval: 1h
+  interval: 5m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
     tag: v1.17.1
-  url: oci://ghcr.io/kyteproject/homelab-charts/cert-manager
+  url: oci://ghcr.io/home-operations/charts-mirror/cert-manager
   verify:
     provider: cosign
 ---
