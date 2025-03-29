@@ -64,13 +64,3 @@ spec:
     serviceAccount:
       create: true
       name: *app
-
-    serviceMonitor:
-      app:
-        serviceName: *app
-        endpoints:
-          - port: http
-        selector:
-          matchLabels:
-            app.kubernetes.io/name: *app
-            app.kubernetes.io/instance: *app
