@@ -3,7 +3,6 @@ connectivity:
   checker:
     target: 1.1.1.1:53
     interval: 1m
-
 endpoints:
   - name: flux-webhook
     url: https://flux-webhook.omux.io
@@ -12,23 +11,13 @@ endpoints:
       dns-resolver: tcp://1.1.1.1:53
     conditions:
       - "[STATUS] == 404"
-
 metrics: true
-
 storage:
   type: postgres
   path: postgres://${INIT_POSTGRES_USER}:${INIT_POSTGRES_PASS}@${INIT_POSTGRES_HOST}:5432/${INIT_POSTGRES_DBNAME}?sslmode=disable
   caching: true
-
 ui:
   title: Status | Gatus
   header: Status
-  link: https://github.com/kyteproject
-  buttons:
-    - name: Github
-      link: https://github.com/kyteproject
-    - name: Homelab
-      link: https://github.com/kyteproject/gitops-homelab
-
 web:
   port: ${GATUS_WEB_PORT}
