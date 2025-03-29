@@ -4,5 +4,4 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - release.yaml
-  - rbac.yaml
   - prometheusrule.yaml
