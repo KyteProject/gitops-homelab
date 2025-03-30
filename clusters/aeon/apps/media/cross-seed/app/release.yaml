@@ -69,6 +69,10 @@ spec:
     persistence:
       config:
         existingClaim: *app
+      config-cross-seeds:
+        type: emptyDir
+        globalMounts:
+          - path: /config/cross-seeds
       config-file:
         type: configMap
         name: cross-seed-configmap
@@ -83,14 +87,9 @@ spec:
       media:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Media
+        path: /mnt/tank/Media/torrents
         globalMounts:
-          - path: /media
-            subPath: .
-      config-cross-seeds:
-        type: emptyDir
-        globalMounts:
-          - path: /config/cross-seeds
+          - path: /torrents
     service:
       app:
         controller: *app
