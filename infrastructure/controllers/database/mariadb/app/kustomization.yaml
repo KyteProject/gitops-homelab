@@ -4,3 +4,10 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - release.yaml
+# Remove VolSync JSON patches as they didn't work
+# Add a custom annotation to the MariaDB kustomization
+# that we can check from the parent kustomization
+labels:
+  - pairs:
+      mariadb.omux.io/volsync-disabled: "true"
+    includeSelectors: false
