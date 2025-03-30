@@ -9,9 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    # Temporarily disable VolSync for MariaDB due to pre-existing PVC
-    # Uncomment the following line when you're ready to migrate to VolSync
-    # - ../../../../flux/components/volsync
+    - ../../../../flux/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
