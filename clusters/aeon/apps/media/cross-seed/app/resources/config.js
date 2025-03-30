@@ -25,7 +25,7 @@ module.exports = {
   ],
   linkType: "hardlink",
   matchMode: "partial",
-  outputDir: null,
+  outputDir: "/tmp",
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
   radarr: [
