@@ -36,11 +36,11 @@ module.exports = {
     "http://sonarr.media.svc.cluster.local:8989/?apikey=" + process.env.SONARR_API_KEY
   ],
   torznab: [
-    'http://prowlarr.media.svc.cluster.local:9696/1/api',
-    'http://prowlarr.media.svc.cluster.local:9696/2/api',
-    'http://prowlarr.media.svc.cluster.local:9696/3/api',
-    'http://prowlarr.media.svc.cluster.local:9696/36/api',
-    'http://prowlarr.media.svc.cluster.local:9696/35/api'
+    'http://prowlarr.media.svc.cluster.local:9696/1/api?apikey=' + process.env.PROWLARR_API_KEY,
+    'http://prowlarr.media.svc.cluster.local:9696/2/api?apikey=' + process.env.PROWLARR_API_KEY,
+    'http://prowlarr.media.svc.cluster.local:9696/3/api?apikey=' + process.env.PROWLARR_API_KEY,
+    'http://prowlarr.media.svc.cluster.local:9696/36/api?apikey=' + process.env.PROWLARR_API_KEY,
+    'http://prowlarr.media.svc.cluster.local:9696/35/api?apikey=' + process.env.PROWLARR_API_KEY
   ],
   useClientTorrents: true,
 };
