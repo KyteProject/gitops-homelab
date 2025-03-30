@@ -52,6 +52,10 @@ spec:
           global:
             resolveTimeout: 5m
         externalUrl: https://am.omux.io
+        web:
+          cors:
+            allowedOrigins:
+              - https://karma.omux.io
         storage:
           volumeClaimTemplate:
             spec:
