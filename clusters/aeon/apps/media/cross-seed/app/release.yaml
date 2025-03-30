@@ -90,6 +90,7 @@ spec:
         path: /mnt/tank/Media/torrents
         globalMounts:
           - path: /torrents
+            subPath: .
     service:
       app:
         controller: *app
