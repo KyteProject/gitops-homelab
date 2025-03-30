@@ -7,6 +7,9 @@ module.exports = {
   action: "inject",
   apiKey: process.env.CROSS_SEED_API_KEY,
   delay: 30,
+  duplicateCategories: false,
+  flatLinking: false,
+  includeEpisodes: true,
   includeNonVideos: true,
   includeSingleEpisodes: true,
   linkCategory: "cross-seed",
@@ -25,7 +28,13 @@ module.exports = {
   outputDir: "/tmp",
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
+  radarr: [
+    `http://radarr.default.svc.cluster.local/?apikey=${RADARR_API_KEY}`
+  ],
   skipRecheck: true,
-  torznab: [], // Using autobrr for announcements
+  sonarr: [
+    `http://sonarr.default.svc.cluster.local/?apikey=${SONARR_API_KEY}`
+  ],
+  torznab: [],
   useClientTorrents: true,
 };
