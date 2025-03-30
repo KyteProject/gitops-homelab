@@ -35,6 +35,12 @@ module.exports = {
   sonarr: [
     "http://sonarr.media.svc.cluster.local:8989/?apikey=" + process.env.SONARR_API_KEY
   ],
-  torznab: [],
+  torznab: [
+    'http://prowlarr.media.svc.cluster.local:9696/1/api',
+    'http://prowlarr.media.svc.cluster.local:9696/2/api',
+    'http://prowlarr.media.svc.cluster.local:9696/3/api',
+    'http://prowlarr.media.svc.cluster.local:9696/36/api',
+    'http://prowlarr.media.svc.cluster.local:9696/35/api'
+  ],
   useClientTorrents: true,
 };
