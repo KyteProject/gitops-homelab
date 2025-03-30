@@ -33,7 +33,7 @@ module.exports = {
   ],
   skipRecheck: true,
   sonarr: [
-    "http://prowlarr.media.svc.cluster.local:9696/?apikey=" + process.env.SONARR_API_KEY
+    "http://sonarr.media.svc.cluster.local:8989/?apikey=" + process.env.SONARR_API_KEY
   ],
   torznab: [],
   useClientTorrents: true,
