@@ -28,7 +28,9 @@ spec:
               repository: ghcr.io/prymitive/karma
               tag: v0.120@sha256:733bff15f2529065f1c1b50b13e4a56a541d3c0615dbc6b4b6a07befbfcc27ff
             env:
-              ALERTMANAGER_URI: https://am.omux.io
+              ALERTMANAGER_URI: http://alertmanager-operated.monitoring.svc.cluster.local:9093
+              ALERTMANAGER_EXTERNAL_URI: https://am.omux.io
+              ALERTMANAGER_PROXY: "true"
             probes:
               liveness: &probes
                 enabled: true
