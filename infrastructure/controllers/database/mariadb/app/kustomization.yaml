@@ -4,3 +4,4 @@ kind: Kustomization
 resources:
   - externalsecret.yaml
   - release.yaml
+  - resources/pvc-patch.yaml
