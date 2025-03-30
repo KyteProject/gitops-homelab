@@ -87,8 +87,10 @@ spec:
         globalMounts:
           - path: /media
             subPath: .
-      tmp:
+      config-cross-seeds:
         type: emptyDir
+        globalMounts:
+          - path: /config/cross-seeds
     service:
       app:
         controller: *app
