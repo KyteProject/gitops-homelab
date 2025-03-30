@@ -29,11 +29,11 @@ module.exports = {
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
   radarr: [
-    `http://radarr.media.svc.cluster.local/?apikey=${process.env.RADARR_API_KEY}`
+    `http://radarr.media.svc.cluster.local:7878/?apikey=${process.env.RADARR_API_KEY}`
   ],
   skipRecheck: true,
   sonarr: [
-    `http://sonarr.media.svc.cluster.local/?apikey=${process.env.SONARR_API_KEY}`
+    `http://prowlarr.media.svc.cluster.local:9696/?apikey=${process.env.SONARR_API_KEY}`
   ],
   torznab: [],
   useClientTorrents: true,
