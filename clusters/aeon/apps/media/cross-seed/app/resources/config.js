@@ -18,7 +18,6 @@ module.exports = {
   ],
   linkType: "hardlink",
   matchMode: "partial",
-  searchCadence: "2w",
   outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
