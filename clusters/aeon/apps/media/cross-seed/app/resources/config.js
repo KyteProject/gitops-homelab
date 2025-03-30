@@ -14,18 +14,18 @@ module.exports = {
   includeSingleEpisodes: true,
   linkCategory: "cross-seed",
   linkDirs: [
-    "/media/torrents/audiobooks",
-    "/media/torrents/anime",
-    "/media/torrents/books",
-    "/media/torrents/games",
-    "/media/torrents/movies",
-    "/media/torrents/music",
-    "/media/torrents/software",
-    "/media/torrents/tv"
+    "/torrents/audiobooks",
+    "/torrents/anime",
+    "/torrents/books",
+    "/torrents/games",
+    "/torrents/movies",
+    "/torrents/music",
+    "/torrents/software",
+    "/torrents/tv"
   ],
   linkType: "hardlink",
   matchMode: "partial",
-  outputDir: "/tmp",
+  outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
   qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
   radarr: [

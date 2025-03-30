@@ -8,6 +8,9 @@ configMapGenerator:
   - name: cross-seed-configmap
     files:
       - resources/config.js
+    options:
+      annotations:
+        kustomize.toolkit.fluxcd.io/prune: disabled
   - name: cross-seed-loki-rules
     files:
       - resources/lokirule.yaml
