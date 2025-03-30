@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: tools
 resources:
   - atuin/ks.yaml
-  - bookstack/ks.yaml
   - changedetection/ks.yaml
   - chartdb/ks.yaml
   - n8n/ks.yaml

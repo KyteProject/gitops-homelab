@@ -6,6 +6,5 @@ resources:
   - cloudnative-pg/ks.yaml
   - dragonfly/ks.yaml
   - emqx/ks.yaml
-  - mariadb/ks.yaml
 components:
   - ../../flux/components/common
