@@ -33,7 +33,8 @@ module.exports = {
     'http://prowlarr.media.svc.cluster.local:9696/2/api?apikey=' + process.env.PROWLARR_API_KEY,
     'http://prowlarr.media.svc.cluster.local:9696/3/api?apikey=' + process.env.PROWLARR_API_KEY,
     'http://prowlarr.media.svc.cluster.local:9696/36/api?apikey=' + process.env.PROWLARR_API_KEY,
-    'http://prowlarr.media.svc.cluster.local:9696/35/api?apikey=' + process.env.PROWLARR_API_KEY
+    'http://prowlarr.media.svc.cluster.local:9696/35/api?apikey=' + process.env.PROWLARR_API_KEY,
+    'http://prowlarr.media.svc.cluster.local:9696/69/api?apikey=' + process.env.PROWLARR_API_KEY
   ],
   useClientTorrents: true,
 };
