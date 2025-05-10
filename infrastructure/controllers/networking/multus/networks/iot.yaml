@@ -10,9 +10,8 @@ spec:
       "name": "multus-iot",
       "plugins": [
         {
-          "type": "vlan",
-          "master": "enp2s0f0np0",
-          "vlanId": 40,
+          "type": "macvlan",
+          "master": "enp2s0f0np0.40",
           "ipam": {
             "type": "static",
             "routes": [
