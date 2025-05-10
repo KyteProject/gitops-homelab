@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: gha-runner-scale-set
 spec:
-  interval: 1h
+  interval: 5m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.10.1
+    tag: 0.11.0
   url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -49,7 +49,7 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.323.0@sha256:3d4ddadb661a179b973a45e253ebc4f349de571ba4d1f637ed99e279f475a482
+            image: ghcr.io/home-operations/actions-runner:2.323.0@sha256:6d878ca00ecd301a5e5dab006d3ea96083e92f64e364a578f7b42bbc47ba738e
             command:
               - /home/runner/run.sh
             env:
