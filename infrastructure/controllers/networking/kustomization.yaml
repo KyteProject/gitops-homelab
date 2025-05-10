@@ -9,5 +9,6 @@ resources:
   - echo-server/ks.yaml
   - external-dns/ks.yaml
   - smtp-relay/ks.yaml
+  - multus/ks.yaml
 components:
   - ../../flux/components/common
