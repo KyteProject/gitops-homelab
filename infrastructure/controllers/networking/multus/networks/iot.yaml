@@ -11,7 +11,7 @@ spec:
       "plugins": [
         {
           "type": "macvlan",
-          "master": "enp2s0f0np0.40",
+          "master": "^enp.40",
           "ipam": {
             "type": "static",
             "routes": [
