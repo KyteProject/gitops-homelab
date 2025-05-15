@@ -57,6 +57,10 @@ spec:
     persistence:
       config:
         existingClaim: *app
+      config-cache:
+        existingClaim: home-assistant-cache
+        globalMounts:
+          - path: /config/.venv
       config-logs:
         type: emptyDir
         globalMounts:
