@@ -23,7 +23,8 @@ spec:
         containers:
           app:
             image:
-              repository: mackid1993/docker-roonserver:latest
+              repository: mackid1993/docker-roonserver
+              tag: latest
             env:
               TZ: Europe/London
             resources:
