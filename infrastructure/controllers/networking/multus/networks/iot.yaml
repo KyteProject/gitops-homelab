@@ -10,17 +10,14 @@ spec:
       "name": "multus-iot",
       "plugins": [
         {
-          "type": "macvlan",
-          "master": "^enp.40",
+          "type": "ipvlan",
+          "master": "enp2cc14f4.40",
           "ipam": {
             "type": "static",
             "routes": [
               {"dst": "0.0.0.0/0", "gw": "192.168.40.1"}
             ]
           }
-        },
-        {
-          "type": "sbr"
         }
       ]
     }
