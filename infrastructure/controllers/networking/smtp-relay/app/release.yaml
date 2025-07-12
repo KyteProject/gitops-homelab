@@ -62,6 +62,10 @@ spec:
           - path: /data/maddy.conf
             subPath: maddy.conf
             readOnly: true
+      cache:
+        type: emptyDir
+        globalMounts:
+          - path: /cache
       tmp:
         type: emptyDir
         medium: Memory
