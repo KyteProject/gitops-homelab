@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: home
 resources:
   - home-assistant/ks.yaml
-  - roon/ks.yaml
+  # - roon/ks.yaml
   # - zigbee2mqtt/ks.yaml
 components:
   - ../../../../infrastructure/flux/components/common
