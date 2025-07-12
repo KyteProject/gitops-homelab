@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
   - receiver
   - release.yaml
-  - repository.yaml
   - prometheusrule.yaml
 configMapGenerator:
   - name: flux-instance-values

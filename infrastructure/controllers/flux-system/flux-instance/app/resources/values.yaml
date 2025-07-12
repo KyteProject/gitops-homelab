@@ -2,7 +2,7 @@
 instance:
   distribution:
     # renovate: depName=fluxcd/flux2 datasource=github-releases
-    version: 2.5.1
+    version: 2.6.4
   cluster:
     networkPolicy: false
   components:
@@ -15,6 +15,7 @@ instance:
     url: https://github.com/kyteproject/gitops-homelab
     ref: refs/heads/main
     path: ./infrastructure/flux/cluster
+    interval: 1h
   commonMetadata:
     labels:
       app.kubernetes.io/name: flux
@@ -101,6 +102,14 @@ instance:
           - op: add
             path: /spec/template/spec/containers/0/args/-
             value: --oom-watch-interval=500ms
+        target:
+          kind: Deployment
+          name: helm-controller
+      - # Disable chart digest tracking
+        patch: |
+          - op: add
+            path: /spec/template/spec/containers/0/args/-
+            value: --feature-gates=DisableChartDigestTracking=true
         target:
           kind: Deployment
           name: helm-controller
