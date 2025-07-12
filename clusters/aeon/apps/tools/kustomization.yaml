@@ -2,11 +2,11 @@
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
 namespace: tools
-resources:
-  - atuin/ks.yaml
-  - changedetection/ks.yaml
-  - chartdb/ks.yaml
-  - n8n/ks.yaml
-  - wakapi/ks.yaml
+resources: []
+  # - atuin/ks.yaml
+  # - changedetection/ks.yaml
+  # - chartdb/ks.yaml
+  # - n8n/ks.yaml
+  # - wakapi/ks.yaml
 components:
   - ../../../../infrastructure/flux/components/common
