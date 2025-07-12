@@ -5,8 +5,6 @@ on:
   push:
     branches: ["main"]
     paths:
-      - .renovaterc.json5
-      - .renovate.json5
       - .renovate/**.json5
   schedule:
     - cron: "0 * * * *"
@@ -40,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Generate Token
-        uses: actions/create-github-app-token@af35edadc00be37caa72ed9f3e6d5f7801bfdf09 # v1.11.7
+        uses: actions/create-github-app-token@df432ceedc7162793a195dd1713ff69aefc7379e # v2.0.6
         id: app-token
         with:
           app-id: ${{ secrets.BOT_APP_ID }}
@@ -52,7 +50,7 @@ jobs:
           token: ${{ steps.app-token.outputs.token }}
 
       - name: Renovate
-        uses: renovatebot/github-action@cf5954a2aac7999882d3de4e462499adde159d04 # v41.0.17
+        uses: renovatebot/github-action@13da59cf7cfbd3bfea72ce26752ed22edf747ce9 # v43.0.2
         env:
           LOG_LEVEL: ${{ inputs.logLevel || 'debug' }}
           RENOVATE_AUTODISCOVER: true

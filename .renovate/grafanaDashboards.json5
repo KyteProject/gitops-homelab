@@ -13,7 +13,7 @@
     {
       customType: "regex",
       description: "Process Grafana dashboards",
-      fileMatch: [
+      managerFilePatterns: [
         "(^|/)infrastructure/.+\\.ya?ml$",
         "(^|/)clusters/.+\\.ya?ml$"
       ],
@@ -32,16 +32,17 @@
       ],
       automerge: true,
       automergeType: "branch",
+      commitMessageExtra: "({{currentVersion}} → {{newVersion}})",
+      commitMessageTopic: "dashboard {{depName}}",
+      ignoreTests: true,
       matchDatasources: [
         "custom.grafana-dashboards"
       ],
       matchUpdateTypes: [
         "major"
       ],
-      semanticCommitType: "chore",
       semanticCommitScope: "grafana-dashboards",
-      commitMessageTopic: "dashboard {{depName}}",
-      commitMessageExtra: "({{currentVersion}} → {{newVersion}})",
+      semanticCommitType: "chore",
     },
   ],
 }

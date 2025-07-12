@@ -28,7 +28,8 @@
         "patch"
       ],
       matchPackageNames: [
-        "/kube-prometheus-stack/"
+        "/kube-prometheus-stack/",
+        "/grafana/"
       ],
       ignoreTests: false,
     },
@@ -45,6 +46,25 @@
         "digest"
       ],
       minimumReleaseAge: "3 days",
+      ignoreTests: true,
+    },
+    {
+      description: "Auto-merge trusted GitHub Actions",
+      matchManagers: [
+        "github-actions"
+      ],
+      matchPackageNames: [
+        "/^actions//",
+        "/^renovatebot//"
+      ],
+      automerge: true,
+      automergeType: "branch",
+      matchUpdateTypes: [
+        "minor",
+        "patch",
+        "digest"
+      ],
+      minimumReleaseAge: "1 minute",
       ignoreTests: true,
     },
     {
