@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 2.0.0
+    tag: 2.1.5
   url: oci://ghcr.io/stakater/charts/reloader
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -23,11 +23,10 @@ spec:
     name: reloader
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     fullnameOverride: *app

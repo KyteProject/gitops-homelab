@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 1.39.2
+    tag: 1.43.0
   url: oci://ghcr.io/coredns/charts/coredns
   verify:
     provider: cosign
@@ -25,11 +25,10 @@ spec:
     name: coredns
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   valuesFrom:
     - kind: ConfigMap
