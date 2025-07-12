@@ -6,7 +6,7 @@ resources:
   - coredns/ks.yaml
   - descheduler/ks.yaml
   - intel-device-plugin/ks.yaml
-  - irqbalance/ks.yaml
+  # - irqbalance/ks.yaml
   - metrics-server/ks.yaml
   - reloader/ks.yaml
   - spegel/ks.yaml
