@@ -11,7 +11,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: onepassword
+    - name: onepassword-stores
       namespace: external-secrets
   interval: 30m
   path: ./clusters/aeon/apps/tools/atuin/app

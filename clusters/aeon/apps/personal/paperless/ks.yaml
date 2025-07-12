@@ -13,7 +13,7 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-    - name: onepassword
+    - name: onepassword-stores
       namespace: external-secrets
     - name: democratic-csi-nfs
       namespace: storage

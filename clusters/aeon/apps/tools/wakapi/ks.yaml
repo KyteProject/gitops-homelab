@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword
+    - name: onepassword-stores
       namespace: external-secrets
   interval: 30m
   path: ./clusters/aeon/apps/tools/wakapi/app

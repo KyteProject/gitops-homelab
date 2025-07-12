@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg-cluster
       namespace: database
-    - name: onepassword
+    - name: onepassword-stores
       namespace: external-secrets
   interval: 1h
   path: ./infrastructure/controllers/monitoring/gatus/app

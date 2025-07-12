@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: onepassword
+    - name: onepassword-stores
       namespace: external-secrets
     - name: volsync
       namespace: storage
