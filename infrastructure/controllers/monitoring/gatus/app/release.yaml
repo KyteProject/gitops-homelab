@@ -11,11 +11,10 @@ spec:
     namespace: flux-system
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     controllers:
@@ -25,16 +24,16 @@ spec:
         initContainers:
           init-db:
             image:
-              repository: ghcr.io/kyteproject/postgres-init
-              tag: 17.4
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17
             envFrom: &envFrom
               - secretRef:
                   name: gatus-secret
           init-config:
             dependsOn: init-db
             image:
-              repository: ghcr.io/kiwigrid/k8s-sidecar
-              tag: 1.30.2@sha256:cdb361e67b1b5c4945b6e943fbf5909badaaeb51595eaf75fb7493b3abbbe10f
+              repository: ghcr.io/home-operations/k8s-sidecar
+              tag: 1.30.7@sha256:3b6444d91c6e69a9e07c5e55419452d967d18c833d88b36277dc2021b708f621
             env:
               FOLDER: /config
               LABEL: gatus.io/enabled
@@ -52,12 +51,12 @@ spec:
           app:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.17.0@sha256:a8c53f9e9f1a3876cd00e44a42c80fc984e118d5ba0bdbaf08980cb627d61512
+              tag: v5.20.0@sha256:e655d13d0cb89c64a2e53a853bbca9556a7238e788bc4a08c19aa5fb7938d0da
             env:
               GATUS_WEB_PORT: &port 80
               GATUS_CONFIG_PATH: /config
               GATUS_DELAY_START_SECONDS: 5
-              TZ: Europe/London
+              TZ: America/Chicago
             envFrom: *envFrom
             probes:
               liveness: &probes
@@ -77,6 +76,8 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
+        serviceAccount:
+          name: *app
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -101,21 +102,12 @@ spec:
           - name: external
             namespace: kube-system
             sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     service:
       app:
-        controller: *app
         ports:
           http:
             port: *port
-    serviceAccount:
-      create: true
-      name: *app
     serviceMonitor:
       app:
-        serviceName: *app
         endpoints:
           - port: http

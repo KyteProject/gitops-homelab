@@ -11,11 +11,10 @@ spec:
     namespace: flux-system
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     controllers:
@@ -25,17 +24,14 @@ spec:
           cni-plugins:
             image:
               repository: ghcr.io/home-operations/cni-plugins
-              tag: 1.7.1@sha256:a2b59b11a9cd50b5e699d7162a899a81c9b30a9386378b1deb01c054eedb38fe
+              tag: 1.7.1@sha256:4bd4e77e3fbc21dd63b9826a011cead1333b6975efa4d1d2631ca932bfd27371
         containers:
           multus:
             image:
               repository: ghcr.io/k8snetworkplumbingwg/multus-cni
-              tag: v4.1.4@sha256:09fdfb7ce090ccbf8927d2728970c3cdeb5917d48209f692de849e384f00d893
-            command:
-              - /thin_entrypoint
+              tag: v4.2.1@sha256:6bebbda31416810875367484b8125026b2816885b79c89c2df863a6ed77dd4a6
             args:
-              - --cleanup-config-on-exit=true
-              - --multus-log-level=debug
+              - --cleanup-config-on-exit
             resources:
               requests:
                 cpu: 10m
@@ -43,6 +39,8 @@ spec:
                 memory: 32Mi
             securityContext:
               privileged: true
+        serviceAccount:
+          name: *app
     defaultPodOptions:
       hostNetwork: true
     persistence:
@@ -56,6 +54,3 @@ spec:
         hostPath: /opt/cni/bin
         globalMounts:
           - path: /host/opt/cni/bin
-    serviceAccount:
-      create: true
-      name: *app

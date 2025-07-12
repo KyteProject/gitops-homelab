@@ -11,11 +11,10 @@ spec:
     namespace: flux-system
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     controllers:
@@ -26,7 +25,7 @@ spec:
           webhook:
             image:
               repository: ghcr.io/kashalls/external-dns-unifi-webhook
-              tag: v0.5.1@sha256:fc031337a83e3a7d5f3407c931373455fe6842e085b47e4bb1e73708cb054b06
+              tag: v0.6.0@sha256:dd71adb88b64174b158481fb359dfe985d8bea1cad8cefba36209c8fc9eb03d3
             env:
               UNIFI_HOST: https://unifi.internal
             envFrom:
@@ -61,11 +60,15 @@ spec:
               limits:
                 memory: 64Mi
             restartPolicy: Always
+            securityContext: &securityContext
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
               repository: registry.k8s.io/external-dns/external-dns
-              tag: v0.16.1@sha256:37d3a7a05c4638b8177382b80a627c223bd84a53c1a91be137245bd3cfdf9986
+              tag: v0.18.0@sha256:f90738b35be265d50141d5c21e6f6049c3da7cd761682c40214117a2951b80bc
             args:
               - --domain-filter=omux.io
               - --events
@@ -93,10 +96,9 @@ spec:
                   failureThreshold: 3
               readiness: *probes
             resources: *resources
-            securityContext:
-              allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+            securityContext: *securityContext
+        serviceAccount:
+          name: *app
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -104,15 +106,10 @@ spec:
         runAsGroup: 568
     service:
       app:
-        controller: *app
         ports:
           http:
             port: *port
-    serviceAccount:
-      create: true
-      name: *app
     serviceMonitor:
       app:
-        serviceName: *app
         endpoints:
           - port: http
