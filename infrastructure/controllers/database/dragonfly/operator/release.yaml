@@ -88,6 +88,7 @@ spec:
               capabilities: {drop: ["ALL"]}
         serviceAccount:
           name: *app
+          create: true
         pod:
           securityContext:
             runAsUser: 65534
