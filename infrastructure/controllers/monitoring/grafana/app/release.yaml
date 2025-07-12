@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: grafana
 spec:
-  interval: 1h
+  interval: 5m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 8.11.0
+    tag: 9.2.10
   url: oci://ghcr.io/grafana/helm-charts/grafana
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -23,11 +23,10 @@ spec:
     name: grafana
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     deploymentStrategy:
@@ -123,44 +122,16 @@ spec:
           # renovate: depName="Cloudflare Tunnels (cloudflared)"
           gnetId: 17457
           revision: 6
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
-        emqx-authentication:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/authentication.json
-          datasource: Prometheus
-        emqx-authorization:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/authorization.json
-          datasource: Prometheus
-        emqx-client-events:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/client-events.json
-          datasource: Prometheus
-        emqx-messages:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/messages.json
-          datasource: Prometheus
-        emqx-overview:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/overview.json
-          datasource: Prometheus
-        emqx-rule-engine-count:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/rule-engine-count.json
-          datasource: Prometheus
-        emqx-rule-engine-rate:
-          url: https://raw.githubusercontent.com/emqx/emqx-exporter/aeon/grafana-dashboard/template/emqx-5/rule-engine-rate.json
-          datasource: Prometheus
+          datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
+        envoy:
+          # renovate: depName="Envoy Proxy Monitoring gRPC"
+          gnetId: 23239
+          revision: 1
+          datasource: [{ name: DS_AFRANET_PROMETHEUS, value: Prometheus }]
         external-dns:
           # renovate: depName="External-dns"
           gnetId: 15038
           revision: 3
-          datasource: Prometheus
-        external-secrets:
-          # renovate: depName="External Secrets"
-          gnetId: 21640
-          revision: 4
-          datasource:
-            - name: DS_METRICS
-              value: Prometheus
-        gatus:
-          url: https://raw.githubusercontent.com/TwiN/gatus/master/.examples/docker-compose-grafana-prometheus/grafana/provisioning/dashboards/gatus.json
           datasource: Prometheus
         kubernetes-api-server:
           # renovate: depName="Kubernetes / System / API Server"
@@ -185,7 +156,7 @@ spec:
         kubernetes-nodes:
           # renovate: depName="Kubernetes / Views / Nodes"
           gnetId: 15759
-          revision: 35
+          revision: 37
           datasource: Prometheus
         kubernetes-pods:
           # renovate: depName="Kubernetes / Views / Pods"
@@ -200,8 +171,8 @@ spec:
         node-exporter-full:
           # renovate: depName="Node Exporter Full"
           gnetId: 1860
-          revision: 37
-          datasource: Prometheus
+          revision: 41
+          datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
         prometheus:
           # renovate: depName="Prometheus"
           gnetId: 19105
@@ -211,9 +182,7 @@ spec:
           # renovate: depName="SMARTctl Exporter Dashboard"
           gnetId: 22604
           revision: 2
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
+          datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
         unifi-insights:
           # renovate: depName="UniFi-Poller: Client Insights - Prometheus"
           gnetId: 11315
@@ -234,21 +203,16 @@ spec:
           gnetId: 11312
           revision: 9
           datasource: Prometheus
-        unpackerr:
-          # renovate: depName="Unpackerr"
-          gnetId: 18817
-          revision: 1
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
         volsync:
           # renovate: depName="VolSync Dashboard"
           gnetId: 21356
           revision: 3
-          datasource:
-            - name: DS_PROMETHEUS
-              value: Prometheus
+          datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
     sidecar:
+      image:
+        registry: ghcr.io
+        repository: home-operations/k8s-sidecar
+        tag: 1.30.7@sha256:3b6444d91c6e69a9e07c5e55419452d967d18c833d88b36277dc2021b708f621
       dashboards:
         enabled: true
         searchNamespace: ALL

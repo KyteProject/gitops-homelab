@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 1h
+  interval: 5m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 70.0.1
+    tag: 75.10.0
   url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -23,11 +23,10 @@ spec:
     name: kube-prometheus-stack
   install:
     remediation:
-      retries: 3
+      retries: -1
   upgrade:
     cleanupOnFail: true
     remediation:
-      strategy: rollback
       retries: 3
   values:
     crds:
@@ -76,15 +75,20 @@ spec:
               namespace: kube-system
               sectionName: https
       prometheusSpec:
+        image:
+          registry: docker.io
+          repository: prompp/prompp
+          tag: 2.53.2-0.2.6
+        securityContext:
+          runAsNonRoot: true
+          runAsUser: 64535
+          runAsGroup: 64535
+          fsGroup: 64535
         ruleSelectorNilUsesHelmValues: false
         serviceMonitorSelectorNilUsesHelmValues: false
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
-        enableAdminAPI: true
-        walCompression: true
-        enableFeatures:
-          - memory-snapshot-on-shutdown
         externalUrl: https://prometheus.omux.io
         retention: 14d
         retentionSize: 50GB
