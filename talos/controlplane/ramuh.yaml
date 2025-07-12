@@ -16,6 +16,11 @@ machine:
             addresses:
               - 192.168.20.7/24
             mtu: 1500
+          - vlanId: 40
+            dhcp: false
+            addresses:
+              - 192.168.40.2/24
+            mtu: 1500
       - # ifrit
         deviceSelector: { busPath: 0-1.0 }
         dhcp: false

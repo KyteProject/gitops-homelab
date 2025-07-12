@@ -133,11 +133,11 @@ cluster:
         disabled: false
   extraManifests:
     - # renovate: datasource=github-releases depName=kubernetes-sigs/gateway-api
-      https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.2.1/experimental-install.yaml
+      https://github.com/kubernetes-sigs/gateway-api/releases/download/v1.3.0/experimental-install.yaml
     - # renovate: datasource=github-releases depName=prometheus-operator/prometheus-operator
-      https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.81.0/stripped-down-crds.yaml
+      https://github.com/prometheus-operator/prometheus-operator/releases/download/v0.83.0/stripped-down-crds.yaml
     - # renovate: datasource=github-releases depName=k8snetworkplumbingwg/network-attachment-definition-client
-      https://github.com/k8snetworkplumbingwg/network-attachment-definition-client/raw/refs/tags/v1.7.6/artifacts/networks-crd.yaml
+      https://github.com/k8snetworkplumbingwg/network-attachment-definition-client/raw/refs/tags/v1.7.7/artifacts/networks-crd.yaml
   token: op://homelab/talos/CLUSTER_TOKEN
   secretboxEncryptionSecret: op://homelab/talos/CLUSTER_SECRETBOXENCRYPTIONSECRET
   ca:
