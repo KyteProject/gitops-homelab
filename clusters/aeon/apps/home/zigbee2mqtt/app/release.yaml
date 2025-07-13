@@ -95,8 +95,13 @@ spec:
           - name: internal
             namespace: kube-system
             sectionName: https
+        rules:
+          - backendRefs:
+              - name: zigbee2mqtt
+                port: *port
     service:
       app:
+        controller: zigbee2mqtt
         ports:
           http:
             port: *port
