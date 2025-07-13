@@ -18,7 +18,7 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
     - name: volsync
-      namespace: volsync-system
+      namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/home/zigbee2mqtt/app
   postBuild:
