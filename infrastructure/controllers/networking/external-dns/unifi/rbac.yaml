@@ -13,7 +13,7 @@ rules:
     resources: ["nodes"]
     verbs: ["list", "watch"]
   - apiGroups: [""]
-    resources: ["namespaces", "pods", "services"]
+    resources: ["namespaces", "pods", "services", "endpoints"]
     verbs: ["get", "watch", "list"]
   - apiGroups: ["discovery.k8s.io"]
     resources: ["endpointslices"]
