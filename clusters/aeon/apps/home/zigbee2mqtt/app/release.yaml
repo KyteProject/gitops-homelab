@@ -21,6 +21,12 @@ spec:
       zigbee2mqtt:
         annotations:
           reloader.stakater.com/auto: "true"
+          k8s.v1.cni.cncf.io/networks: |
+            [{
+              "name": "multus-iot",
+              "namespace": "networking",
+              "ips": ["192.168.40.201/24"]
+            }]
         containers:
           app:
             image:
