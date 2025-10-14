@@ -55,3 +55,16 @@ tasks:
       - test -f {{.BOOTSTRAP_DIR}}/resources.yaml
       - which helmfile jq kubectl op talosctl
 
+  apps-only:
+    desc: Bootstrap Kubernetes Controllers
+    prompt: Bootstrap Kubernetes Controllers ...?
+    cmds:
+      - op inject --in-file {{.BOOTSTRAP_DIR}}/resources.yaml | kubectl apply --server-side --filename -
+      # - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml template --quiet | kubectl apply --server-side --filename -
+      - helmfile --file {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml sync --hide-notes
+    preconditions:
+      - op user get --me
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.d/00-crds.yaml
+      - test -f {{.BOOTSTRAP_DIR}}/helmfile.d/01-apps.yaml
+      - test -f {{.BOOTSTRAP_DIR}}/resources.yaml
+      - which helmfile jq kubectl op talosctl
