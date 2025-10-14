@@ -10,7 +10,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: onepassword-stores
+    - name: onepassword-store
       namespace: external-secrets
   interval: 30m
   path: ./clusters/aeon/apps/personal/homepage/app
