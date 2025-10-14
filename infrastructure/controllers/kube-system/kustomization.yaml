@@ -11,4 +11,4 @@ resources:
   - reloader/ks.yaml
   - spegel/ks.yaml
 components:
-  - ../../flux/components/common
+  - ../../components/namespace

@@ -11,16 +11,11 @@ spec:
   dependsOn:
     - name: flux-operator
       namespace: *namespace
-    - name: onepassword-stores
-      namespace: external-secrets
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/flux-system/flux-instance/app
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
-    namespace: flux-system
+    namespace: *namespace
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true

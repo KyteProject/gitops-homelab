@@ -11,4 +11,4 @@ resources:
   - smtp-relay/ks.yaml
   - multus/ks.yaml
 components:
-  - ../../flux/components/common
+  - ../../components/namespace
