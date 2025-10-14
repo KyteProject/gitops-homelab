@@ -19,7 +19,7 @@ releases:
           - --namespace=kube-system
           - --field-manager=kustomize-controller
           - --kustomize
-          - ../infrastructure/controllers/kube-system/cilium/configs
+          - ../../infrastructure/controllers/kube-system/cilium/configs
         showlogs: true
 
   - name: coredns
