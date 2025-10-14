@@ -6,7 +6,7 @@ machine:
   ca:
     crt: op://homelab/talos/MACHINE_CA_CRT
     {% if machinetype == 'controlplane' %}
-    key: op://K8s/talos/MACHINE_CA_KEY
+    key: op://homelab/talos/MACHINE_CA_KEY
     {% endif %}
   certSANs:
     - "127.0.0.1"
@@ -129,7 +129,7 @@ cluster:
   ca:
     crt: op://homelab/talos/CLUSTER_CA_CRT
     {% if machinetype == 'controlplane' %}
-    key: op://K8s/talos/CLUSTER_CA_KEY
+    key: op://homelab/talos/CLUSTER_CA_KEY
     {% endif %}
   {% if machinetype == 'controlplane' %}
   coreDNS:
