@@ -4,44 +4,14 @@
   color: "0e8a16"
 - name: area/github
   color: "0e8a16"
-  description: Changes to GitHub workflows and configuration
-- name: area/infrastructure
+- name: area/kubernetes
   color: "0e8a16"
-  description: Changes to infrastructure components
+- name: area/renovate
+  color: "0e8a16"
 - name: area/talos
   color: "0e8a16"
-  description: Changes to Talos configuration
 - name: area/taskfile
   color: "0e8a16"
-
-# Clusters
-- name: cluster/aeon
-  color: "5319e7"
-  description: Changes affecting the main cluster
-
-# Types
-- name: type/breaking
-  color: "ee0701"
-  description: Introduces a breaking change
-- name: type/bug
-  color: "ee0701"
-  description: Something isn't working
-- name: type/dependency
-  color: "0366d6"
-  description: Pull requests that update a dependency file
-- name: type/documentation
-  color: "0075ca"
-  description: Improvements or additions to documentation
-- name: type/enhancement
-  color: "a2eeef"
-  description: New feature or request
-- name: type/maintenance
-  color: "fef2c0"
-  description: Repository maintenance
-- name: type/security
-  color: "ee0701"
-  description: Security related changes
-
 # Renovate Types
 - name: renovate/container
   color: "027fa0"
@@ -53,7 +23,6 @@
   color: "027fa0"
 - name: renovate/helm
   color: "027fa0"
-
 # Semantic Types
 - name: type/digest
   color: "ffeC19"
@@ -63,34 +32,8 @@
   color: "ff9800"
 - name: type/major
   color: "f6412d"
-
-# Status
-- name: do-not-merge
-  color: "ee0701"
-  description: Pull request should not be merged
-- name: help-wanted
-  color: "008672"
-  description: Extra attention is needed
+# Uncategorized
+- name: community
+  color: "370fb2"
 - name: hold
-  color: "e11d21"
-  description: PR should not be automatically merged
-
-# Size
-- name: size/XS
-  color: "009900"
-  description: PR changes 0-9 lines
-- name: size/S
-  color: "77bb00"
-  description: PR changes 10-29 lines
-- name: size/M
-  color: "eebb00"
-  description: PR changes 30-99 lines
-- name: size/L
-  color: "ee9900"
-  description: PR changes 100-499 lines
-- name: size/XL
-  color: "ee5500"
-  description: PR changes 500-999 lines
-- name: size/XXL
-  color: "ee0000"
-  description: PR changes 1000+ lines
+  color: "ee0701"

@@ -12,7 +12,6 @@ vars:
 env:
   KUBECONFIG: '{{.KUBERNETES_DIR}}/kubeconfig'
   MINIJINJA_CONFIG_FILE: '{{.ROOT_DIR}}/.minijinja.toml'
-  SOPS_AGE_KEY_FILE: '{{.ROOT_DIR}}/age.key'
   TALOSCONFIG: '{{.TALOS_DIR}}/clusterconfig/talosconfig'
   FLUX_NAMESPACE: 'flux-system'
   CLUSTER_NAME: aeon

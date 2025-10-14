@@ -1,11 +1,13 @@
 * text=auto eol=lf
-*.sops.* diff=sopsdiffer
-*.yaml.j2 linguist-language=YAML
-*.yml linguist-detectable=true
-*.yml linguist-language=YAML
-*.yaml linguist-detectable=true
-*.yaml linguist-language=YAML
-*.sops.toml linguist-language=JSON
+*.env linguist-detectable linguist-language=SHELL
+*.json linguist-detectable linguist-language=JSON
+*.json5 linguist-detectable linguist-language=JSON5
+*.md linguist-detectable linguist-language=MARKDOWN
+*.sh linguist-detectable linguist-language=SHELL
+*.toml linguist-detectable linguist-language=TOML
+*.yml linguist-detectable linguist-language=YAML
+*.yaml linguist-detectable linguist-language=YAML
+*.yaml.j2 linguist-detectable linguist-language=YAML
 
 # Documentation
 *.md linguist-documentation
@@ -15,27 +17,14 @@ README.md linguist-documentation
 .vscode/** linguist-vendored
 .github/renovate/** linguist-vendored
 
-# YAML files (primary language)
-*.yaml linguist-detectable
-*.yml linguist-detectable
-
 # Justfile (secondary)
 **/justfile linguist-detectable
 **/*.just linguist-detectable
-
-# SOPS encrypted files (don't count towards language stats)
-*.sops.* linguist-generated
-*.sops.*.yaml linguist-generated
-*.sops.*.yml linguist-generated
 
 # Other config files (don't count towards language stats)
 .editorconfig linguist-vendored
 .gitattributes linguist-vendored
 .gitignore linguist-vendored
-
-# JSON files
-*.json linguist-detectable
-*.json5 linguist-detectable
 
 # Ignore specific directories from language statistics
 bootstrap/** linguist-vendored

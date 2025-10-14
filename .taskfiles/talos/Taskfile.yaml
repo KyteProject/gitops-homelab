@@ -1,15 +1,6 @@
 ---
 version: '3'
 
-vars:
-  SYSTEM_UPGRADE_KS: '{{.KUBERNETES_DIR}}/controllers/system-upgrade/system-upgrade-controller/ks.yaml'
-
-env:
-  KUBERNETES_VERSION:
-    sh: yq '.spec.postBuild.substitute.KUBERNETES_VERSION' {{.SYSTEM_UPGRADE_KS}} | tail -1 || echo "v1.32.3"
-  TALOS_VERSION:
-    sh: yq '.spec.postBuild.substitute.TALOS_VERSION' {{.SYSTEM_UPGRADE_KS}} | tail -1 || echo "v1.9.5"
-
 tasks:
 
   init-node:
@@ -60,7 +51,8 @@ tasks:
   apply-node:
     desc: Apply Talos config to a node [NODE=required] [MODE=auto]
     cmd: |-
-      minijinja-cli {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2 | op inject \
+      minijinja-cli --define "machinetype={{.MACHINE_TYPE}}" {{.TALOS_DIR}}/machineconfig.yaml.j2 \
+        | op inject \
         | talosctl --nodes {{.NODE}} apply-config \
           --mode {{.MODE}} \
           --config-patch @{{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml \
@@ -78,7 +70,7 @@ tasks:
     preconditions:
       - op user get --me
       - talosctl config info
-      - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}.yaml.j2
+      - test -f {{.TALOS_DIR}}/machineconfig.yaml.j2
       - test -f {{.TALOS_DIR}}/{{.MACHINE_TYPE}}/{{.NODE}}.yaml
       - which minijinja-cli op talosctl
 
@@ -91,7 +83,7 @@ tasks:
       TALOS_IMAGE:
         sh: |-
           talosctl --nodes {{.NODE}} get machineconfig --output=jsonpath='{.spec}' \
-            | yq '.machine.install.image'
+            | yq '.machine.install.image | select(. != null)'
     requires:
       vars: [NODE]
     preconditions:
@@ -99,19 +91,8 @@ tasks:
       - talosctl --nodes {{.NODE}} get machineconfig
       - which minijinja-cli talosctl yq
 
-  upgrade-k8s:
-    desc: Upgrade Kubernetes across the whole cluster
-    cmd: talosctl --nodes {{.RANDOM_CONTROLLER}} upgrade-k8s --to $KUBERNETES_VERSION
-    vars:
-      RANDOM_CONTROLLER:
-        sh: talosctl config info --output json | jq --raw-output '.endpoints[]' | shuf -n 1
-    preconditions:
-      - talosctl config info
-      - talosctl --nodes {{.RANDOM_CONTROLLER}} get machineconfig
-      - which jq talosctl
-
   reboot-node:
-    desc: Reboot Talos on a single node [NODE=required] [MODE=default]
+    desc: Reboot Talos on a single node [NODE=required] [MODE={{.MODE}}]
     cmd: talosctl --nodes {{.NODE}} reboot --mode={{.MODE}}
     vars:
       MODE: '{{.MODE | default "default"}}'
@@ -167,6 +148,31 @@ tasks:
       - talosctl config info
       - talosctl --nodes {{.RANDOM_CONTROLLER}} get machineconfig
       - which jq talosctl
+
+  generate-iso:
+    desc: Generate a Talos ISO for a specific version [VERSION=required]
+    cmd: |
+      curl -L -o {{.TALOS_DIR}}/talos-{{.VERSION}}.iso \
+        https://factory.talos.dev/image/{{.TALOS_SCHEMATIC}}/{{.VERSION}}/metal-amd64.iso
+    vars:
+      TALOS_SCHEMATIC:
+        sh: task --silent talos:generate-schematic ISO=true
+    requires:
+      vars: [VERSION]
+    preconditions:
+      - which curl task
+
+  generate-schematic:
+    desc: Generate a Talos schematic [ISO={{.ISO}}]
+    cmd: |
+      minijinja-cli --define "iso={{.ISO}}" {{.TALOS_DIR}}/schematic.yaml.j2 \
+        | curl --silent -X POST --data-binary @- https://factory.talos.dev/schematics \
+        | jq --raw-output '.id'
+    vars:
+      ISO: '{{.ISO | default false}}'
+    preconditions:
+      - test -f {{.TALOS_DIR}}/schematic.yaml.j2
+      - which curl jq minijinja-cli
 
   debug:template:
     desc: Debug Talos template rendering [NODE=shiva]

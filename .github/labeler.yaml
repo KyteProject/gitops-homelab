@@ -1,36 +1,30 @@
 ---
-# Areas
-area/github:
+area/bootstrap:
   - changed-files:
-    - any-glob-to-any-file: ".github/**/*"
-
+      - any-glob-to-any-file: "bootstrap/**/*"
 area/docs:
   - changed-files:
       - any-glob-to-any-file:
-          - "docs/**/*"
           - "README.md"
-
-area/infrastructure:
+          - "docs/**/*"
+area/github:
   - changed-files:
-    - any-glob-to-any-file: "infrastructure/**/*"
-
+      - any-glob-to-any-file: ".github/**/*"
+area/kubernetes:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "infrastructure/**/*"
+          - "clusters/**/*"
+area/renovate:
+  - changed-files:
+      - any-glob-to-any-file:
+          - ".renovate/**/*"
+          - ".renovaterc.json5"
 area/talos:
   - changed-files:
-    - any-glob-to-any-file: "talos/**/*"
-
-area/bootstrap:
-  - changed-files:
-      - any-glob-to-any-file: bootstrap/**/*
-
+      - any-glob-to-any-file: "talos/**/*"
 area/taskfile:
   - changed-files:
       - any-glob-to-any-file:
-          - .taskfiles/**/*
-          - Taskfile.yaml
-
-# Clusters
-cluster/aeon:
-  - changed-files:
-    - any-glob-to-any-file: "clusters/aeon/**/*"
-
-# Size labels are automatically handled by GitHub Actions
+          - ".taskfiles/**/*"
+          - "Taskfile.yaml"
