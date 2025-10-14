@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: cert-manager
 spec:
-  interval: 5m
+  interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.17.2
+    tag: v1.19.0
   url: oci://quay.io/jetstack/charts/cert-manager
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -17,18 +17,16 @@ kind: HelmRelease
 metadata:
   name: cert-manager
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: cert-manager
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  valuesFrom:
-    - kind: ConfigMap
-      name: cert-manager-values
+  interval: 1h
+  values:
+    crds:
+      enabled: true
+    dns01RecursiveNameservers: https://1.1.1.1:443/dns-query,https://1.0.0.1:443/dns-query
+    dns01RecursiveNameserversOnly: true
+    prometheus:
+      enabled: true
+      servicemonitor:
+        enabled: true

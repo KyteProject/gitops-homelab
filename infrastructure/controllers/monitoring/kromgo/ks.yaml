@@ -8,20 +8,11 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../flux/components/gatus/external
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/monitoring/kromgo/app
-  postBuild:
-    substitute:
-      APP: *app
-      GATUS_STATUS: "404"
-      GATUS_NAMESPACE: *namespace
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true

@@ -4,18 +4,11 @@ kind: HelmRelease
 metadata:
   name: echo-server
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     controllers:
       echo-server:
@@ -27,7 +20,7 @@ spec:
               repository: ghcr.io/mendhak/http-https-echo
               tag: 37@sha256:f55000d9196bd3c853d384af7315f509d21ffb85de315c26e9874033b9f83e15
             env:
-              PORT: &port 8080
+              HTTP_PORT: &port 80
               LOG_WITHOUT_NEWLINE: true
               LOG_IGNORE_PATH: &path /healthz
               PROMETHEUS_ENABLED: true
@@ -54,17 +47,22 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
+      hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://{{ .Release.Name }}.omux.io/healthz
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - echo.omux.io
         parentRefs:
-          - name: external
-            namespace: kube-system
+          - name: envoy-external
+            namespace: networking
             sectionName: https
     service:
       app:

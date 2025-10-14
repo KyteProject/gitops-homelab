@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 5m
+  interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 75.10.0
+    tag: 78.2.1
   url: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -17,40 +17,28 @@ kind: HelmRelease
 metadata:
   name: kube-prometheus-stack
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: kube-prometheus-stack
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
-    crds:
-      enabled: true
-      upgradeJob:
-        enabled: true
-        forceConflicts: true
     cleanPrometheusOperatorObjectNames: true
     alertmanager:
       route:
         main:
           enabled: true
           hostnames:
-            - am.omux.io
+            - alertmanager.omux.io
           parentRefs:
-            - name: internal
-              namespace: kube-system
+            - name: envoy-internal
+              namespace: networking
               sectionName: https
       alertmanagerSpec:
+        externalUrl: https://alertmanager.omux.io
         alertmanagerConfiguration:
           name: alertmanager
           global:
             resolveTimeout: 5m
-        externalUrl: https://am.omux.io
         storage:
           volumeClaimTemplate:
             spec:
@@ -71,14 +59,16 @@ spec:
           hostnames:
             - prometheus.omux.io
           parentRefs:
-            - name: internal
-              namespace: kube-system
+            - name: envoy-internal
+              namespace: networking
               sectionName: https
       prometheusSpec:
+        externalUrl: https://prometheus.omux.io
+        version: v2.55.1 # override 'unsupported Prometheus version' error
         image:
           registry: docker.io
           repository: prompp/prompp
-          tag: 2.53.2-0.2.6
+          tag: 0.6.0
         securityContext:
           runAsNonRoot: true
           runAsUser: 64535
@@ -89,7 +79,6 @@ spec:
         podMonitorSelectorNilUsesHelmValues: false
         probeSelectorNilUsesHelmValues: false
         scrapeConfigSelectorNilUsesHelmValues: false
-        externalUrl: https://prometheus.omux.io
         retention: 14d
         retentionSize: 50GB
         resources:

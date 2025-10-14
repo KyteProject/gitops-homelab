@@ -9,9 +9,11 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
+    - name: openebs
+      namespace: storage
     - name: snapshot-controller
       namespace: *namespace
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/storage/volsync/app
   prune: true
   sourceRef:
@@ -19,5 +21,4 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: true

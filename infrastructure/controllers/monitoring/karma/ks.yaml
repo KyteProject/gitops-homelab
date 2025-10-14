@@ -8,10 +8,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: kube-prometheus-stack
-      namespace: *namespace
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/monitoring/karma/app
   prune: true
   sourceRef:
@@ -19,5 +16,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true

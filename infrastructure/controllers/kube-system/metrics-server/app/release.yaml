@@ -4,12 +4,12 @@ kind: OCIRepository
 metadata:
   name: metrics-server
 spec:
-  interval: 5m
+  interval: 15m
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 3.12.2
+    tag: 3.13.0
   url: oci://ghcr.io/home-operations/charts-mirror/metrics-server
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -17,17 +17,10 @@ kind: HelmRelease
 metadata:
   name: metrics-server
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: metrics-server
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     args:
       - --kubelet-insecure-tls

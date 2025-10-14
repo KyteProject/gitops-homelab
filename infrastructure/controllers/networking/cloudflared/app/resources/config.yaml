@@ -1,8 +1,8 @@
 ---
-originRequest:
-  originServerName: external.omux.io
-
 ingress:
-  - { hostname: omux.io, service: https://cilium-gateway-external.kube-system.svc.cluster.local }
-  - { hostname: "*.omux.io", service: https://cilium-gateway-external.kube-system.svc.cluster.local }
-  - { service: http_status:404 }
+  - hostname: "*.omux.io"
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - service: http_status:404

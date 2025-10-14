@@ -8,7 +8,7 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/monitoring/blackbox-exporter/app
   prune: true
   sourceRef:
@@ -16,7 +16,6 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
@@ -31,7 +30,7 @@ spec:
   dependsOn:
     - name: blackbox-exporter
       namespace: *namespace
-  interval: 30m
+  interval: 1h
   path: ./infrastructure/controllers/monitoring/blackbox-exporter/probes
   prune: true
   sourceRef:
@@ -39,4 +38,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m

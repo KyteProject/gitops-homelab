@@ -1,0 +1,589 @@
+== About
+This is a minimalist Debian 12 (preferred) or Ubuntu Server seedbox setup that is oriented around fast and stable seeding, for both private and public trackers. Optionally, setting up qBittorent and Plex through a VPN is covered.
+
+It is bare-metal, not using any Dockers, so networking performance for 10gbit servers doesn't suffer, and it is also hardened to CIS level 1 for servers.
+
+== 1. Prerequisites
+On Hetzner, format and install Debian 12 as RAID0 if applicable, as to not waste any storage and increase drive speeds. Also ensure `/home` and `/` are not separate partitions, meaning only `/` is used, and make `/` a XFS partition instead of ext4.
+
+* It's preferred to backup externally, instead of relying on RAID1.
+** https://serverpartdeals.com/collections/manufacturer-recertified-hdd[Serverpartdeals] is the best company in the US selling manufacturer recertified drives. Their packaging is paranoid, shipping times are fast, and the warranty is good -- although they won't cover the shipping label's cost.
+** Backing up this way will save a lot of money compared to paying Hetzner for backups, but will rely on you having fast download and upload speeds at home to do comfortably.
+
+Login as the `root` user after Debian's installation is complete, or use `sudo -i` to escalate to root privileges.
+
+Install sudo: +
+`# apt install sudo`
+
+If the current user is root, make an administrator account instead to avoid mistakes. By default it'll be a user, unprivileged, but can escalate to root via using `sudo` before a command: +
+`# useradd -m -G sudo -s /bin/bash server`
+
+Set the passphrase to something moderately complex using a password manager like Bitwarden. I recommend at least 30 characters long, lower & upper case characters with numbers, and no symbols. +
+`# passwd server`
+
+Login to 'server' and test if sudo works (it should output -> root): +
+`sudo whoami`
+
+The 'server' user is now going to be used instead of using 'root' directly.
+
+TIP: If you're using a laptop as a server, set `HandleLidSwitchExternalPower=ignore` in `/etc/systemd/login.conf`. +
+Then run: `sudo systemctl restart systemd-logind`
+
+Remove Hetzner repositories, as it can make the OS lag behind in package updates, which is bad for security: +
+`sudo rm /etc/apt/sources.list.d/hetzner-security-updates.list; sudo rm /etc/apt/apt.conf.d/99hetzner`
+
+Sudo edit `/etc/apt/sources.list`, and remove all lines containing Hetzner.
+
+TIP: *irqbalance* balances interrupts across CPU cores to handle high load more efficiently, which can prevent low networking performance. +
+*AppArmor* is to stop software from doing what they shouldn't, hence better security. +
+*auditd & apparmor-notify* is to allow viewing AppArmor logs, but also installing auditd allows AppArmor profiles to be created by you. +
+*Unattended upgrades* is so you don't accidentally forget to update packages, which would cause security issues. +
+*UFW* is a firewall management tool for blocking off unused ports. +
+*Fail2ban* is to make bruteforce password attacks on SSH and your web server (nginx) much more difficult. +
+*apt-transport-https* is to allow apt to operate over HTTPS to prevent security flaws such as https://justi.cz/security/2019/01/22/apt-rce.html[RCEs].
+
+`sudo apt update && sudo apt install irqbalance apparmor apparmor-utils auditd apparmor-notify unattended-upgrades apt-listchanges ufw fail2ban python3-systemd apt-transport-https ansible`
+
+.*For Ubuntu:* Setting up kernel hotpatching support; to update the kernel automatically without rebooting.
+. `sudo apt install ubuntu-advantage-tools`
+. You have to make an Ubuntu account to use Ubuntu Pro's functionality: +
+`sudo ua attach`
+
+
+*For Debian:* +
+Sudo edit `/etc/apt/sources.list` and change `http://` to `https://`, also enable the backports repository: +
+image:apt https.png[]
+
+NOTE: If bookworm-backports is not there, use this: +
+`deb https://deb.debian.org/debian bookworm-backports main contrib non-free-firmware` +
+Then run `sudo apt update`.
+
+Sudo edit `/etc/fstab` and add "noatime" to the XFS partition: +
+image:fstab.png[]
+
+// Do this before hardening via dev-sec, otherwise they'll be locked out.
+Run `ssh-keygen` on your local computer/PC, use the default location unless you already have an SSH key there (in that case, put it elsewhere and remember it), then set the passphrase to something moderately complex using a password manager like Bitwarden. I recommend at least 30 characters long, lower & upper case characters with numbers, and no symbols.
+
+* Run on the server for the 'server' user: +
+`mkdir -p ~/.ssh`
+
+* Include `-i /DIRECTORY/TO/YOUR/id_ed25519.pub` if you put a custom location and/or name (i.e. not id_ed25519.pub or id_rsa.pub): +
+`ssh-copy-id -p YOUR_SSH_PORT server@YOUR_SERVER_IP`
+- On Windows, use PowerShell and do this instead: `type C:\Users\$Env:UserName\.ssh\id_ed25519.pub | ssh -p YOUR_SSH_PORT server@YOUR_SERVER_IP 'cat >> ~/.ssh/authorized_keys'`
+
+* Check on the server to see if your key was installed successfully: +
+`cat ~/.ssh/authorized_keys`
+
+* Login with only the SSH key for the 'server' user, and if it works, proceed with the next hardening step.
+
+.Setup the firewall:
+- `sudo ufw allow ssh`
+- `sudo ufw allow https`
+
+Complete the firewall setup: +
+`sudo ufw default deny incoming && sudo ufw default allow outgoing && sudo ufw enable`
+
+Install what we'll use to automatically harden: +
+`sudo ansible-galaxy install git+https://github.com/ansible-lockdown/DEBIAN12-CIS.git` +
+or `sudo ansible-galaxy install git+https://github.com/ansible-lockdown/UBUNTU24-CIS`
+
+Edit: `~/harden.yml`; use UBUNTU24-CIS instead if applicable:
+```yaml
+- name: CIS level 1 server hardening
+  hosts: localhost
+  roles:
+    - role: DEBIAN12-CIS
+      tags:
+        - level1-server
+```
+
+Now we automatically harden: +
+`sudo ansible-playbook ~/harden.yml`
+
+NOTE: If it freezes at configuring https://en.wikipedia.org/wiki/Advanced_Intrusion_Detection_Environment[AIDE], press kbd:[Ctrl + c] to exit out of ansible-playbook then run: `sudo ansible-playbook ~/harden.yml --skip-tags "aide"`
+
+TIP: You can optionally edit the `Port` from `/etc/ssh/sshd_config` if you plan to hide your server behind a VPN for Plex or public tracker usage. +
+Be sure to run `sudo ufw allow YOUR_CUSTOM_SSH_PORT`, such as `sudo ufw allow 44718`.
+
+Sudo edit `/etc/default/grub`:
+
+* Remove `nomodeset` to allow the Intel iGPU to run, which is desirable for Plex, Emby, or Jellyfin.
+** Also run: `sudo sed -i 's/^blacklist i915/#&/' /etc/modprobe.d/blacklist-hetzner.conf`
+
+* Add the kernel command line options from the https://kernsec.org/wiki/index.php/Kernel_Self_Protection_Project/Recommended_Settings#kernel_command_line_options[Kernel Self Protection Project], and include the x86_64 options too. I would recommend using the "slow" options at first, to see if your server can handle it.
+
+- To make it easy (please check the KSPP link and compare): +
+`hardened_usercopy=1 init_on_alloc=1 init_on_free=1 randomize_kstack_offset=on page_alloc.shuffle=1 slab_nomerge pti=on nosmt iommu.passthrough=0 iommu.strict=1 mitigations=auto,nosmt vsyscall=none vdso32=0 cfi=kcfi`
+
+Generate the new boot configuration: +
+`sudo grub-mkconfig -o /boot/grub/grub.cfg`
+
+Sudo edit `/etc/sysctl.d/99-custom.conf`; note that these settings might be wasteful on 1gbps servers, but there shouldn't be a perceivable negative impact from it:
+
+```
+# Don't save core dumps anywhere for better security, and less disk usage.
+kernel.core_pattern = /dev/null
+
+# Block processes with setuid from ignoring 'kernel.core_pattern'
+fs.suid_dumpable = 0
+
+# The fq (fair queueing) qdisc is recommended for BBR, instead of the default fq_codel
+net.core.default_qdisc = fq
+
+# Keep network throughput consistently high even with packet loss,
+# at the cost of a little maximum upload burst
+net.ipv4.tcp_congestion_control = bbr
+
+# Use TCP Fast Open for both incoming and outgoing connections to reduce latency
+net.ipv4.tcp_fastopen = 3
+
+# Ensure MTU is valid to prevent stuck connections; very useful on misconfigured networks:
+# https://blog.cloudflare.com/path-mtu-discovery-in-practice/
+net.ipv4.tcp_mtu_probing = 1
+
+# Allow TCP with buffers up to 16MB
+net.core.rmem_default = 16777216
+net.core.rmem_max = 16777216
+net.core.wmem_default = 16777216
+net.core.wmem_max = 16777216
+net.core.optmem_max = 16777216
+
+# Increase Linux autotuning TCP buffer limit to 64MB
+net.ipv4.tcp_rmem = 4096 524288 67108864
+net.ipv4.tcp_wmem = 4096 524288 67108864
+
+# Don't swap to disk while the memory is not overloaded
+vm.swappiness = 1
+
+# Reduce TCP performance spikes by disabling timestamps
+net.ipv4.tcp_timestamps = 0
+
+# Done so TCP doesn't run out of memory
+net.ipv4.tcp_mem = 3145728 4194304 6291456
+
+# Protect against TCP TIME-WAIT assassination, which increases socket re-use
+net.ipv4.tcp_rfc1337 = 1
+
+# Allow 3/4 of available free memory in the receive buffer
+net.ipv4.tcp_adv_win_scale = 2
+
+# Allow ping to be ran under a normal user, fixing "Operation not permitted"
+net.ipv4.ping_group_range = 0 1000
+
+kernel.sched_autogroup_enabled = 0
+
+net.core.netdev_budget = 209715
+net.core.netdev_max_backlog = 3145728
+net.core.somaxconn = 50000
+
+net.ipv4.ip_local_port_range = 1024 65535
+net.ipv4.tcp_max_syn_backlog = 8192
+net.ipv4.tcp_orphan_retries = 2
+net.ipv4.tcp_retries2 = 8
+net.ipv4.tcp_slow_start_after_idle = 0
+net.ipv4.tcp_syn_retries = 2
+net.ipv4.tcp_synack_retries = 2
+net.ipv4.tcp_tw_reuse = 1
+net.ipv4.tcp_workaround_signed_windows = 1
+
+vm.min_free_kbytes = 524288
+vm.zone_reclaim_mode = 1
+```
+
+NOTE: You can skip Swizzin installation if you already have it, for example, through hostingby.design's Swizzin OS template. +
+hostingby.design and Andy10gbit would in that case already have qBittorrent using libtorrent v1.2.x installed. +
+If you want Plex though, run `sudo box install plex`
+
+.Install Swizzin, which are high-quality automation scripts to make administrating a seedbox easier; through which we *install qBittorrent and optionally Plex*
+[%collapsible]
+====
+
+Use libtorrent v1.2.x instead of v2, as v2 has issues with disk performance / caching. +
+`$ sudo -i` +
+`# export libtorrent_github_tag=RC_1_2`
+
+Retreive then run Swizzin: +
+`# bash <(wget -qO - s5n.sh) && . ~/.bashrc`
+
+.Through Swizzin, install the following:
+* panel
+* nginx
+* qbittorrent -> 4.3.9 or 5.0.4 depending on your preferences
+* plex (only if you're streaming movies / TV shows)
+
+See https://swizzin.ltd/getting-started/box-basics[here] for how to interact with Swizzin after its installation.
+
+Exit the root user: +
+`# exit`
+
+''''
+
+## RAID0 Setup
+
+### Install mdadm if not already present
+
+sudo apt-get update
+sudo apt-get install mdadm
+
+### Create RAID0 array
+
+sudo mdadm --create /dev/md0 --level=0 --raid-devices=4 /dev/sda /dev/sdb /dev/sdc /dev/sdd
+
+### Format with XFS for large files and good performance
+
+sudo mkfs.xfs -f /dev/md0
+
+### Create mount point
+
+sudo mkdir -p /data
+
+### Add to fstab for persistent mounting
+
+echo "/dev/md0    /data    xfs    defaults,noatime    0 2" | sudo tee -a /etc/fstab
+
+### Mount it
+
+sudo mount /data
+
+### Set permissions
+
+sudo chown -R $USER:$USER /data
+
+### Create folder structure
+
+Both the watch directory and cross-seed directory should go on the RAID0 array at /data to maintain hardlink compatibility:
+
+```bash
+/data/                # RAID0 array
+├── torrents/         # For long-term seeding
+│   ├── anime
+│   ├── movies
+│   ├── tv
+│   └── etc...
+├── media/            # Organized media library (hardlinked)
+│   ├── anime
+│   ├── movies
+│   ├── tv
+│   └── etc...
+├── watch/            # Watch folder for torrent client
+│   ├── anime
+│   ├── movies
+│   └── tv
+└── cross-seed/       # For cross-seed application
+    ├── candidates    # Where cross-seed puts potential matches
+    └── cache         # For cross-seed's internal database
+```
+
+For cross-seed configuration:
+```
+outputDir: /data/cross-seed/candidates
+torrentDir: /data/torrents
+```
+
+For autobrr:
+```
+Download path: /home/swiz/incomplete
+Watch folder: /data/watch
+```
+
+#### Create directory structure on NVMe for incomplete downloads
+sudo mkdir -p /home/swiz/incomplete/{anime,audiobooks,books,education,games,general,movies,music,software,tv}
+
+
+#### Set ownership (assuming your user is 'server' - adjust if different)
+sudo chown -R server:server /home/swiz/incomplete
+sudo chown -R server:server /data
+
+#### Set permissions
+sudo chmod -R 755 /home/swiz/incomplete
+sudo chmod -R 755 /data
+
+This keeps everything that needs hardlinks on the same filesystem (the RAID0 array), while using the NVMe only for active downloads that benefit from the speed.
+
+====
+
+// fail2ban is done after nginx is installed so it doesn't error on [nginx-http-auth].
+The following steps are required to make fail2ban work; used for anti-bruteforcing of our SSH and Nginx servers: +
+`echo "sshd_backend = systemd" | sudo tee -a /etc/fail2ban/paths-debian.conf`
+
+Sudo edit `/etc/fail2ban/fail2ban.local`: +
+```
+[DEFAULT]
+allowipv6 = auto
+backend = systemd
+banaction = ufw
+banaction_allports = ufw
+bantime = 2h
+ignoreip = 127.0.0.1/8
+logtarget = SYSTEMD-JOURNAL
+maxretry = 5
+```
+
+Sudo edit `/etc/fail2ban/jail.local`: +
+```
+[sshd]
+enabled = true
+port = YOUR_SSH_PORT
+
+[nginx-http-auth]
+enabled = true
+port = http,https
+logpath = %(nginx_error_log)s
+```
+
+`sudo systemctl restart fail2ban`
+
+Additional hardening via AppArmor: +
+`sudo apt install -t bookworm-backports golang-go`
+
+* If those two packages don't exist, run: +
+`echo 'deb http://deb.debian.org/debian bookworm-backports main contrib non-free' | sudo tee -a /etc/apt/sources.list`
+
+Optimize AppArmor for the loading of thousands of profiles: +
+`echo 'write-cache' | sudo tee -a /etc/apparmor/parser.conf` +
+`echo 'Optimize=compress-fast' | sudo tee -a /etc/apparmor/parser.conf`
+
+Follow https://apparmor.pujol.io/install/[AppArmor.d's official instructions] on installing additional AppArmor profiles.
+
+* If there is a broken AppArmor profile, remove it, such as +
+`sudo rm /etc/apparmor.d/home.tor-browser.firefox`.
+
+Sudo edit `/etc/apparmor.d/qbittorrent-nox` and add the following lines: +
+
+```
+owner /home/swiz/incomplete/** rw,
+owner /data/torrents/** rw,
+owner /data/watch/** rw,
+owner /data/cross-seed/** rw,
+```
+
+Now we can enforce AppArmor profiles for our web-facing applications: +
+`sudo aa-enforce -d /etc/apparmor.d qbittorrent-nox php-fpm sshd`
+
+Restart the server to apply our GRUB and sysctl changes: +
+`sudo systemctl reboot`
+
+== 2. Setting up qBittorrent
+Open the Swizzin panel, which should be on the root of your IP such as https://EXAMPLE_IP.
+
+Click the Gear icon to go into the settings.
+
+.*Downloads*
+- Default save path: `/home/YOUR_SWIZZIN_USER/torrents/qbittorrent`
+** Use `/home/YOUR_SWIZZIN_USER/storage/torrents/qbittorrent` if on a hostingby.design server with both SSDs and HDDs.
+- Default Torrent Management Mode: Automatic
+** This is so you can download torrents based on category and have them be separated into their own sub-folder. For example: the category "mam" -> `/home/YOUR_SWIZZIN_USER/torrents/qbittorrent/mam`.
+
+.*Connection*
+- Peer connection protocol: TCP
+- Use UPnP / NAT-PMP port forwarding from my router: ON
+- Uncheck all under Connections Limits!
+- `sudo ufw allow YOUR_PORT_FOR_INCOMING_CONNECTIONS`
+
+.*BitTorrent*
+- Encryption mode: Allow encryption
+- If using private trackers, uncheck all under Privacy, and NEVER enable anonymous mode.
+- Uncheck all under Torrent Queueing and Seeding Limits!
+
+.For 1gbit servers such as Hetzner
+[%collapsible]
+====
+
+.*Advanced*
+- File pool size: 5000
+- Outstanding memory when checking torrents: 1024
+** 512 if not using Hetzner / limited RAM such as 16GB.
+- Disk cache: -1
+** 1024 to play it safe, or 0 if you experience memory leaks / 90-100% RAM usage.
+- Disk cache expiry: 60
+- Disk IO type: Default
+- Disk IO read mode: Enable OS Cache
+- Disk IO write mode: Enable OS Cache
+- Coalesce reads and writes: OFF
+- Use piece extent affinity: ON
+- Send upload piece suggestions: ON
+- Send buffer watermark: 5120
+- Send buffer low watermark: 512
+- Send buffer watermark factor: Between 200-250, adjust as needed
+- Outgoing connections per second: 50 (increase to 75 if racing on REDacted)
+- Socket backlog size: 1000
+- Type of service (ToS) for connections to peers: 128
+- μTP-TCP mixed mode algorithm: Prefer TCP
+- Support IDN: ON
+- Allow multiple connections from the same IP address: ON
+- Validate HTTPS tracker certificate: OFF
+- Server-side request forgery (SSRF) mitigation: ON
+- Upload slots behaviour: Fixed Slots
+- Upload choking algorithm: Fastest Upload
+- Always announce to all trackers in a tier: OFF
+- Always announce to all tiers: ON
+- Max concurrent HTTP announces: 50
+** Only use 75 if experiencing announce issues with a very high amount of torrents loaded.
+- Peer turnover disconnect percentage: 0
+- Peer turnover threshold percentage: 90
+- Peer turnover disconnect interval: 30
+- Max outstanding requests to a single peer: 500
+
+====
+
+.For 10gbit servers
+[%collapsible]
+====
+
+.*Advanced*
+- File pool size: 250000
+- Outstanding memory when checking torrents: 1024
+** 512 on limited RAM such as 16GB.
+- Disk cache: -1
+** 1024 to play it safe, or 0 if you experience memory leaks / 90-100% RAM usage.
+- Disk cache expiry: 60
+- Disk IO type: Default
+- Disk IO read mode: Enable OS Cache
+- Disk IO write mode: Enable OS Cache
+- Coalesce reads and writes: OFF
+- Use piece extent affinity: ON
+- Send upload piece suggestions: ON
+- Send buffer watermark: 20480
+- Send buffer low watermark: 2048
+- Send buffer watermark factor: 250
+- Outgoing connections per second: 50 (increase to 75 if racing on REDacted)
+- Socket backlog size: 1500
+- Type of service (ToS) for connections to peers: 128
+- μTP-TCP mixed mode algorithm: Prefer TCP
+- Support IDN: ON
+- Allow multiple connections from the same IP address: ON
+- Validate HTTPS tracker certificate: OFF
+- Server-side request forgery (SSRF) mitigation: ON
+- Upload slots behaviour: Fixed Slots
+- Upload choking algorithm: Fastest Upload
+- Always announce to all trackers in a tier: OFF
+- Always announce to all tiers: ON
+- Max concurrent HTTP announces: 50
+** Only use 75 if experiencing announce issues with a very high amount of torrents loaded.
+- Peer turnover disconnect percentage: 0
+- Peer turnover threshold percentage: 90
+- Peer turnover disconnect interval: 30
+- Max outstanding requests to a single peer: 500
+
+====
+
+== 3. (Optional) Setting up a VPN for qBittorrent and Plex
+
+This is to avoid complaints to Hetzner that would get your server shut down, which will always happen on public trackers, but are rare on private trackers.
+
+WARNING: This will slow down 10gbit servers to around 1.2gbit.
+
+.Instructions
+[%collapsible]
+====
+
+Here we're going to use https://airvpn.org[AirVPN]; their servers are reliable, fast, and support port forwarding which is a requirement. I've personally used them since 2016, and struggled to find better VPNs when needing port forwarding.
+
+`sudo ufw route allow in on wg0; sudo ufw allow 1637/udp`
+
+Open AirVPN's website, go to "Client Area", then "VPN Devices -> Manage". Here you assign a new device with whatever name you want; personally I'd name it "Hetzner".
+
+Go back into "Client Area", then go to "Config Generator".
+
+* Choose "Linux" as the OS, click the slider for "Wireguard UDP 1637", then select your device. Now pick a server that has a 20000mbit/s (10gbps up and down) link; for Germany, their Netherlands servers are most suitable, while for Finland it would be Sweden.
+- At the bottom of the page, click "Generate".
+
+Rename the generated VPN file to "wg0" ("wg0.conf" if you enabled file extensions in your OS).
+
+Edit "wg0.conf":
+
+* Change the `MTU` to 1420.
+* Remove the line containing `PersistentKeepalive`.
+
+Install Wireguard on the server: +
+`sudo apt install wireguard resolvconf`
+
+Sudo edit `/opt/swizzin/swizzin.cfg` and add `FORMS_LOGIN = False`
+
+NOTE: This is required to login to the Swizzin panel when using alternative ports.
+
+Move "wg0.conf" to `/etc/wireguard`; use an SFTP program such as https://filezilla-project.org/[FileZilla] if you need to.
+
+Sudo edit `/etc/nginx/sites-enabled/default`
+
+- Change the listen port from 443 to a port you have forwarded in AirVPN, note that the port and local port cannot differ on AirVPN's website.
+
+Using your Swizzin user, edit `~/.config/qBittorrent/qBittorrent.conf`:
+
+- Change `WebUI\LocalHostAuth` to *false*.
+** It's safe to bypass the localhost login requirement since Nginx protects this page already with a login.
+
+Sudo edit `/etc/ssh/sshd_config`, and change the Port to one you've port forwarded with AirVPN, note that again, the port and local port cannot differ on AirVPN's website.
+
+As root: +
+`sudo systemctl restart ssh nginx panel qbittorrent@YOUR_SWIZZIN_USER`
+
+Enable the VPN on the server: +
+`sudo wg-quick up wg0`
+
+Open the qBittorrent UI, likely https://example.airdns.org:12345
+
+Click the Gear icon to go into the settings.
+
+.*Advanced*
+* Network interface: wg0
+
+Now for Plex, go to the URL -- likely https://example.airdns.org:54321 (this must have its local port set to 32400), then click the wrench icon, go to Settings -> Remote Access, and make sure it looks similar to the following: +
+image:plex port.png[]
+
+====
+
+== Tips
+Check your successful server logins occassionally with: +
+`sudo last -w -F`
+
+View the AppArmor denials for 1 day: +
+`sudo aa-notify -s 1 -v`
+
+Reload an AppArmor profile after changing it: +
+`sudo aa-enforce THE_PROFILE`
+
+Monitor system resources live; run without `sudo` to view the current user's processes only: +
+`sudo htop`
+
+== Private tracker tips
+.*Myanonamouse*
+
+Setting a dynamic seedbox IP: +
+
+Your username -> Preferences -> Security -> Create session with the IP -> go back to Security -> then click "Allow session to set dynamic seedbox IP": +
+image:MAM allow dynamic.png[] +
+image:MAM cookie.png[]
+
+== File transfers / backups
+There are three good options, two graphical, one command-line, depending on what you're comfortable with.
+
+=== Graphical
+
+.https://syncthing.net/[Syncthing]
+* This is an okay option for syncing across drives or servers, the downside is the long wait time for a first folder scan.
+- `sudo box install syncthing` on the server(s).
+
+.https://filezilla-project.org/[FileZilla]
+- This is the fastest SFTP client for downloads; given the following option is set to 10: +
+image:simultaneous transfers.png[]
+
+== Command-line
+
+.rsync
+- On the server (example is of moving all files under `/home/EXAMPLE_USER/torrents/qbittorrent/` to IP 31.3.3.7 on SSH port 6969): +
+`rsync --progress -atvz /home/EXAMPLE_USER/torrents/qbittorrent/* -e 'ssh -p 6969' EXAMPLE_USER@31.3.3.7:/home/EXAMPLE_USER/torrents/qbittorrent`
+
+== Appendices
+
+.Learning resources used
+. hostingby.design's server templates.
+. ofnir & imabee's advice on qBittorrent settings.
+. https://www.emqx.com/en/blog/emqx-performance-tuning-tcp-syn-queue-and-accept-queue
+. https://blog.cloudflare.com/optimizing-tcp-for-high-throughput-and-low-latency
+. https://fasterdata.es.net/host-tuning/linux/
+. https://learn.microsoft.com/en-us/azure/virtual-network/virtual-network-tcpip-performance-tuning
+. https://docs.redhat.com/en/documentation/red_hat_enterprise_linux/9/html/monitoring_and_managing_system_status_and_performance/tuning-the-network-performance_monitoring-and-managing-system-status-and-performance
+. https://madaidans-insecurities.github.io/guides/linux-hardening.html
+. https://blog.cloudflare.com/path-mtu-discovery-in-practice/
+

@@ -101,7 +101,7 @@ just cluster-bootstrap
     │   ├── cert-manager      # Certificate management
     │   ├── database          # Database operators and clusters
     │   ├── kube-system       # Core kubernetes components
-    │   ├── monitoring        # Observability stack
+    │   ├── monitoring        # monitoring stack
     │   ├── networking        # Network services and ingress
     │   ├── security          # Secret management and security tools
     │   └── storage           # Storage controllers and operators

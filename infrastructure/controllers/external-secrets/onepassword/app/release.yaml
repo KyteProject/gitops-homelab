@@ -4,18 +4,11 @@ kind: HelmRelease
 metadata:
   name: onepassword
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: -1
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
+  interval: 1h
   values:
     controllers:
       onepassword:
@@ -25,8 +18,8 @@ spec:
         containers:
           api:
             image:
-              repository: docker.io/1password/connect-api
-              tag: 1.7.3@sha256:0601c7614e102eada268dbda6ba4b5886ce77713be2c332ec6a2fd0f028484ba
+              repository: ghcr.io/1password/connect-api
+              tag: 1.8.1@sha256:ac6e9efe4f54cc351393fcb8f01b10e667b08b68ff47ebf6024ff93eae642e5c
             env:
               XDG_DATA_HOME: &configDir /config
               OP_HTTP_PORT: &apiPort 80
@@ -35,7 +28,7 @@ spec:
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: onepassword-secret
+                    name: "{{ .Release.Name }}-secret"
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -71,8 +64,8 @@ spec:
               capabilities: { drop: ["ALL"] }
           sync:
             image:
-              repository: docker.io/1password/connect-sync
-              tag: 1.7.3@sha256:2f17621c7eb27bbcb1f86bbc5e5a5198bf54ac3b9c2ffac38064d03c932b07d5
+              repository: ghcr.io/1password/connect-sync
+              tag: 1.8.1@sha256:565e1765aff957379acbb46fab2b2d67380a149d70ef22507d05a5316a100052
             env:
               XDG_DATA_HOME: *configDir
               OP_HTTP_PORT: &syncPort 8081
@@ -81,7 +74,7 @@ spec:
               OP_SESSION:
                 valueFrom:
                   secretKeyRef:
-                    name: onepassword-secret
+                    name: "{{ .Release.Name }}-secret"
                     key: 1password-credentials.json
             probes:
               liveness:
@@ -109,6 +102,7 @@ spec:
             resources: *resources
             securityContext: *securityContext
     defaultPodOptions:
+      hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 999
