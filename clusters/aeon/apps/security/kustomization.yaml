@@ -5,4 +5,4 @@ namespace: security
 resources: []
   # - authentik/ks.yaml
 components:
-  - ../../../../infrastructure/flux/components/common
+  - ../../../../infrastructure/components/namespace

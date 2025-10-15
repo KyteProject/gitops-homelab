@@ -9,16 +9,12 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/flux/components/volsync
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
-    - name: emqx-cluster
-      namespace: database
     - name: multus-networks
       namespace: networking
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/home/home-assistant/app
   postBuild:
@@ -26,11 +22,8 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 5Gi
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true

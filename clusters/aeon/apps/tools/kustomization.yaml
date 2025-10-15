@@ -9,4 +9,4 @@ resources: []
   # - n8n/ks.yaml
   # - wakapi/ks.yaml
 components:
-  - ../../../../infrastructure/flux/components/common
+  - ../../../../infrastructure/components/namespace

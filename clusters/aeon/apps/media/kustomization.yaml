@@ -17,4 +17,4 @@ resources: []
   # - tautulli/ks.yaml
   # - unpackerr/ks.yaml
 components:
-  - ../../../../infrastructure/flux/components/common
+  - ../../../../infrastructure/components/namespace

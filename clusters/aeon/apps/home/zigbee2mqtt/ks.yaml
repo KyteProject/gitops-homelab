@@ -9,10 +9,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/flux/components/volsync
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
-    - name: mosquitto
-      namespace: *namespace
     - name: onepassword-store
       namespace: external-secrets
     - name: rook-ceph-cluster
@@ -26,11 +24,8 @@ spec:
       APP: *app
       VOLSYNC_CAPACITY: 1Gi
   prune: true
-  retryInterval: 2m
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true
