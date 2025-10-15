@@ -8,8 +8,15 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  dependsOn:
+    - name: external-secrets
+      namespace: kube-system
   interval: 1h
   path: ./infrastructure/controllers/networking/cloudflared/app
+  postBuild:
+    substituteFrom:
+      - kind: Secret
+        name: cloudflared-secret
   prune: true
   sourceRef:
     kind: GitRepository

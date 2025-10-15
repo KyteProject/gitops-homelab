@@ -32,6 +32,7 @@ spec:
               - --provider=cloudflare
               - --registry=txt
               - --source=gateway-httproute
+              - --source=crd
               - --txt-owner-id=k8s
               - --txt-prefix=k8s.
               - --zone-id-filter=$(CF_ZONE_ID)
