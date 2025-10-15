@@ -67,9 +67,14 @@ spec:
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
-      hostNetwork: true
-      dnsPolicy: ClusterFirstWithHostNet
-      # hostUsers: false
+      annotations:
+        k8s.v1.cni.cncf.io/networks: |
+          [{
+            "name": "multus-iot",
+            "namespace": "networking",
+            "ips": ["192.168.40.201/24"]
+          }]
+      hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
