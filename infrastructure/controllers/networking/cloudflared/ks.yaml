@@ -9,8 +9,8 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   dependsOn:
-    - name: external-secrets
-      namespace: kube-system
+    - name: onepassword-store
+      namespace: external-secrets
   interval: 1h
   path: ./infrastructure/controllers/networking/cloudflared/app
   postBuild:
