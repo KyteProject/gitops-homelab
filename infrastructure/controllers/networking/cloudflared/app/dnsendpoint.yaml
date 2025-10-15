@@ -11,7 +11,7 @@ spec:
       recordTTL: 1
       recordType: CNAME
       targets:
-        - ${TUNNEL_HOSTNAME}
+        - $(TUNNEL_HOSTNAME)
       providerSpecific:
         - name: external-dns.alpha.kubernetes.io/cloudflare-proxied
           value: "true"
