@@ -8,15 +8,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  dependsOn:
-    - name: onepassword-store
-      namespace: external-secrets
   interval: 1h
   path: ./infrastructure/controllers/networking/cloudflared/app
-  postBuild:
-    substituteFrom:
-      - kind: Secret
-        name: cloudflared-secret
   prune: true
   sourceRef:
     kind: GitRepository
