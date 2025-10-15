@@ -49,11 +49,14 @@ spec:
                   name: "{{ .Release.Name }}-secret"
             probes:
               liveness:
-                enabled: false
+                enabled: true
               readiness:
-                enabled: false
+                enabled: true
               startup:
-                enabled: false
+                enabled: true
+                spec:
+                  periodSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 10m

@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./release.yaml
-  # - ./scaledobject.yaml  # Disabled until firewall allows pod network access to zigbee controller
+  - ./scaledobject.yaml
