@@ -69,7 +69,7 @@ spec:
     defaultPodOptions:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
-      hostUsers: false
+      # hostUsers: false
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
