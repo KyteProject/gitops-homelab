@@ -1,1 +1,1 @@
-{{ exec "yq" (list "select(.kind == \"HelmRelease\").spec.values" (printf "../infrastructure/controllers/%s/%s/app/release.yaml" .Release.Namespace .Release.Name)) }}
+{{ exec "yq" (list "select(.kind == \"HelmRelease\").spec.values" (printf "/home/dan/dev/personal/homelab/infrastructure/controllers/%s/%s/app/release.yaml" .Release.Namespace .Release.Name)) }}
