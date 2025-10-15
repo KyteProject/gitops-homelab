@@ -75,7 +75,7 @@ metadata:
   namespace: flux-system
 spec:
   dependsOn:
-    - name: flux-controllers
+    - name: cluster-controllers
       namespace: flux-system
   interval: 1h
   path: ./clusters/aeon/apps
