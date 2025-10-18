@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app authentik
+  name: authentik
 spec:
   chart:
     spec:
@@ -12,17 +12,7 @@ spec:
         kind: HelmRepository
         name: authentik
         namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      retries: 3
-  interval: 30m
-  maxHistory: 3
-  uninstall:
-    keepHistory: false
+  interval: 1h
   values:
     # https://github.com/goauthentik/helm/issues/330
     additionalObjects:
@@ -37,8 +27,8 @@ spec:
             - auth.omux.io
             - id.omux.io
           parentRefs:
-            - name: internal
-              namespace: kube-system
+            - name: envoy-internal
+              namespace: networking
               sectionName: https
           rules:
             - backendRefs:

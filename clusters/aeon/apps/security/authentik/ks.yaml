@@ -15,7 +15,7 @@ spec:
       namespace: database
     - name: dragonfly-cluster
       namespace: database
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/security/authentik/app
   prune: true
   sourceRef:
@@ -23,5 +23,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true
