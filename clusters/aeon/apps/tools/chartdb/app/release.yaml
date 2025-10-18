@@ -18,21 +18,22 @@ spec:
               repository: ghcr.io/chartdb/chartdb
               tag: 1.16.0@sha256:7077687c230ace08e6b7078d69628a3049c690615e66561ea8727440abc27dfc
             env:
+              TZ: Europe/London
               DISABLE_ANALYTICS: true
             envFrom:
               - secretRef:
                   name: chartdb-secret
-            securityContext:
-              allowPrivilegeEscalation: false
-              capabilities:
-                drop:
-                  - ALL
-
-    defaultPodOptions:
-      securityContext:
-        runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 64M
+              limits:
+                memory: 128M
 
     route:
       app:
