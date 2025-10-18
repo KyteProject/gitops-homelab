@@ -134,6 +134,9 @@ spec:
         synology-snmp:
           datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
           url: https://grafana.com/api/dashboards/18643/revisions/1/download
+        trivy-operator:
+          datasource: Prometheus
+          url: https://grafana.com/api/dashboards/16337/revisions/13/download
         unifi-insights:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/11315/revisions/9/download
