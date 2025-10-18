@@ -12,7 +12,7 @@ spec:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 1h
-  path: ./clusters/aeon/apps/tools/erpnext/app
+  path: ./clusters/aeon/apps/personal/erpnext/app
   prune: true
   sourceRef:
     kind: GitRepository
