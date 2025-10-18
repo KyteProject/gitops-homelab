@@ -34,17 +34,31 @@ spec:
                 memory: 64M
               limits:
                 memory: 128M
-
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
     route:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: networking
             sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: &port 80
     service:
       app:
         ports:
           http:
-            port: 8080
+            port: *port
