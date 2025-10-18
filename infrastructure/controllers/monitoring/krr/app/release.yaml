@@ -1,0 +1,104 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: &app krr
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      krr:
+        enabled: true
+        type: job
+        pod:
+          restartPolicy: Never
+        containers:
+          app:
+            image:
+              repository: robustadev/krr
+              tag: v1.26.3@sha256:ea829e0f966ee4f1737ea75f64437dcac9777e7de5f98c7889a32ef66b4fa4c9
+              pullPolicy: IfNotPresent
+            # /bin/sh -c "python krr.py simple --max-workers 3 --width 2048"
+            command:
+              - python
+              - krr.py
+              - simple
+              - --max-workers
+              - "3"
+              - --width
+              - "2048"
+            probes:
+              liveness:
+                enabled: false
+              readiness:
+                enabled: false
+              startup:
+                enabled: false
+            resources:
+              limits:
+                memory: 2Gi
+              requests:
+                memory: 1Gi
+
+    serviceAccount:
+      *app : {}
+
+    rbac:
+      roles:
+        *app :
+          type: ClusterRole
+          rules:
+            - apiGroups: [ "" ]
+              resources:
+                - configmaps
+                - daemonsets
+                - deployments
+                - namespaces
+                - pods
+                - replicasets
+                - replicationcontrollers
+                - services
+              verbs: [ "get", "list", "watch" ]
+            - apiGroups: [ "" ]
+              resources: [ "nodes" ]
+              verbs: [ "get", "list", "watch" ]
+            - apiGroups: [ "apps" ]
+              resources:
+                - daemonsets
+                - deployments
+                - deployments/scale
+                - replicasets
+                - replicasets/scale
+                - statefulsets
+              verbs: [ "get", "list", "watch" ]
+            - apiGroups: [ "extensions" ]
+              resources:
+                - daemonsets
+                - deployments
+                - deployments/scale
+                - ingresses
+                - replicasets
+                - replicasets/scale
+                - replicationcontrollers/scale
+              verbs: [ "get", "list", "watch" ]
+            - apiGroups: [ "batch" ]
+              resources:
+                - cronjobs
+                - jobs
+              verbs: [ "get", "list", "watch" ]
+            - apiGroups: [ "autoscaling" ]
+              resources:
+                - horizontalpodautoscalers
+              verbs: [ "get", "list", "watch" ]
+
+      bindings:
+        *app :
+          type: ClusterRoleBinding
+          roleRef:
+            identifier: *app
+          subjects:
+            - identifier: *app
