@@ -2,29 +2,23 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app chartdb
+  name: chartdb
 spec:
-  interval: 30m
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  interval: 1h
   values:
     controllers:
       chartdb:
         containers:
           app:
             image:
-              repository: ghcr.io/kyteproject/chartdb
-              tag: 1.10.0@sha256:3e665cc5193dbb5d5aa5f1063c91ea14e3fb6d6c2daed722d438c4dc165ae5f4
+              repository: ghcr.io/chartdb/chartdb
+              tag: 1.16.0@sha256:7077687c230ace08e6b7078d69628a3049c690615e66561ea8727440abc27dfc
+            env:
+              DISABLE_ANALYTICS: true
             envFrom:
               - secretRef:
                   name: chartdb-secret
@@ -46,21 +40,11 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: external
-            namespace: kube-system
+          - name: envoy-external
+            namespace: networking
             sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: &port 8080
-
     service:
       app:
-        controller: *app
         ports:
           http:
-            port: *port
-
-    serviceAccount:
-      create: true
-      name: *app
+            port: 8080

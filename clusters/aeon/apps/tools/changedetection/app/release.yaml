@@ -2,25 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app changedetection
+  name: changedetection
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  maxHistory: 3
-  install:
-    createNamespace: true
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
-  uninstall:
-    keepHistory: false
+  interval: 1h
   values:
     controllers:
       changedetection:
@@ -30,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/dgtlmoon/changedetection.io
-              tag: 0.49.4
+              tag: 0.50.26@sha256:1422b9ecb1b2934b49d1a2109e06933723d5769f29947a077d29f634753103a0
               pullPolicy: IfNotPresent
             env:
               TZ: Europe/London
@@ -75,7 +63,7 @@ spec:
         fsGroupChangePolicy: OnRootMismatch
     persistence:
       config:
-        existingClaim: *app
+        existingClaim: "{{ .Release.Name }}"
         advancedMounts:
           changedetection:
             app:
@@ -87,16 +75,11 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: networking
             sectionName: https
-        rules:
-          - backendRefs:
-              - name: *app
-                port: *port
     service:
       app:
-        controller: *app
         ports:
           http:
             port: *port
