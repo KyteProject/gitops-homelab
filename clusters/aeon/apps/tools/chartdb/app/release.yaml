@@ -37,7 +37,9 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               # readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "SETUID", "SETGID"]
     route:
       app:
         hostnames:
