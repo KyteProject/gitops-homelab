@@ -15,20 +15,12 @@ spec:
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app n8n
+  name: n8n
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
-    name: *app
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+    name: n8n
+  interval: 1h
   values:
     deploymentStrategy:
       type: Recreate
@@ -86,7 +78,6 @@ spec:
     # Service configuration
     service:
       app:
-        controller: *app
         ports:
           http:
             port: 5678

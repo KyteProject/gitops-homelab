@@ -17,7 +17,7 @@ spec:
       namespace: database
     - name: cloudnative-pg-cluster
       namespace: database
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/personal/immich/app
   postBuild:
     substitute:

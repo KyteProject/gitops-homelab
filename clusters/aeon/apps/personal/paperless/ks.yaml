@@ -19,7 +19,7 @@ spec:
       namespace: storage
     - name: volsync
       namespace: storage
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/personal/paperless/app
   postBuild:
     substitute:

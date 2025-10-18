@@ -9,14 +9,6 @@ spec:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     controllers:
       thelounge:
@@ -63,8 +55,8 @@ spec:
           - "{{ .Release.Name }}.omux.io"
           - "irc.omux.io"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: networking
             sectionName: https
         rules:
           - backendRefs:

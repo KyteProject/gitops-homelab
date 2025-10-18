@@ -6,7 +6,6 @@ resources:
   - atuin/ks.yaml
   - changedetection/ks.yaml
   - chartdb/ks.yaml
-  # - n8n/ks.yaml
-  # - wakapi/ks.yaml
+  - n8n/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace

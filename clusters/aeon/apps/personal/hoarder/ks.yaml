@@ -13,7 +13,7 @@ spec:
       namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph
-  interval: 30m
+  interval: 1h
   path: ./clusters/aeon/apps/personal/hoarder/app
   prune: true
   sourceRef:
@@ -21,5 +21,4 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
   wait: true

@@ -4,19 +4,11 @@ kind: HelmRelease
 metadata:
   name: &app hoarder
 spec:
-  interval: 30m
+  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
     controllers:
       web:
@@ -102,8 +94,8 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: networking
             sectionName: https
         rules:
           - backendRefs:

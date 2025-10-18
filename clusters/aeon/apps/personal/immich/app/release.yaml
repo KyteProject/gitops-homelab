@@ -8,11 +8,7 @@ spec:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  interval: 30m
-  install:
-    timeout: 30m
-  upgrade:
-    timeout: 30m
+  interval: 1h
   values:
     controllers:
       server:
@@ -214,8 +210,8 @@ spec:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: networking
             sectionName: https
         rules:
           - backendRefs:
