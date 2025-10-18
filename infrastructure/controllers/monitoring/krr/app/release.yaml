@@ -45,11 +45,11 @@ spec:
                 memory: 1Gi
 
     serviceAccount:
-      *app : {}
+      *app: {}
 
     rbac:
       roles:
-        *app :
+        *app:
           type: ClusterRole
           rules:
             - apiGroups: [ "" ]
@@ -96,7 +96,7 @@ spec:
               verbs: [ "get", "list", "watch" ]
 
       bindings:
-        *app :
+        *app:
           type: ClusterRoleBinding
           roleRef:
             identifier: *app

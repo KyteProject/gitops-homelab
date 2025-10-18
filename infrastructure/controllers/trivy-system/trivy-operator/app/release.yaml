@@ -30,3 +30,5 @@ spec:
       headless: false
     operator:
       builtInTrivyServer: true
+    nodeCollector:
+      enabled: false
