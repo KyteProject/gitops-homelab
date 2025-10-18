@@ -25,6 +25,7 @@ spec:
               EXECUTIONS_DATA_MAX_AGE: 7
               EXECUTIONS_DATA_PRUNE_MAX_COUNT: 50000
               GENERIC_TIMEZONE: "Europe/London"
+              N8N_USER_FOLDER: /home/node/.n8n
               N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: false
               N8N_PROTOCOL: "https"
               N8N_PORT: &port 8080
@@ -44,7 +45,7 @@ spec:
                 memory: 2Gi
             securityContext:
               allowPrivilegeEscalation: false
-              readOnlyRootFilesystem: true
+              readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
@@ -53,7 +54,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [65536]
+        supplementalGroups: [10000]
     persistence:
       data:
         existingClaim: "{{ .Release.Name }}"
@@ -69,12 +70,6 @@ spec:
           - name: envoy-internal
             namespace: networking
             sectionName: https
-    service:
-      app:
-        controller: n8n
-        ports:
-          http:
-            port: *port
       webhooks:
         hostnames:
           - "{{ .Release.Name }}-webhook.omux.io"
@@ -88,3 +83,9 @@ spec:
                   value: /webhook
             backendRefs:
               - {}
+    service:
+      app:
+        controller: n8n
+        ports:
+          http:
+            port: *port
