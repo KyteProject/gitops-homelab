@@ -7,7 +7,6 @@
 
     // Local configs
     "github>kyteproject/gitops-homelab//.renovate//autoMerge.json5",
-    "github>kyteproject/gitops-homelab//.renovate//changelogs.json5",
     "github>kyteproject/gitops-homelab//.renovate//clusters.json5",
     "github>kyteproject/gitops-homelab//.renovate//customManagers.json5",
     "github>kyteproject/gitops-homelab//.renovate//grafanaDashboards.json5",
