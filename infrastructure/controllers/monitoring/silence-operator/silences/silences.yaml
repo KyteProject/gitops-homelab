@@ -20,7 +20,7 @@ spec:
       value: CephNodeDiskspaceWarning
     - name: device
       value: /dev/nvme.*
-      matchType: "=~"
+      isRegex: true
 ---
 apiVersion: monitoring.giantswarm.io/v1alpha1
 kind: Silence
@@ -32,4 +32,4 @@ spec:
       value: KubeHpaMaxedOut
     - name: horizontalpodautoscaler
       value: keda-hpa-.*
-      matchType: "=~"
+      isRegex: true
