@@ -24,24 +24,24 @@ spec:
               QBT_PREFERENCES__WEBUI__AUTHSUBNETWHITELISTENABLED: "true"
               QBT_PREFERENCES__WEBUI__AUTHSUBNETWHITELIST: "10.244.0.0/16"
               TZ: Europe/London
-            probes:
-              liveness: &probes
-                enabled: true
-                custom: true
-                spec:
-                  httpGet:
-                    path: /api/v2/app/version
-                    port: *port
-                  initialDelaySeconds: 0
-                  periodSeconds: 10
-                  timeoutSeconds: 1
-                  failureThreshold: 3
-              readiness: *probes
-              startup:
-                enabled: true
-                spec:
-                  periodSeconds: 10
-                  failureThreshold: 30
+            # probes:
+            #   liveness: &probes
+            #     enabled: true
+            #     custom: true
+            #     spec:
+            #       httpGet:
+            #         path: /api/v2/app/version
+            #         port: *port
+            #       initialDelaySeconds: 0
+            #       periodSeconds: 10
+            #       timeoutSeconds: 1
+            #       failureThreshold: 3
+            #   readiness: *probes
+            #   startup:
+            #     enabled: true
+            #     spec:
+            #       periodSeconds: 10
+            #       failureThreshold: 30
             resources:
               requests:
                 cpu: 100m
