@@ -33,13 +33,4 @@ spec:
     - name: horizontalpodautoscaler
       value: keda-hpa-.*
       isRegex: true
----
-apiVersion: monitoring.giantswarm.io/v1alpha1
-kind: Silence
-metadata:
-  name: udm-bandwidth-low
-spec:
-  matchers:
-    - name: alertname
-      value: UDM(Download|Upload)Bandw(id)?thLow
-      isRegex: true
+
