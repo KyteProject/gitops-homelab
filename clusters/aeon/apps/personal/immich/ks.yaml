@@ -8,8 +8,8 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
-  components:
-    - ../../../../../../infrastructure/components/volsync
+  # components:
+  #   - ../../../../../../infrastructure/components/volsync
   dependsOn:
     - name: immich-db
       namespace: personal
