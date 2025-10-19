@@ -20,7 +20,8 @@ module.exports = {
   matchMode: "partial",
   outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
-  qbittorrentUrl: "http://qbittorrent.media.svc.cluster.local:8080",
+  skipRecheck: true,
+  torrentClients: ["qbittorrent:http://qbittorrent.media.svc.cluster.local"],
   radarr: [
     "http://radarr.media.svc.cluster.local:7878/?apikey=" + process.env.RADARR_API_KEY
   ],
