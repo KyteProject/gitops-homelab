@@ -8,6 +8,7 @@ metadata:
     external-dns.alpha.kubernetes.io/hostname: postgres.omux.io
 spec:
   type: LoadBalancer
+  externalTrafficPolicy: Local
   ports:
     - name: postgres
       port: 5432
