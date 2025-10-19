@@ -33,8 +33,6 @@ spec:
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
             supplementalGroups: [3004]
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
         containers:
           server:
             image:
@@ -53,11 +51,9 @@ spec:
               TZ: Europe/London
             resources:
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 200m
                 memory: 1024Mi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 5000Mi
             probes:
               liveness: &probes
@@ -86,8 +82,6 @@ spec:
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
         containers:
           ml:
             image:
@@ -106,11 +100,9 @@ spec:
               TZ: Europe/London
             resources:
               requests:
-                gpu.intel.com/i915: 1
                 cpu: 200m
                 memory: 1024Mi
               limits:
-                gpu.intel.com/i915: 1
                 memory: 5000Mi
             probes:
               liveness: &mlprobes
