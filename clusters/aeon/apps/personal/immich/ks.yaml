@@ -28,6 +28,8 @@ spec:
       APP_UID: "568"
       APP_GID: "568"
       VOLSYNC_CAPACITY: 10Gi
+      VOLSYNC_ACCESSMODES: ReadWriteMany
+      VOLSYNC_STORAGECLASS: ceph-filesystem
   prune: true
   sourceRef:
     kind: GitRepository
