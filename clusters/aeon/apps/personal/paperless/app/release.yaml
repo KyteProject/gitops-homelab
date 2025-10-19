@@ -103,7 +103,7 @@ spec:
               runAsUser: 65534
               runAsGroup: 65534
     service:
-      app:
+      app: &app
         controller: paperless
         ports:
           http:
