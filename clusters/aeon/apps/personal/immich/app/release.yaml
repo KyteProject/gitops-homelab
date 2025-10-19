@@ -27,10 +27,12 @@ spec:
                   name: immich-secret
         pod:
           securityContext:
+            runAsNonRoot: true
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
+            supplementalGroups: [3004]
           nodeSelector:
             intel.feature.node.kubernetes.io/gpu: "true"
         containers:
@@ -243,7 +245,7 @@ spec:
       library:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Media/immich
+        path: /mnt/tank/immich
         globalMounts:
           - path: *mediaLocation
       cache:
