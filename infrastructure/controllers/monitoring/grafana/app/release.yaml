@@ -98,9 +98,6 @@ spec:
         envoy:
           datasource: [{ name: DS_AFRANET_PROMETHEUS, value: Prometheus }]
           url: https://grafana.com/api/dashboards/23239/revisions/1/download
-        external-dns:
-          datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15038/revisions/3/download
         kubernetes-api-server:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/15761/revisions/19/download
@@ -131,12 +128,9 @@ spec:
         smartctl-exporter:
           datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
           url: https://grafana.com/api/dashboards/22604/revisions/2/download
-        synology-snmp:
-          datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
-          url: https://grafana.com/api/dashboards/18643/revisions/1/download
         trivy-operator:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/16337/revisions/13/download
+          url: https://grafana.com/api/dashboards/17813/revisions/2/download
         unifi-insights:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/11315/revisions/9/download
