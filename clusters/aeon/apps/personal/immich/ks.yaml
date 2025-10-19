@@ -8,15 +8,17 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
+    - name: immich-db
+      namespace: database
     - name: onepassword-store
       namespace: external-secrets
-    - name: democratic-csi-nfs
+    - name: openebs
       namespace: storage
-    - name: dragonfly-cluster
-      namespace: database
-    - name: cloudnative-pg-cluster
-      namespace: database
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   interval: 1h
   path: ./clusters/aeon/apps/personal/immich/app
   postBuild:
@@ -25,6 +27,7 @@ spec:
       HOSTNAME: photos.omux.io
       APP_UID: "568"
       APP_GID: "568"
+      VOLSYNC_CAPACITY: 10Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -33,3 +36,29 @@ spec:
   targetNamespace: *namespace
   timeout: 5m
   wait: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: immich-db
+  namespace: database
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: immich-db
+  dependsOn:
+    - name: cloudnative-pg
+      namespace: database
+    - name: onepassword-store
+      namespace: external-secrets
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  interval: 1h
+  path: ./clusters/aeon/apps/personal/immich/db
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  wait: true
+  timeout: 5m

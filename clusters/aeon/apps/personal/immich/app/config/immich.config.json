@@ -1,7 +1,9 @@
 {
   "backup": {
     "database": {
-      "enabled": false
+      "enabled": true,
+      "cronExpression": "0 02 * * *",
+      "keepLastAmount": 14
     }
   },
   "ffmpeg": {
@@ -11,7 +13,8 @@
     "targetVideoCodec": "h264",
     "acceptedVideoCodecs": ["h264"],
     "targetAudioCodec": "aac",
-    "acceptedAudioCodecs": ["aac", "mp3", "libopus"],
+    "acceptedAudioCodecs": ["aac", "mp3", "libopus", "pcm_s16le"],
+    "acceptedContainers": ["mov", "ogg", "webm"],
     "targetResolution": "720",
     "maxBitrate": "8M",
     "bframes": -1,
@@ -53,7 +56,7 @@
       "concurrency": 5
     },
     "thumbnailGeneration": {
-      "concurrency": 5
+      "concurrency": 3
     },
     "videoConversion": {
       "concurrency": 1
@@ -68,24 +71,35 @@
   },
   "machineLearning": {
     "enabled": true,
-    "url": "http://immich-machine-learning.personal:3003",
+    "urls": ["http://immich-machine-learning.personal.svc.cluster.local:3003"],
     "clip": {
       "enabled": true,
       "modelName": "ViT-B-32__openai"
+    },
+    "duplicateDetection": {
+      "enabled": true,
+      "maxDistance": 0.01
     },
     "facialRecognition": {
       "enabled": true,
       "modelName": "buffalo_l",
       "minScore": 0.7,
       "maxDistance": 0.5,
-      "minFaces": 5
+      "minFaces": 3
     }
   },
   "map": {
-    "enabled": true
+    "enabled": true,
+    "lightStyle": "https://tiles.immich.cloud/v1/style/light.json",
+    "darkStyle": "https://tiles.immich.cloud/v1/style/dark.json"
   },
   "reverseGeocoding": {
     "enabled": true
+  },
+  "metadata": {
+    "faces": {
+      "import": true
+    }
   },
   "oauth": {
     "autoLaunch": true,
@@ -93,15 +107,16 @@
     "buttonText": "Login with Authentik",
     "clientId": "{{ .IMMICH_OIDC_CLIENT_ID }}",
     "clientSecret": "{{ .IMMICH_OIDC_CLIENT_SECRET }}",
-    "defaultStorageQuota": 0,
+    "defaultStorageQuota": 10,
     "enabled": true,
     "issuerUrl": "https://id.omux.io/application/o/immich/.well-known/openid-configuration",
     "mobileOverrideEnabled": false,
     "mobileRedirectUri": "",
     "scope": "openid email profile",
     "signingAlgorithm": "RS256",
+    "profileSigningAlgorithm": "none",
     "storageLabelClaim": "preferred_username",
-    "storageQuotaClaim": "immich_quota"
+    "storageQuotaClaim": "quota"
   },
   "passwordLogin": {
     "enabled": false
@@ -126,11 +141,11 @@
     "extractEmbedded": false
   },
   "newVersionCheck": {
-    "enabled": false
+    "enabled": true
   },
   "trash": {
     "enabled": true,
-    "days": 30
+    "days": 90
   },
   "theme": {
     "customCss": ""
@@ -161,6 +176,6 @@
     }
   },
   "user": {
-    "deleteDelay": 2
+    "deleteDelay": 7
   }
 }

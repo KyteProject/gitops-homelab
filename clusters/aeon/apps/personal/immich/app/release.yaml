@@ -11,48 +11,44 @@ spec:
   interval: 1h
   values:
     controllers:
-      server:
-        replicas: 3
+      immich:
         strategy: RollingUpdate
+        replicas: 3
         annotations:
-          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
-          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
+          secret.reloader.stakater.com/reload: immich-secret
         initContainers:
-          02-init-db:
+          init-db:
             image:
-              repository: ghcr.io/onedr0p/postgres-init
-              tag: 16.8
-              pullPolicy: Always
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 17.6@sha256:86a1992d46273c58fd4ad95b626081dfaabfe16bd56944675169e406d1a660dd
+              pullPolicy: IfNotPresent
             envFrom:
               - secretRef:
-                  name: &secret immich-secret
+                  name: immich-secret
         pod:
           securityContext:
             runAsUser: 568
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: ${APP}
-                  app.kubernetes.io/component: server
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
         containers:
           server:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.125.7
+              tag: v2.1.0@sha256:72a9b9de6c6abfa7a9c9cdc244ae4d2bd9fea2ae00997f194cbd10aca72ea210
             envFrom:
               - secretRef:
-                  name: *secret
-              - configMapRef:
-                  name: &configmap immich-configmap
+                  name: immich-secret
             env:
+              DB_PORT: "5432"
               IMMICH_CONFIG_FILE: /config/immich.config.json
-              IMMICH_WORKERS_INCLUDE: api
+              IMMICH_MEDIA_LOCATION: &mediaLocation /usr/src/app/upload
+              LOG_LEVEL: verbose
+              NODE_ENV: production
+              REDIS_HOSTNAME: &redisHostname immich-valkey.personal.svc.cluster.local
+              TZ: Europe/London
             resources:
               requests:
                 gpu.intel.com/i915: 1
@@ -76,54 +72,11 @@ spec:
               readiness: *probes
               startup:
                 enabled: false
-      microservices:
-        replicas: 3
-        strategy: RollingUpdate
-        annotations:
-          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
-          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
-        pod:
-          securityContext:
-            runAsUser: 568
-            runAsGroup: 568
-            fsGroup: 568
-            fsGroupChangePolicy: "OnRootMismatch"
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: ${APP}
-                  app.kubernetes.io/component: microservices
-          nodeSelector:
-            intel.feature.node.kubernetes.io/gpu: "true"
-        containers:
-          microservices:
-            image:
-              repository: ghcr.io/immich-app/immich-server
-              tag: v1.125.7
-            envFrom:
-              - secretRef:
-                  name: *secret
-              - configMapRef:
-                  name: *configmap
-            env:
-              IMMICH_WORKERS_EXCLUDE: api
-            resources:
-              requests:
-                gpu.intel.com/i915: 1
-                cpu: 200m
-                memory: 1024Mi
-              limits:
-                gpu.intel.com/i915: 1
-                memory: 5000Mi
       machine-learning:
-        replicas: 3
         strategy: RollingUpdate
+        replicas: 3
         annotations:
-          secret.reloader.stakater.com/reload: "immich-secret,immich-config-secret"
-          configmap.reloader.stakater.com/reload: "immich-configmap,immich-config-tpl"
+          secret.reloader.stakater.com/reload: immich-secret
         pod:
           enableServiceLinks: false
           securityContext:
@@ -131,19 +84,24 @@ spec:
             runAsGroup: 568
             fsGroup: 568
             fsGroupChangePolicy: "OnRootMismatch"
-          topologySpreadConstraints:
-            - maxSkew: 1
-              topologyKey: kubernetes.io/hostname
-              whenUnsatisfiable: DoNotSchedule
-              labelSelector:
-                matchLabels:
-                  app.kubernetes.io/instance: ${APP}
-                  app.kubernetes.io/component: machine-learning
+          nodeSelector:
+            intel.feature.node.kubernetes.io/gpu: "true"
         containers:
-          machine-learning:
+          ml:
             image:
               repository: ghcr.io/immich-app/immich-machine-learning
-              tag: v1.125.7
+              tag: v2.1.0@sha256:24bfef29bc5c0923c64c98810931eda1449a4b237e6704a715605761bc107ae4
+            envFrom:
+              - secretRef:
+                  name: immich-secret
+            env:
+              DB_PORT: "5432"
+              IMMICH_MEDIA_LOCATION: *mediaLocation
+              LOG_LEVEL: verbose
+              MPLCONFIGDIR: "/cache/matplotlib"
+              NODE_ENV: production
+              REDIS_HOSTNAME: *redisHostname
+              TZ: Europe/London
             resources:
               requests:
                 gpu.intel.com/i915: 1
@@ -153,7 +111,7 @@ spec:
                 gpu.intel.com/i915: 1
                 memory: 5000Mi
             probes:
-              liveness: &probes
+              liveness: &mlprobes
                 enabled: true
                 custom: true
                 spec:
@@ -164,21 +122,66 @@ spec:
                   periodSeconds: 10
                   timeoutSeconds: 1
                   failureThreshold: 5
-              readiness: *probes
+              readiness: *mlprobes
               startup:
                 enabled: false
+      valkey:
+        replicas: 1
+        strategy: RollingUpdate
+        pod:
+          securityContext:
+            runAsUser: 568
+            runAsGroup: 568
+            fsGroup: 568
+            fsGroupChangePolicy: "OnRootMismatch"
+        containers:
+          valkey:
+            image:
+              repository: ghcr.io/valkey-io/valkey
+              tag: 8.1.4
+            command: ["valkey-server", "--save", "60", "1", "--loglevel", "warning"]
+            resources:
+              requests:
+                cpu: 10m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            probes:
+              liveness:
+                enabled: true
+                custom: true
+                spec:
+                  exec: &probe-exec
+                    command: ["sh", "-c", "valkey-cli ping | grep PONG"]
+                  initialDelaySeconds: 30
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  exec: *probe-exec
+                  initialDelaySeconds: 5
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  exec: *probe-exec
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 30
 
     service:
-      server:
-        controller: server
+      immich:
+        controller: immich
         ports:
           http:
             port: *serverport
-          metrics:
-            port: 8081
-      microservices:
-        controller: microservices
-        ports:
           metrics:
             port: 8081
       machine-learning:
@@ -186,29 +189,28 @@ spec:
         ports:
           http:
             port: *mlport
+      valkey:
+        controller: valkey
+        ports:
+          redis:
+            port: 6379
 
-    # serviceMonitor:
-    #   immich:
-    #     serviceName: immich-server
-    #     endpoints:
-    #       - port: metrics
-    #         scheme: http
-    #         path: /metrics
-    #         interval: 1m
-    #         scrapeTimeout: 30s
-    #   microservices:
-    #     serviceName: immich-microservices
-    #     endpoints:
-    #       - port: metrics
-    #         scheme: http
-    #         path: /metrics
-    #         interval: 1m
-    #         scrapeTimeout: 30s
+    serviceMonitor:
+      immich:
+        enabled: true
+        serviceName: immich-immich
+        endpoints:
+          - port: metrics
+            scheme: http
+            path: /metrics
+            interval: 1m
+            scrapeTimeout: 30s
 
     route:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - photos.omux.io
         parentRefs:
           - name: envoy-internal
             namespace: networking
@@ -216,57 +218,82 @@ spec:
         rules:
           - backendRefs:
               - port: http
-                name: app
+                name: immich-immich
 
     persistence:
       config:
+        existingClaim: "{{ .Release.Name }}"
+        advancedMounts:
+          immich:
+            server:
+              - path: /usr/src/app/config
+          machine-learning:
+            ml:
+              - path: /usr/src/app/config
+      config-file:
         type: secret
         name: immich-config-secret
         advancedMounts:
-          server:
+          immich:
             server:
               - path: /config
-          microservices:
-            microservices:
+          machine-learning:
+            ml:
               - path: /config
       library:
-        existingClaim: immich-media
+        type: nfs
+        server: tank.lan
+        path: /mnt/tank/Media/immich
+        globalMounts:
+          - path: *mediaLocation
+      cache:
+        existingClaim: immich-cache
         advancedMounts:
-          server:
+          machine-learning:
+            ml:
+              - path: /cache
+                subPath: cache
+              - path: /.cache
+                subPath: dotCache
+      valkey-data:
+        existingClaim: "{{ .Release.Name }}-valkey"
+        advancedMounts:
+          valkey:
+            valkey:
+              - path: /data
+      matplotlib:
+        type: emptyDir
+        advancedMounts:
+          immich:
             server:
-              - path: /usr/src/app/upload
-          microservices:
-            microservices:
-              - path: /usr/src/app/upload
+              - path: /config/matplotlib
       geocoding-dump:
         type: emptyDir
         advancedMounts:
-          server:
+          immich:
             server:
               - path: /usr/src/app/.reverse-geocoding-dump
-          microservices:
-            microservices:
-              - path: /usr/src/app/.reverse-geocoding-dump
-      geoname-dump:
-        type: emptyDir
-        advancedMounts:
-          microservices:
-            microservices:
-              - path: /usr/src/app/node_modules/local-reverse-geocoder/geonames_dump
       transformers-cache:
         type: emptyDir
         advancedMounts:
-          server:
+          immich:
             server:
               - path: /usr/src/app/.transformers_cache
-          microservices:
-            microservices:
+          machine-learning:
+            ml:
               - path: /usr/src/app/.transformers_cache
-      model-cache:
+      tmpfs:
         type: emptyDir
         advancedMounts:
+          immich:
+            server:
+              - path: /tmp
+                subPath: tmp
           machine-learning:
-            machine-learning:
-              - path: /cache
-      #   # globalMounts:
-      #   #   - path: /config
+            ml:
+              - path: /tmp
+                subPath: tmp
+          valkey:
+            valkey:
+              - path: /tmp
+                subPath: tmp
