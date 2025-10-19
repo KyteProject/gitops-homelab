@@ -9,12 +9,10 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/flux/components/volsync
+    - ../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/media/tautulli/app
   postBuild:
@@ -27,5 +25,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true
