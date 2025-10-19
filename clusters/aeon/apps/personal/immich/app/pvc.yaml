@@ -20,14 +20,3 @@ spec:
     requests:
       storage: 5Gi
   storageClassName: ceph-block
----
-apiVersion: v1
-kind: PersistentVolumeClaim
-metadata:
-  name: immich
-spec:
-  accessModes: ["ReadWriteOnce"]
-  resources:
-    requests:
-      storage: ${VOLSYNC_CAPACITY}
-  storageClassName: ceph-block
