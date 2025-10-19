@@ -19,6 +19,10 @@ spec:
       namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/personal/actual/app
+  postBuild:
+    substitute:
+      APP: actual-data
+      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
