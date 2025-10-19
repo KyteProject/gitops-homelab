@@ -2,21 +2,13 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app qbittorrent
+  name: qbittorrent
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  interval: 1h
   values:
     controllers:
       qbittorrent:
@@ -24,42 +16,38 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/qbittorrent
-              tag: 5.0.4@sha256:995c561247b069c10b1fa098186f35b3155c2df63912041f70637a9232755756
+              tag: 5.1.2@sha256:31ac39705e31f7cdcc04dc46c1c0b0cdf8dc6f9865d4894efc097a33adc41524
             env:
-              QBT_WEBUI_PORT: &port 8080
-              QBT_TORRENTING_PORT: &torrentPort 50413
+              QBT_TORRENTING_PORT: &bittorrentPort 50413
+              QBT_WEBUI_PORT: &port 80
               TZ: Europe/London
-              QBT_DEBUG: true
-              QBT_TRACE: true
-              QBT_LOG_LEVEL: DEBUG
-            # probes:
-            #   liveness: &probes
-            #     enabled: true
-            #     custom: true
-            #     spec:
-            #       httpGet:
-            #         path: /api/v2/app/version
-            #         port: *port
-            #       initialDelaySeconds: 0
-            #       periodSeconds: 10
-            #       timeoutSeconds: 1
-            #       failureThreshold: 3
-            #   readiness: *probes
-            #   startup:
-            #     enabled: true
-            #     spec:
-            #       failureThreshold: 30
-            #       periodSeconds: 10
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  periodSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 100m
               limits:
-                memory: 8Gi
+                memory: 32Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities:
-                drop: ["ALL"]
+              capabilities: { drop: ["ALL"] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -70,43 +58,65 @@ spec:
         supplementalGroups: [65537]
     persistence:
       config:
-        existingClaim: qbittorrent-config
-        globalMounts:
-          - path: /config
+        existingClaim: "{{ .Release.Name }}"
+      incomplete:
+        type: custom
+        volumeSpec:
+          ephemeral:
+            volumeClaimTemplate:
+              spec:
+                accessModes: ["ReadWriteOnce"]
+                resources:
+                  requests:
+                    storage: 1Mi # Ignored
+                storageClassName: openebs-hostpath
+                volumeMode: Filesystem
       media:
         type: nfs
         server: tank.lan
         path: /mnt/tank/Media/torrents
         globalMounts:
           - path: /torrents
-      tmp:
+      qbrr:
+        type: image
+        image: ghcr.io/buroa/qbrr:0.1.1@sha256:fe4a1d100ba896999253a5122d9c77cc4920779d618c23f765458cb6ec7383ca
+        globalMounts:
+          - readOnly: true
+      tmpfs:
         type: emptyDir
+        advancedMounts:
+          qbittorrent:
+            app:
+              - path: /config/qBittorrent/logs
+                subPath: logs
+              - path: /tmp
+                subPath: tmp
     route:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
           - qb.omux.io
         parentRefs:
-          - name: internal
-            namespace: kube-system
+          - name: envoy-internal
+            namespace: networking
             sectionName: https
         rules:
           - backendRefs:
-              - name: *app
+              - identifier: app
                 port: *port
     service:
       app:
-        controller: *app
-        nameOverride: *app
+        forceRename: "{{ .Release.Name }}"
+        primary: true
         ports:
           http:
             port: *port
       bittorrent:
-        controller: *app
         type: LoadBalancer
         annotations:
-          lbipam.cilium.io/ips: 192.168.20.82, ::ffff:192.168.20.82
+          lbipam.cilium.io/ips: 192.168.20.82
+        externalTrafficPolicy: Local
         ports:
           bittorrent-tcp:
-            port: *torrentPort
+            port: *bittorrentPort
             protocol: TCP
