@@ -2,25 +2,32 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-media
-  namespace: personal
+  name: immich-cache
 spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: truenas-nfs
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 500Gi
+      storage: 10Gi
+  storageClassName: openebs-hostpath
 ---
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: immich-cache
-  namespace: personal
+  name: immich-valkey
 spec:
-  accessModes:
-    - ReadWriteMany
-  storageClassName: truenas-nfs
+  accessModes: ["ReadWriteOnce"]
   resources:
     requests:
-      storage: 50Gi  # Adjust based on thumbnail cache needs
+      storage: 5Gi
+  storageClassName: ceph-block
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: immich
+spec:
+  accessModes: ["ReadWriteOnce"]
+  resources:
+    requests:
+      storage: ${VOLSYNC_CAPACITY}
+  storageClassName: ceph-block

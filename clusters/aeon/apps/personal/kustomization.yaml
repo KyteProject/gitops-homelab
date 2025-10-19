@@ -5,7 +5,7 @@ namespace: personal
 resources:
   - hoarder/ks.yaml
   # - homepage/ks.yaml
-  # - immich/ks.yaml
+  - immich/ks.yaml
   # - paperless/ks.yaml
   - thelounge/ks.yaml
   - vikunja/ks.yaml

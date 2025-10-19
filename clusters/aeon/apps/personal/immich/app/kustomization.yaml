@@ -4,7 +4,6 @@ kind: Kustomization
 namespace: personal
 resources:
   - externalsecret.yaml
-  - configmap.yaml
   - release.yaml
   - pvc.yaml
 configMapGenerator:
@@ -16,3 +15,5 @@ generatorOptions:
 labels:
   - pairs:
       app.kubernetes.io/name: immich
+      app.kubernetes.io/instance: immich
+      app.kubernetes.io/part-of: immich
