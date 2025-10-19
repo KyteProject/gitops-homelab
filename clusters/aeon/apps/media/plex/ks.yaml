@@ -9,22 +9,18 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/flux/components/gatus/external
-    - ../../../../../../infrastructure/flux/components/volsync
+    - ../../../../infrastructure/components/keda
+    - ../../../../infrastructure/components/volsync
   dependsOn:
-    - name: intel-device-plugin-gpu
+    - name: intel-gpu-resource-driver
       namespace: kube-system
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/media/plex/app
   postBuild:
     substitute:
       APP: *app
-      GATUS_PATH: /identity
-      GATUS_NAMESPACE: *namespace
       VOLSYNC_CACHE_CAPACITY: 25Gi
       VOLSYNC_CAPACITY: 50Gi
   prune: true
@@ -33,5 +29,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true

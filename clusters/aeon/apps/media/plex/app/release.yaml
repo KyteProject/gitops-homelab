@@ -2,39 +2,21 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app plex
+  name: plex
 spec:
-  interval: 1h
   chartRef:
     kind: OCIRepository
     name: app-template
     namespace: flux-system
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
+  interval: 1h
   values:
-    initContainers:
-      - name: fix-permissions
-        image: busybox
-        command: ["/bin/sh", "-c", "chown -R 568:568 /config && chmod -R 755 /config"]
-        securityContext:
-          runAsUser: 0
-          runAsGroup: 0
-        volumeMounts:
-          - name: config
-            mountPath: /config
     controllers:
       plex:
         containers:
           app:
             image:
               repository: ghcr.io/home-operations/plex
-              tag: 1.41.5.9522@sha256:cb0310eb53e8ff6e51be2869b6de0425f649e631aa329e6ccf0c72ba580a8aa3
+              tag: 1.42.2.10156@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
             env:
               PLEX_ADVERTISE_URL: https://{{ .Release.Name }}.omux.io:443
               PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24
@@ -55,19 +37,23 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  failureThreshold: 30
                   periodSeconds: 10
+                  failureThreshold: 30
             resources:
+              claims:
+                - name: gpu
               requests:
                 cpu: 100m
               limits:
-                gpu.intel.com/i915: 1
                 memory: 10Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
               capabilities: { drop: ["ALL"] }
     defaultPodOptions:
+      resourceClaims:
+        - name: gpu
+          resourceClaimTemplateName: plex
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
@@ -77,51 +63,70 @@ spec:
         supplementalGroups: [44, 65538]
     persistence:
       config:
-        existingClaim: *app
+        existingClaim: "{{ .Release.Name }}"
       config-cache:
-        existingClaim: plex-cache
+        existingClaim: "{{ .Release.Name }}-cache"
         globalMounts:
           - path: /config/Library/Application Support/Plex Media Server/Cache
-      config-logs:
-        type: emptyDir
-        globalMounts:
-          - path: /config/Library/Application Support/Plex Media Server/Logs
       media:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Media/media
+        path: /mnt/tank/Media
         globalMounts:
           - readOnly: true
-      tmp:
+      tmpfs:
         type: emptyDir
-      transcode:
-        type: emptyDir
+        advancedMounts:
+          plex:
+            app:
+              - path: /config/Library/Application Support/Plex Media Server/Logs
+                subPath: logs
+              - path: /transcode
+                subPath: transcode
+              - path: /tmp
+                subPath: tmp
+    rawResources:
+      gpu:
+        apiVersion: resource.k8s.io/v1
+        kind: ResourceClaimTemplate
+        spec:
+          spec:
+            spec:
+              devices:
+                requests:
+                  - name: gpu
+                    exactly:
+                      deviceClassName: gpu.intel.com
     route:
       app:
+        annotations:
+          gatus.home-operations.com/endpoint: |-
+            url: https://{{ .Release.Name }}.omux.io/identity
         hostnames:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
-          - name: external
-            namespace: kube-system
+          - name: envoy-external
+            namespace: networking
             sectionName: https
         rules:
-          - backendRefs:
-              - name: *app
+          - # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
+            backendRefs:
+              - identifier: app
                 port: *port
             filters:
               - type: RequestHeaderModifier
                 requestHeaderModifier:
-                  remove: ["Range"]
+                  remove:
+                    - Range
             matches:
               - path:
                   type: PathPrefix
                   value: /library/streams
           - backendRefs:
-              - name: *app
+              - identifier: app
                 port: *port
     service:
       app:
-        controller: *app
         ports:
           http:
             port: *port
