@@ -219,8 +219,8 @@ spec:
             sectionName: https
         rules:
           - backendRefs:
-              - port: http
-                name: immich-immich
+              - name: immich-immich
+                port: *serverport
 
     persistence:
       config:
