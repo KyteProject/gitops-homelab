@@ -8,11 +8,11 @@ spec:
     - name: autobrr.rules
       rules:
         - alert: AutobrrNetworkUnmonitored
-          expr: |
+          expr: |-
             autobrr_irc_channel_enabled_total != autobrr_irc_channel_monitored_total
           for: 5m
           annotations:
             summary: >-
-              {{ $labels.network }} has unmonitored IRC channels
+              One or more IRC channels on the {{ $labels.network }} network are enabled but not being monitored
           labels:
             severity: critical
