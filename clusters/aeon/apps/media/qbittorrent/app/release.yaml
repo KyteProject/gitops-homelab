@@ -20,6 +20,9 @@ spec:
             env:
               QBT_TORRENTING_PORT: &bittorrentPort 50413
               QBT_WEBUI_PORT: &port 80
+              QBT_PREFERENCES__WEBUI__LOCALHOSTONLYAUTH: "false"
+              QBT_PREFERENCES__WEBUI__AUTHSUBNETWHITELISTENABLED: "true"
+              QBT_PREFERENCES__WEBUI__AUTHSUBNETWHITELIST: "10.244.0.0/16"
               TZ: Europe/London
             probes:
               liveness: &probes
