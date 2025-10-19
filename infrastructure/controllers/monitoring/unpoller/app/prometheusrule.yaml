@@ -7,7 +7,7 @@ spec:
   groups:
     - name: unpoller.rules
       rules:
-        - alert: UDMDownloadBandwithLow
+        - alert: UDMDownloadBandwidthLow
           expr: |-
             unpoller_device_speedtest_download < 100
           for: 5m
