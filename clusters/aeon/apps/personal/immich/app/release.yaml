@@ -44,7 +44,7 @@ spec:
           server:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.125.7
+              tag: v1.144.1
             envFrom:
               - secretRef:
                   name: *secret
@@ -102,7 +102,7 @@ spec:
           microservices:
             image:
               repository: ghcr.io/immich-app/immich-server
-              tag: v1.125.7
+              tag: v1.144.1
             envFrom:
               - secretRef:
                   name: *secret
