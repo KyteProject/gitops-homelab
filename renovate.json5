@@ -6,13 +6,14 @@
     "helpers:pinGitHubActionDigests",
 
     // Local configs
-    "github>kyteproject/gitops-homelab//.renovate//autoMerge.json5",
-    "github>kyteproject/gitops-homelab//.renovate//customManagers.json5",
-    "github>kyteproject/gitops-homelab//.renovate//grafanaDashboards.json5",
-    "github>kyteproject/gitops-homelab//.renovate//groups.json5",
-    "github>kyteproject/gitops-homelab//.renovate//labels.json5",
-    "github>kyteproject/gitops-homelab//.renovate//overrides.json5",
-    "github>kyteproject/gitops-homelab//.renovate//semanticCommits.json5",
+    "github>kyteproject/gitops-homelab//.renovate/autoMerge.json5",
+    "github>kyteproject/gitops-homelab//.renovate/allowedVersions.json5",
+    "github>kyteproject/gitops-homelab//.renovate/customManagers.json5",
+    "github>kyteproject/gitops-homelab//.renovate/grafanaDashboards.json5",
+    "github>kyteproject/gitops-homelab//.renovate/groups.json5",
+    "github>kyteproject/gitops-homelab//.renovate/labels.json5",
+    "github>kyteproject/gitops-homelab//.renovate/overrides.json5",
+    "github>kyteproject/gitops-homelab//.renovate/semanticCommits.json5",
 
 
     ":automergeBranch",
