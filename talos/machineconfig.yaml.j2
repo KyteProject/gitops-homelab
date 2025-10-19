@@ -111,7 +111,8 @@ machine:
       - name: thunderbolt
       - name: thunderbolt_net
   nodeLabels:
-    intel.feature.node.kubernetes.io/gpu: true
+    # intel.feature.node.kubernetes.io/gpu: true
+    node.kubernetes.io/gpu: "true"
     topology.kubernetes.io/region: homelab
     topology.kubernetes.io/zone: aeon
 cluster:
