@@ -24,7 +24,7 @@ spec:
   prune: true
   sourceRef:
     kind: GitRepository
-    name: home-kubernetes
+    name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
 # ---
@@ -46,8 +46,8 @@ spec:
 #       APP: *app
 #       VOLSYNC_CAPACITY: 1Gi
 #   prune: true
-#   sourceRef:
-#     kind: GitRepository
-#     name: home-kubernetes
-#     namespace: flux-system
+  # sourceRef:
+  #   kind: GitRepository
+  #   name: flux-system
+  #   namespace: flux-system
 #   targetNamespace: *namespace
