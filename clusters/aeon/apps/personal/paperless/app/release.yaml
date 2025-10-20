@@ -38,7 +38,6 @@ spec:
               readOnlyRootFilesystem: false
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
         runAsUser: 0
         runAsGroup: 0
         fsGroup: 0
