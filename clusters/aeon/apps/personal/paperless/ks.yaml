@@ -8,37 +8,46 @@ spec:
   commonMetadata:
     labels:
       app.kubernetes.io/name: *app
+  components:
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
-    - name: cloudnative-pg-cluster
-      namespace: database
-    - name: dragonfly-cluster
-      namespace: database
-    - name: onepassword-store
-      namespace: external-secrets
-    - name: democratic-csi-nfs
+    - name: openebs
       namespace: storage
-    - name: volsync
-      namespace: storage
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
   interval: 1h
   path: ./clusters/aeon/apps/personal/paperless/app
   postBuild:
     substitute:
       APP: *app
-      HOSTNAME: paperless.omux.io
-      APP_UID: "568"
-      APP_GID: "568"
-      VOLSYNC_CLAIM: paperless-data
       VOLSYNC_CAPACITY: 5Gi
-      VOLSYNC_CACHE_CAPACITY: 5Gi
-      VOLSYNC_STORAGECLASS: truenas-nfs
-      VOLSYNC_SNAPSHOTCLASS: truenas-nfs
-      VOLSYNC_PUID: "3000"
-      VOLSYNC_PGID: "3000"
   prune: true
   sourceRef:
     kind: GitRepository
-    name: flux-system
+    name: home-kubernetes
     namespace: flux-system
   targetNamespace: *namespace
-  timeout: 5m
-  wait: true
+# ---
+# apiVersion: kustomize.toolkit.fluxcd.io/v1
+# kind: Kustomization
+# metadata:
+#   name: &app paperless-ai
+#   namespace: &namespace personal
+# spec:
+#   commonMetadata:
+#     labels:
+#       app.kubernetes.io/name: *app
+#   components:
+#    - ../../../../../../infrastructure/components/volsync
+#   interval: 1h
+#   path: ./clusters/aeon/apps/personal/paperless/ai
+#   postBuild:
+#     substitute:
+#       APP: *app
+#       VOLSYNC_CAPACITY: 1Gi
+#   prune: true
+#   sourceRef:
+#     kind: GitRepository
+#     name: home-kubernetes
+#     namespace: flux-system
+#   targetNamespace: *namespace

@@ -5,4 +5,3 @@ namespace: personal
 resources:
   - externalsecret.yaml
   - release.yaml
-  - ../../../../../../../infrastructure/templates/volsync
