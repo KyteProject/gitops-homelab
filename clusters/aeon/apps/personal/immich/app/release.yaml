@@ -209,6 +209,10 @@ spec:
           - name: envoy-internal
             namespace: networking
             sectionName: https
+        rules:
+          - backendRefs:
+              - identifier: immich
+                port: *serverport
 
     persistence:
       config:
