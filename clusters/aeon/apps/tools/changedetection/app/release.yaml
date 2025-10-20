@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/dgtlmoon/changedetection.io
-              tag: 0.50.26@sha256:1422b9ecb1b2934b49d1a2109e06933723d5769f29947a077d29f634753103a0
+              tag: 0.50.27@sha256:b598918d611c2371dbf5434109130a4ac8b5e146ecd86238eef77a0c725b61bd
               pullPolicy: IfNotPresent
             env:
               TZ: Europe/London
@@ -37,7 +37,7 @@ spec:
           browser:
             image:
               repository: docker.io/browserless/chrome
-              tag: latest
+              tag: latest@sha256:57d19e414d9fe4ae9d2ab12ba768c97f38d51246c5b31af55a009205c136012f
               pullPolicy: IfNotPresent
             env:
               - { name: SCREEN_WIDTH, value: "1920" }
