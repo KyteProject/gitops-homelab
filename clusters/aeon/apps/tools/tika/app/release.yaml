@@ -42,6 +42,7 @@ spec:
           - path: /tmp
     service:
       app:
+        controller: tika
         ports:
           http:
             port: 80
