@@ -26,6 +26,9 @@ spec:
               MALOJA_PORT: &port 8080
               MALOJA_DIRECTORY_CONFIG: /data/config
               MALOJA_DIRECTORY_STATE: /data/state
+              MALOJA_DIRECTORY_CACHE: /data/cache
+              MALOJA_DIRECTORY_LOGS: /data/logs
+              MALOJA_DIRECTORY_IMAGES: /data/images
               MALOJA_LOGGING: false
             envFrom:
               - secretRef:
@@ -60,6 +63,13 @@ spec:
         globalMounts:
           - subPath: data
             path: /data
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          maloja:
+            app:
+              - path: /tmp
+                subPath: tmp
     route:
       app:
         hostnames:
