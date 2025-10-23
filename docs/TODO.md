@@ -36,7 +36,10 @@
 - [ ] Monica
 - [x] Immich
 - [ ] Homepage / [Glance](https://github.com/glanceapp/glance)
-- [ ] Navidrome
+- [x] Navidrome
+- [ ] Maloja
+- [ ] Multiscrobbler
+- [ ] watchstate
 - [ ] [Opencloud](opencloudeu/opencloud-rolling)? or nextcloud?
 - [ ] Netbox
 - [x] Paperless
