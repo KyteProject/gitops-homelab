@@ -51,6 +51,16 @@ pages:
               - asmongold
               - jembawls
 
+          - type: lobsters
+            collapse-after: 3
+            sort-by: hot
+            tags:
+              - linux
+              - programming
+              - rust
+              - games
+              - graphics
+
       - size: full
         widgets:
           - type: extension
@@ -77,7 +87,8 @@ pages:
               - UCSNsJvvc3LarXVkJ2H6e2zQ # Michael Hendriks
               - UCD80bzqJh1N7lOqn7n0vKTg # Nilaus
               - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
-
+              - UCYO_jab_esuFRV4b17AJtAw # 3Blue1Brown
+              - UCIZa-t5ctYtAn6BruNTxxwQ # Clockwork
 
           - type: reddit
             subreddit: selfhosted
