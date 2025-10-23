@@ -22,7 +22,7 @@ spec:
             env:
               BASE_URL: https://multiscrobbler.omux.io
               SUBSONIC_URL: http://navidrome.media.svc.cluster.local:8080
-              MALOJA_URL: https://maloja.omux.io
+              MALOJA_URL: http://maloja.media.svc.cluster.local:8080
               LASTFM_REDIRECT_URI: https://multiscrobbler.omux.io/lastfm/callback
               SPOTIFY_REDIRECT_URI: https://multiscrobbler.omux.io/callback
               TZ: Europe/London
