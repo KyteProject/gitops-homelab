@@ -75,13 +75,9 @@ pages:
               - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
               - UCv6J_jJa8GJqFwQNgNrMuww # ServeTheHome
               - UCOk-gHyjcWZNj3Br4oxwh0A # Techno Tim
-              - UChIs72whgZI9w6d6FhwGGHA # Gamers Nexus
               - UC4w1YQAJMWOz4qtxinq55LQ # Level1Techs
-              - UCI8iQa1hv7oV_Z8D35vVuSg # Hardware Unboxed
               - UC1LpsuAUaKoMzzJSEt5WImw # Asianometry
-              - UC9PBzalIcEQCsiIkq36PyUA # Digital Foundry
               - UCSNsJvvc3LarXVkJ2H6e2zQ # Michael Hendriks
-              - UCD80bzqJh1N7lOqn7n0vKTg # Nilaus
               - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
               - UCYO_jab_esuFRV4b17AJtAw # 3Blue1Brown
               - UCIZa-t5ctYtAn6BruNTxxwQ # Clockwork
@@ -93,10 +89,16 @@ pages:
         widgets:
           - type: bookmarks
             groups:
-              - title: Entertainment
+              - title: Music Production
                 links:
-                  - title: YouTube
-                    url: https://youtube.com
+                  - title: Audioz
+                    url: https://audioz.download/
+                  - title: Trex | Patreon
+                    url: https://www.patreon.com/c/Trexdnb1/posts
+                  - title: Sample Genie
+                    url: https://sample-genie.com
+                  - title: MVSep
+                    url: https://mvsep.com
 
               - title: DevOps
                 links:
@@ -104,12 +106,6 @@ pages:
                     url: https://artifacthub.io
                   - title: k8s-at-home-search
                     url: https://nanne.dev/k8s-at-home-search/
-                  - title: Git-cleaner
-                    url: https://gitcleaner.com
-                  - title: K8S Exam simulator
-                    url: https://killer.sh
-                  - title: Github-download-folder
-                    url: https://download-directory.github.io/
 
               - title: Hacking
                 links:
@@ -121,8 +117,6 @@ pages:
                     url: https://greynoise.io
                   - title: GrayHatWarFare
                     url: https://grayhatwarfare.com
-                  - title: GPP Tools
-                    url: https://gpptools.com
                   - title: BGP View
                     url: https://bgp.he.net
                   - title: ViewDNS
