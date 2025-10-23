@@ -7,5 +7,6 @@ resources:
   - changedetection/ks.yaml
   - chartdb/ks.yaml
   - n8n/ks.yaml
+  - tika/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace
