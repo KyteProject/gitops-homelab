@@ -37,25 +37,25 @@ pages:
               - url: https://blog.cloudflare.com/rss
                 title: Cloudflare Blog
 
-          - type: twitch-channels
-            channels:
-              - ferretsoftware
-              - theprimeagen
-              - cohhcarnage
-              - christitustech
-              - blurbs
-              - asmongold
-              - jembawls
-
           - type: lobsters
-            collapse-after: 3
+            collapse-after: 5
             sort-by: hot
             tags:
               - linux
               - programming
               - rust
-              - games
-              - graphics
+              - homelab
+              - kubernetes
+              - cloud
+              - networking
+              - security
+              - automation
+              - go
+              - golang
+
+          - type: twitch-channels
+            channels:
+              - theprimeagen
 
       - size: full
         widgets:
