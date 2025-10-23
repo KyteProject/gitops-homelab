@@ -31,6 +31,7 @@ spec:
               MALOJA_DIRECTORY_LOGS: /data/logs
               MALOJA_DIRECTORY_IMAGES: /data/images
               MALOJA_LOGGING: false
+              MALOJA_SKIP_SETUP: "true"
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
