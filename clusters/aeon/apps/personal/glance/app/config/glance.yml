@@ -31,6 +31,15 @@ pages:
               - url: https://awesomekling.github.io/feed.xml
               - url: https://ishadeed.com/feed.xml
                 title: Ahmad Shadeed
+              - url: https://selfh.st/rss/
+                title: selfh.st
+                limit: 5
+              - url: https://ciechanow.ski/atom.xml
+              - url: https://www.joshwcomeau.com/rss.xml
+                title: Josh Comeau
+              - url: https://samwho.dev/rss.xml
+              - url: https://blog.cloudflare.com/rss
+                title: Cloudflare Blog
 
           - type: twitch-channels
             channels:
@@ -60,17 +69,65 @@ pages:
               - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
               - UCv6J_jJa8GJqFwQNgNrMuww # ServeTheHome
               - UCOk-gHyjcWZNj3Br4oxwh0A # Techno Tim
+              - UChIs72whgZI9w6d6FhwGGHA # Gamers Nexus
+              - UC4w1YQAJMWOz4qtxinq55LQ # Level1Techs
+              - UCI8iQa1hv7oV_Z8D35vVuSg # Hardware Unboxed
+              - UC1LpsuAUaKoMzzJSEt5WImw # Asianometry
+              - UC9PBzalIcEQCsiIkq36PyUA # Digital Foundry
+              - UCSNsJvvc3LarXVkJ2H6e2zQ # Michael Hendriks
+              - UCD80bzqJh1N7lOqn7n0vKTg # Nilaus
+              - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+
 
           - type: reddit
             subreddit: selfhosted
 
       - size: small
         widgets:
-          - type: weather
-            units: imperial
-            location: Eugene, Oregon, United States
+          - type: search
+            search-engine: kagi
+
+          - type: bookmarks
+            groups:
+              - title: Entertainment
+                links:
+                  - title: YouTube
+                    url: https://youtube.com
+
+              - title: DevOps
+                links:
+                  - title: Artifacthub
+                    url: https://artifacthub.io
+                  - title: k8s-at-home-search
+                    url: https://nanne.dev/k8s-at-home-search/
+                  - title: Git-cleaner
+                    url: https://gitcleaner.com
+                  - title: K8S Exam simulator
+                    url: https://killer.sh
+                  - title: Github-download-folder
+                    url: https://download-directory.github.io/
+
+              - title: Hacking
+                links:
+                  - title: Shodan
+                    url: https://shodan.io
+                  - title: Intelx
+                    url: https://intelx.io
+                  - title: Greynoise
+                    url: https://greynoise.io
+                  - title: GrayHatWarFare
+                    url: https://grayhatwarfare.com
+                  - title: GPP Tools
+                    url: https://gpptools.com
+                  - title: BGP View
+                    url: https://bgp.he.net
+                  - title: ViewDNS
+                    url: https://viewdns.info
+                  - title: DNSChecker
+                    url: https://dnschecker.org
+
           - type: repository
-            repository: waifulabs/infrastructure
+            repository: kyteproject/gitops-homelab
             pull-requests-limit: 5
             issues-limit: 3
           - type: monitor
