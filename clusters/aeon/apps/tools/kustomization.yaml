@@ -6,6 +6,7 @@ resources:
   - atuin/ks.yaml
   - changedetection/ks.yaml
   - chartdb/ks.yaml
+  - gotenberg/ks.yaml
   - n8n/ks.yaml
   - tika/ks.yaml
 components:
