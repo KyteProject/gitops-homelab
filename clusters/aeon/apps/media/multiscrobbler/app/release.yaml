@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/foxxmd/multi-scrobbler
-              tag: 0.10.0@sha256:67fe05dd28d165f2c62dfc5e28c49f2f8ea9da38f07d0c8e2bfb2c1d0eaa72d1
+              tag: 0.10.0@sha256:e23ddda129ea2a8e9a009ef73d62af910ac25e6213c833680886b7002c5bb6fa
             env:
               BASE_URL: https://multiscrobbler.omux.io
               SUBSONIC_URL: http://navidrome.media.svc.cluster.local:8080
