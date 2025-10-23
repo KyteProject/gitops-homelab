@@ -150,5 +150,3 @@ pages:
                 url: https://hass.omux.io
               - title: Grafana
                 url: https://grafana.omux.io
-              - title: BlueMap
-                url: https://map.omux.io
