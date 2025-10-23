@@ -14,8 +14,6 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: prometheus-operator
-      namespace: monitoring
     - name: volsync
       namespace: storage
   interval: 1h
