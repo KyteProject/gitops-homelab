@@ -74,6 +74,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - scrobbler.omux.io
         parentRefs:
           - name: envoy-internal
             namespace: networking
