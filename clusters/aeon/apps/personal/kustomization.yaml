@@ -5,6 +5,7 @@ namespace: personal
 resources:
   - actual/ks.yaml
   - hoarder/ks.yaml
+  - glance/ks.yaml
   # - homepage/ks.yaml
   - immich/ks.yaml
   - paperless/ks.yaml
