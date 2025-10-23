@@ -47,6 +47,7 @@ spec:
           - path: /tmp
     service:
       app:
+        controller: gotenberg
         ports:
           http:
             port: 3000
