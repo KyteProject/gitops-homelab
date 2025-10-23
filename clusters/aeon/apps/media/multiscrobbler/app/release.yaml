@@ -70,6 +70,17 @@ spec:
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          multiscrobbler:
+            app:
+              - path: /tmp
+                subPath: tmp
+              - path: /run
+                subPath: run
+              - path: /var/run
+                subPath: var-run
     route:
       app:
         hostnames:
