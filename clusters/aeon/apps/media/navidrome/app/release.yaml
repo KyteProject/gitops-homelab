@@ -1,0 +1,122 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: navidrome
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      navidrome:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        containers:
+          app:
+            image:
+              repository: ghcr.io/navidrome/navidrome
+              tag: 0.58.0@sha256:2ae037d464de9f802d047165a13b1c9dc2bdbb14920a317ae4aef1233adc0a3c
+            env:
+              ND_LOGLEVEL: info
+              ND_MUSICFOLDER: /data/media/music
+              ND_DATAFOLDER: /config
+              ND_CACHEFOLDER: /config/cache
+              ND_BASEURL: https://music.omux.io
+              ND_PORT: &port 8080
+              ND_ENABLEINSIGHTSCOLLECTOR: false
+              # Advanced
+              # ND_AUTHREQUESTLIMIT: 0 - Default: 5
+              ND_COVERJPEGQUALITY: 100 # Default: 75
+              ND_DEFAULTTHEME: Spotify-ish
+              ND_ENABLEDOWNLOADS: true
+              ND_ENABLEEXTERNALSERVICES: true
+              ND_ENABLEGRAVATAR: false
+              ND_ENABLESHARING: true
+              ND_ENABLESTARRATING: true # Default: false
+              ND_IMAGECACHESIZE: 1GB
+              ND_LASTFM_ENABLED: false
+              TZ: Europe/London
+              ND_LISTENBRAINZ_BASEURL: http://maloja.media.svc.cluster.local/apis/listenbrainz/1/
+              ND_LISTENBRAINZ_ENABLED: false
+              ND_PROMETHEUS_ENABLED: true
+              ND_PROMETHEUS_METRICSPATH: &metrics /metrics
+              ND_REVERSEPROXYUSERHEADER: "X-authentik-username"
+              ND_REVERSEPROXYWHITELIST: 10.0.0.0/8
+              ND_SCANNER_SCHEDULE: "@every 1h"
+              ND_SEARCHFULLSTRING: true
+              ND_TRANSCODINGCACHESIZE: 1GB
+              ND_SUBSONIC_ARTISTPARTICIPATIONS: true
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /ping
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 1
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: false
+            resources:
+              requests:
+                cpu: 100m
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [65536]
+    persistence:
+      config:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /config
+      media:
+        type: nfs
+        server: tank.lan
+        path: /mnt/tank/Media
+        globalMounts:
+          - path: /data
+            readOnly: true
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          navidrome:
+            app:
+              - path: /tmp
+                subPath: tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - music.omux.io
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+            sectionName: https
+    service:
+      app:
+        ports:
+          http:
+            port: *port
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http
+            scheme: http
+            path: *metrics
