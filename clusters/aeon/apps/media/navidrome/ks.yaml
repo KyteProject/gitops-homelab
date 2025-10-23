@@ -9,10 +9,15 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
+    - ../../../../../../infrastructure/components/keda
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
+    - name: prometheus-operator
+      namespace: monitoring
+    - name: volsync
+      namespace: storage
   interval: 1h
   path: ./clusters/aeon/apps/media/navidrome/app
   postBuild:
