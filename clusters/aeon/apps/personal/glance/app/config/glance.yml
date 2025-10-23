@@ -12,12 +12,8 @@ pages:
     columns:
       - size: small
         widgets:
-          - type: clock
-            hour-format: 12h
-            timezones:
-              - timezone: Europe/London
-                label: WWT Time
-          - type: calendar
+          - type: search
+            search-engine: DuckDuckGo
 
           - type: rss
             limit: 10
@@ -95,9 +91,6 @@ pages:
 
       - size: small
         widgets:
-          - type: search
-            search-engine: kagi
-
           - type: bookmarks
             groups:
               - title: Entertainment
