@@ -58,6 +58,8 @@ spec:
         serviceAccount:
           identifier: *app
         pod:
+          annotations:
+            reloader.stakater.com/auto: "true"
           securityContext:
             runAsUser: 568
             runAsGroup: 568
