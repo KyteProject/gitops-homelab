@@ -32,7 +32,7 @@ spec:
               VIKUNJA_REDIS_ENABLED: "1"
               VIKUNJA_CACHE_ENABLED: "1"
               VIKUNJA_MAILER_ENABLED: "true"
-              VIKUNJA_SERVICE_PUBLICURL: "https://vikunja.omux.io"
+              VIKUNJA_SERVICE_PUBLICURL: "https://vik.omux.io"
               VIKUNJA_SERVICE_ENABLECALDAV: "true"
               VIKUNJA_SERVICE_INTERFACE: ":3456"
               VIKUNJA_SERVICE_TIMEZONE: Europe/London
