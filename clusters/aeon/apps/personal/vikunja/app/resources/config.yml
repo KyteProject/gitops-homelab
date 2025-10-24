@@ -4,8 +4,10 @@ auth:
   openid:
     enabled: true
     providers:
-      - name: authentik
+      authentik:
+        name: authentik
         authurl: https://auth.omux.io/application/o/vikunja/
         logouturl: https://auth.omux.io/application/o/vikunja/end-session/
+        scope: openid profile emai
   ldap:
     enabled: false
