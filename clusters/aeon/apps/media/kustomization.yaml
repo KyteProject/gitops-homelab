@@ -7,8 +7,6 @@ resources:
   - bazarr/ks.yaml
   - cross-seed/ks.yaml
   - jellyseerr/ks.yaml
-  - maloja/ks.yaml
-  - multiscrobbler/ks.yaml
   - navidrome/ks.yaml
   - nzbget/ks.yaml
   - plex/ks.yaml
