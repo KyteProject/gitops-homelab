@@ -1,0 +1,5 @@
+---
+alwaysApply: true
+---
+
+## Before running any kubectl commands, ensure you are in the root project directory and have loaded the kubeconfig file from `./infrastrucutre/kubeconfig`. Otherwsie no commands will work as you won't have the cluster context.
