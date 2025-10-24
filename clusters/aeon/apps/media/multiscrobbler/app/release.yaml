@@ -66,10 +66,6 @@ spec:
             app:
               - path: /tmp
                 subPath: tmp
-              - path: /run
-                subPath: run
-              - path: /var/run
-                subPath: var-run
     route:
       app:
         hostnames:
