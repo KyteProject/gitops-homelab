@@ -31,6 +31,25 @@ spec:
         size: 20Gi
       serviceMonitor:
         enabled: true
+      route:
+        enabled: true
+        hostnames:
+          - logs.omux.io
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        extraRules:
+          - filters:
+              - type: RequestRedirect
+                requestRedirect:
+                  path:
+                    type: ReplaceFullPath
+                    replaceFullPath: /select/vmui/
+                  statusCode: 302
+            matches:
+              - path:
+                  type: Exact
+                  value: /
     dashboards:
       enabled: true
       labels:
