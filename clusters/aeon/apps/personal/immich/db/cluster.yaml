@@ -42,7 +42,7 @@ spec:
       wal:
         compression: bzip2
         maxParallel: 8
-      destinationPath: s3://cloudnative-pg-immich/
+      destinationPath: s3://cloudnative-pg/immich/
       endpointURL: https://35d4b5ef367c91eb592bf91567631e3d.r2.cloudflarestorage.com
       serverName: postgres-immich-v2
       s3Credentials:
