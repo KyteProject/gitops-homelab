@@ -39,8 +39,6 @@ spec:
               ND_IMAGECACHESIZE: 1GB
               ND_LASTFM_ENABLED: false
               TZ: Europe/London
-              ND_LISTENBRAINZ_BASEURL: http://maloja.media.svc.cluster.local/apis/listenbrainz/1/
-              ND_LISTENBRAINZ_ENABLED: false
               ND_PROMETHEUS_ENABLED: true
               ND_PROMETHEUS_METRICSPATH: &metrics /metrics
               ND_REVERSEPROXYUSERHEADER: "X-authentik-username"
@@ -108,7 +106,6 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: networking
-            sectionName: https
     service:
       app:
         ports:

@@ -57,7 +57,7 @@ spec:
       nas:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Paperless
+        path: /mnt/tank/paperless
         globalMounts:
           - path: /data/nas
 
@@ -68,7 +68,6 @@ spec:
         parentRefs:
           - name: envoy-internal
             namespace: networking
-            sectionName: https
         rules:
           - backendRefs:
               - identifier: app
