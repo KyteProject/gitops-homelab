@@ -1,7 +1,7 @@
 ---
 sonarr:
   sonarr:
-    base_url: http://sonarr.media.svc.cluster.local
+    base_url: http://sonarr.omux.io
     api_key: !env_var SONARR_API_KEY
 
     delete_old_custom_formats: true
@@ -27,7 +27,7 @@ sonarr:
 
 radarr:
   radarr:
-    base_url: http://radarr.media.svc.cluster.local
+    base_url: https://radarr.omux.io
     api_key: !env_var RADARR_API_KEY
 
     delete_old_custom_formats: true
