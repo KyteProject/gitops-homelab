@@ -41,7 +41,7 @@ spec:
       kustomize:
         patches:
           - # Increase the number of workers
-            patch: |
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --concurrent=20
@@ -52,7 +52,7 @@ spec:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
           - # Increase the memory limits
-            patch: |
+            patch: |-
               apiVersion: apps/v1
               kind: Deployment
               metadata:
@@ -69,7 +69,7 @@ spec:
               kind: Deployment
               name: (kustomize-controller|helm-controller|source-controller)
           - # Enable in-memory kustomize builds
-            patch: |
+            patch: |-
               - op: replace
                 path: /spec/template/spec/volumes/0
                 value:
@@ -80,7 +80,7 @@ spec:
               kind: Deployment
               name: kustomize-controller
           - # Flux near OOM detection for Helm
-            patch: |
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --feature-gates=OOMWatch=true
@@ -93,24 +93,32 @@ spec:
             target:
               kind: Deployment
               name: helm-controller
-          - # Disable chart digest tracking
-            patch: |
+          - # Cache Secrets and ConfigMaps
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
-                value: --feature-gates=DisableChartDigestTracking=true
+                value: --feature-gates=CacheSecretsAndConfigMaps=true
             target:
               kind: Deployment
-              name: helm-controller
-          - # Watch configmaps and secrets attached to HelmReleases and Kustomizations
-            patch: |
+              name: source-controller
+          - # Watch ConfigMaps and Secrets attached to HelmReleases and Kustomizations
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --watch-configs-label-selector=owner!=helm
             target:
               kind: Deployment
               name: (helm-controller|kustomize-controller)
+          - # Disable chart digest tracking
+            patch: |-
+              - op: add
+                path: /spec/template/spec/containers/0/args/-
+                value: --feature-gates=DisableChartDigestTracking=true
+            target:
+              kind: Deployment
+              name: helm-controller
           - # Cancel health checks on new Kustomizations revisions
-            patch: |
+            patch: |-
               - op: add
                 path: /spec/template/spec/containers/0/args/-
                 value: --feature-gates=CancelHealthCheckOnNewRevision=true

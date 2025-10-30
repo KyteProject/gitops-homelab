@@ -5,3 +5,4 @@ resources:
   - ./receiver
   - ./release.yaml
   - ./prometheusrule.yaml
+  - ./podmonitor.yaml
