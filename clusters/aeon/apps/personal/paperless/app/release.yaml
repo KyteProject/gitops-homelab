@@ -57,7 +57,7 @@ spec:
       nas:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/paperless
+        path: /mnt/tank/Paperless
         globalMounts:
           - path: /data/nas
 
