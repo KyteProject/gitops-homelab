@@ -128,9 +128,6 @@ spec:
         smartctl-exporter:
           datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
           url: https://grafana.com/api/dashboards/22604/revisions/2/download
-        trivy-operator:
-          datasource: Prometheus
-          url: https://grafana.com/api/dashboards/17813/revisions/2/download
         unifi-insights:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/11315/revisions/9/download
