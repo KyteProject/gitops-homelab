@@ -21,7 +21,7 @@ module.exports = {
   outputDir: null,
   port: Number(process.env.CROSS_SEED_PORT),
   skipRecheck: true,
-  torrentClients: ["qbittorrent:http://qbittorrent.media.svc.cluster.local"],
+  torrentClients: ["qbittorrent:https://qbittorrent.omux.io"],
   radarr: [
     // "http://radarr.media.svc.cluster.local:7878/?apikey=" + process.env.RADARR_API_KEY
   ],
