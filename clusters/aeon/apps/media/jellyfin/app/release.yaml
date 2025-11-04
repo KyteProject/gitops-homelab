@@ -106,7 +106,7 @@ spec:
           - "{{ .Release.Name }}.omux.io"
         parentRefs:
           - name: envoy-internal
-            namespace: network
+            namespace: networking
     service:
       app:
         ports:
