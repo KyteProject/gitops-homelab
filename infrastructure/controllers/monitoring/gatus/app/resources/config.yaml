@@ -36,5 +36,13 @@ storage:
 ui:
   title: Status | Gatus
   header: Status
+  logo: https://avatars.githubusercontent.com/u/26648418
+  link: https://github.com/kyteproject
+  buttons:
+    - name: Github
+      link: https://github.com/kyteproject
+    - name: Homelab
+      link: https://github.com/kyteproject/gitops-homelab
+
 web:
   port: ${GATUS_WEB_PORT}
