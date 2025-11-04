@@ -5,7 +5,7 @@
       defaultRegistryUrlTemplate: "https://grafana.com/api/dashboards/{{packageName}}",
       format: "json",
       transformTemplates: [
-        '{"releases":[{"version": $string(revision)}], "sourceDirectory": $string(name)}'
+        '{"releases":[{"version": $string(revision)}], "sourceDirectory": name}'
       ],
     },
   },
@@ -20,6 +20,7 @@
       matchStrings: [
         "dashboards\\/(?<depName>\\d+)\\/revisions\\/(?<currentValue>\\d+)\\/download",
       ],
+      autoReplaceStringTemplate: "dashboards/{{depName}}/revisions/{{newValue}}/download",
       datasourceTemplate: "custom.grafana-dashboards",
       versioningTemplate: "regex:^(?<major>\\d+)$",
     },
