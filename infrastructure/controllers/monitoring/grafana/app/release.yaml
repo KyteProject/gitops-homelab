@@ -100,22 +100,22 @@ spec:
           url: https://grafana.com/api/dashboards/23239/revisions/1/download
         kubernetes-api-server:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15761/revisions/19/download
+          url: https://grafana.com/api/dashboards/15761/revisions/20/download
         kubernetes-coredns:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15762/revisions/21/download
+          url: https://grafana.com/api/dashboards/15762/revisions/22/download
         kubernetes-global:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/15757/revisions/43/download
         kubernetes-namespaces:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15758/revisions/42/download
+          url: https://grafana.com/api/dashboards/15758/revisions/44/download
         kubernetes-nodes:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15759/revisions/37/download
+          url: https://grafana.com/api/dashboards/15759/revisions/40/download
         kubernetes-pods:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/15760/revisions/36/download
+          url: https://grafana.com/api/dashboards/15760/revisions/37/download
         kubernetes-volumes:
           datasource: Prometheus
           url: https://grafana.com/api/dashboards/11454/revisions/14/download
@@ -124,7 +124,7 @@ spec:
           url: https://grafana.com/api/dashboards/1860/revisions/42/download
         prometheus:
           datasource: Prometheus
-          url: https://grafana.com/api/dashboards/19105/revisions/7/download
+          url: https://grafana.com/api/dashboards/19105/revisions/8/download
         smartctl-exporter:
           datasource: [{ name: DS_PROMETHEUS, value: Prometheus }]
           url: https://grafana.com/api/dashboards/22604/revisions/2/download
