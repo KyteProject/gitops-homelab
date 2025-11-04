@@ -6,11 +6,10 @@ resources:
   - autobrr/ks.yaml
   - bazarr/ks.yaml
   - cross-seed/ks.yaml
-  - jellyfin/ks.yaml
   - jellyseerr/ks.yaml
   - navidrome/ks.yaml
   - nzbget/ks.yaml
-  # - plex/ks.yaml
+  - plex/ks.yaml
   - prowlarr/ks.yaml
   - qbittorrent/ks.yaml
   - qui/ks.yaml
