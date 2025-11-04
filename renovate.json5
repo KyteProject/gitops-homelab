@@ -5,7 +5,6 @@
     'docker:enableMajor',
     'helpers:pinGitHubActionDigests',
     'github>kyteproject/gitops-homelab//.renovate/autoMerge.json5',
-    'github>kyteproject/gitops-homelab//.renovate/allowedVersions.json5',
     'github>kyteproject/gitops-homelab//.renovate/customManagers.json5',
     'github>kyteproject/gitops-homelab//.renovate/grafanaDashboards.json5',
     'github>kyteproject/gitops-homelab//.renovate/groups.json5',

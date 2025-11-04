@@ -21,14 +21,6 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-  name: sops-age
-  namespace: flux-system
-stringData:
-  age.agekey: op://homelab/sops/SOPS_PRIVATE_KEY
----
-apiVersion: v1
-kind: Secret
-metadata:
   name: cloudflare-tunnel-id-secret
   namespace: networking
 stringData:
