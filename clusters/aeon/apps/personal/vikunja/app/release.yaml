@@ -27,7 +27,7 @@ spec:
           app:
             image:
               repository: vikunja/vikunja
-              tag: latest@sha256:3839751335af9e8f8f7105021ef2c7bd1c9cf6fcf01ec122cd6431f7ba24a756
+              tag: latest@sha256:e457d7c75d195935df0da68321f9dc3388db710c7543085d785ae523d415b0f2
             env:
               VIKUNJA_REDIS_ENABLED: "1"
               VIKUNJA_CACHE_ENABLED: "1"
