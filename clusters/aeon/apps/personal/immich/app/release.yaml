@@ -132,7 +132,7 @@ spec:
           valkey:
             image:
               repository: ghcr.io/valkey-io/valkey
-              tag: 9.0.0
+              tag: 9.0.1
             command: ["valkey-server", "--save", "60", "1", "--loglevel", "warning"]
             resources:
               requests:
