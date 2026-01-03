@@ -32,7 +32,7 @@ spec:
           app:
             image:
               repository: ghcr.io/twin/gatus
-              tag: v5.30.0@sha256:bab5a31cb3cfde7fd9913a5ff97652883e4db08f3b429a62a7a188c746df4219
+              tag: v5.34.0@sha256:3fff895e77d35ee62e898860f4613755bc2344127d93e3f326429d40270e2115
             env:
               GATUS_WEB_PORT: &port 80
               GATUS_CONFIG_PATH: /config
