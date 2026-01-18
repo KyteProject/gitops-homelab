@@ -7,7 +7,7 @@ helmDefaults:
 releases:
   - name: cilium
     namespace: kube-system
-    chart: oci://ghcr.io/home-operations/charts-mirror/cilium
+    chart: oci://quay.io/cilium/charts/cilium
     version: 1.18.6
     values: ['./templates/values.yaml.gotmpl']
     hooks:
@@ -44,12 +44,37 @@ releases:
     values: ['./templates/values.yaml.gotmpl']
     needs: ['kube-system/spegel']
 
+  - name: external-secrets
+    namespace: external-secrets
+    chart: oci://ghcr.io/external-secrets/charts/external-secrets
+    version: 1.2.1
+    values: ['./templates/values.yaml.gotmpl']
+    needs: ['cert-manager/cert-manager']
+
+  - name: onepassword
+    namespace: external-secrets
+    chart: oci://ghcr.io/bjw-s-labs/helm/app-template
+    version: 4.6.2
+    values: ['./templates/values.yaml.gotmpl']
+    needs: ['external-secrets/external-secrets']
+    hooks:
+      - # Apply 1Password Store
+        events: ['postsync']
+        command: kubectl
+        args:
+          - apply
+          - --server-side
+          - --field-manager=kustomize-controller
+          - --kustomize
+          - ../../infrastructure/controllers/external-secrets/onepassword/store
+        showlogs: true
+
   - name: flux-operator
     namespace: flux-system
     chart: oci://ghcr.io/controlplaneio-fluxcd/charts/flux-operator
     version: 0.38.1
     values: ['./templates/values.yaml.gotmpl']
-    needs: ['cert-manager/cert-manager']
+    needs: ['external-secrets/onepassword']
 
   - name: flux-instance
     namespace: flux-system
