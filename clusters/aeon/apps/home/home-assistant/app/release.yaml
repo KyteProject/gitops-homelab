@@ -50,7 +50,7 @@ spec:
             "namespace": "networking",
             "ips": ["192.168.40.200/24"]
           }]
-      hostUsers: false
+
       securityContext:
         runAsNonRoot: true
         runAsUser: 568
