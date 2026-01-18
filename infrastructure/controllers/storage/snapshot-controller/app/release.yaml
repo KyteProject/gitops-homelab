@@ -23,6 +23,7 @@ spec:
   interval: 1h
   values:
     controller:
-      replicaCount: 2
       serviceMonitor:
         create: true
+    webhook:
+      enabled: false
