@@ -30,4 +30,6 @@ spec:
             deploy:
               type: GatewayNamespace
     global:
-      imageRegistry: mirror.gcr.io
+      images:
+        envoyGateway:
+          image: mirror.gcr.io/envoyproxy/gateway-dev:latest@sha256:61dd83611092427e132128f5e48e0684d973c17df0c234ad814b8956789331ef
