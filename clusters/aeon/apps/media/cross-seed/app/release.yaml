@@ -54,7 +54,9 @@ spec:
         runAsNonRoot: true
         runAsUser: 568
         runAsGroup: 568
-        supplementalGroups: [65536]
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
     persistence:
       config:
         type: emptyDir
@@ -68,10 +70,10 @@ spec:
       media:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Media/torrents
+        path: /mnt/tank/Media
         globalMounts:
           - path: /torrents
-            subPath: .
+            subPath: torrents
       tmp:
         type: emptyDir
     service:
