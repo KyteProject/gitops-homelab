@@ -26,11 +26,11 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /api/system/ping
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
             resources:
