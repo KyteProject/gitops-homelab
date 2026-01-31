@@ -5,12 +5,12 @@ metadata:
   name: seerr
 spec:
   components:
-    - ../../../../components/volsync
+    - ../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
   interval: 1h
-  path: ./kubernetes/apps/media/seerr/app
+  path: ./clusters/aeon/apps/media/seerr/app
   postBuild:
     substitute:
       APP: seerr
