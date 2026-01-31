@@ -29,7 +29,7 @@ spec:
                   httpGet:
                     path: /api/v2/app/version
                     port: *port
-                  initialDelaySeconds: 0
+                  initialDelaySeconds: 10
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
@@ -37,7 +37,10 @@ spec:
               startup:
                 enabled: true
                 spec:
-                  periodSeconds: 10
+                  httpGet:
+                    path: /api/v2/app/version
+                    port: *port
+                  periodSeconds: 5
                   failureThreshold: 30
             resources:
               requests:
