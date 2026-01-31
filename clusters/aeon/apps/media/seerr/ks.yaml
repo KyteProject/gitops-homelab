@@ -5,7 +5,7 @@ metadata:
   name: seerr
 spec:
   components:
-    - ../../../../infrastructure/components/volsync
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
