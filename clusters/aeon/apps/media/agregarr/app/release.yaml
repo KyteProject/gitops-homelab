@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: qui
+  name: agregarr
 spec:
   chartRef:
     kind: OCIRepository
@@ -11,28 +11,22 @@ spec:
   interval: 1h
   values:
     controllers:
-      qui:
-        annotations:
-          reloader.stakater.com/auto: "true"
+      agregarr:
         containers:
           app:
             image:
-              repository: ghcr.io/autobrr/qui
-              tag: v1.13.1@sha256:05b9badae10d21f54722464e8b51abc9487ba93f9bb2fff649fbc09944d0d111
+              repository: ghcr.io/agregarr/agregarr
+              tag: v2.3.0@sha256:87ea4f00479e3ed9108edb2ed39596d68cf122f7fc09b5cff7c32da725857bd0
             env:
-              QUI__HOST: 0.0.0.0
-              QUI__PORT: &port 80
+              PORT: &port 80
               TZ: Europe/London
-            envFrom:
-              - secretRef:
-                  name: "{{ .Release.Name }}-secret"
             probes:
               liveness: &probes
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /health
+                    path: /api/v1/status
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
@@ -41,9 +35,9 @@ spec:
               readiness: *probes
             resources:
               requests:
-                cpu: 10m
+                cpu: 100m
               limits:
-                memory: 512Mi
+                memory: 1Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -55,14 +49,20 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      media:
-        type: nfs
-        server: tank.lan
-        path: /mnt/tank/Media
+        globalMounts:
+          - path: /app/config
+      tmpfs:
+        type: emptyDir
+        advancedMounts:
+          agregarr:
+            app:
+              - path: /app/config/logs
+                subPath: logs
+              - path: /tmp
+                subPath: tmp
     route:
       app:
         hostnames:
