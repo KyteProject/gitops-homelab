@@ -50,7 +50,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [65536]
+        supplementalGroups: [10000]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
@@ -69,10 +69,10 @@ spec:
       media:
         type: nfs
         server: tank.lan
-        path: /mnt/tank/Media/usenet
+        path: /mnt/tank/Media
         globalMounts:
           - path: /usenet
-            subPath: complete
+            subPath: usenet/complete
       tmpfs:
         type: emptyDir
         advancedMounts:
