@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.6.0
+    tag: 0.7.0
   url: oci://ghcr.io/spegel-org/helm-charts/spegel
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -24,10 +24,10 @@ spec:
   values:
     grafanaDashboard:
       enabled: true
+    service:
+      registry:
+        hostPort: 29999
     serviceMonitor:
       enabled: true
     spegel:
       containerdRegistryConfigPath: /etc/cri/conf.d/hosts
-    service:
-      registry:
-        hostPort: 29999
