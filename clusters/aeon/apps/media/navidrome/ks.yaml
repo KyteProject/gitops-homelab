@@ -9,7 +9,7 @@ spec:
     labels:
       app.kubernetes.io/name: *app
   components:
-    - ../../../../../../infrastructure/components/keda
+    - ../../../../../../infrastructure/components/zeroscaler
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
@@ -28,4 +28,3 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: *namespace
-
