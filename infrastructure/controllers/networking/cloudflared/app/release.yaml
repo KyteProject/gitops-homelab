@@ -20,13 +20,13 @@ spec:
           app:
             image:
               repository: mirror.gcr.io/cloudflare/cloudflared
-              tag: 2025.11.1@sha256:89ee50efb1e9cb2ae30281a8a404fed95eb8f02f0a972617526f8c5b417acae2
+              tag: 2026.3.0@sha256:6b599ca3e974349ead3286d178da61d291961182ec3fe9c505e1dd02c8ac31b0
             args:
               - tunnel
               - run
             env:
               NO_AUTOUPDATE: true
-              TUNNEL_METRICS: 0.0.0.0:8080
+              TUNNEL_METRICS: 0.0.0.0:80
               TUNNEL_TRANSPORT_PROTOCOL: http2
             envFrom:
               - secretRef:
@@ -38,10 +38,10 @@ spec:
                 spec:
                   httpGet:
                     path: /ready
-                    port: &port 8080
+                    port: &port 80
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
             resources:
@@ -52,7 +52,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
