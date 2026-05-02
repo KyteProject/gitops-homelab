@@ -12,14 +12,14 @@ releases:
   - name: envoy-gateway
     namespace: networking
     chart: oci://mirror.gcr.io/envoyproxy/gateway-helm
-    version: v1.6.2
+    version: 1.7.2
 
   - name: keda
     namespace: monitoring
     chart: oci://ghcr.io/home-operations/charts-mirror/keda
-    version: 2.18.3
+    version: 5.22.2
 
   - name: kube-prometheus-stack
     namespace: monitoring
     chart: oci://ghcr.io/prometheus-community/charts/kube-prometheus-stack
-    version: 81.0.0
+    version: 84.2.0

@@ -13,7 +13,7 @@ spec:
   dependsOn:
     - name: immich-db
       namespace: personal
-    - name: onepassword-store
+    - name: onepassword-connect-store
       namespace: external-secrets
     - name: openebs
       namespace: storage
@@ -51,7 +51,7 @@ spec:
   dependsOn:
     - name: cloudnative-pg
       namespace: database
-    - name: onepassword-store
+    - name: onepassword-connect-store
       namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph

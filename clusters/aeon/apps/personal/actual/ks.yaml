@@ -11,7 +11,7 @@ spec:
   components:
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
-    - name: onepassword-store
+    - name: onepassword-connect-store
       namespace: external-secrets
     - name: rook-ceph-cluster
       namespace: rook-ceph
