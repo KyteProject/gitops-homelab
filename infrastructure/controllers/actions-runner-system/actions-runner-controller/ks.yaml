@@ -22,7 +22,7 @@ spec:
   dependsOn:
     - name: actions-runner-controller
     - name: openebs
-      namespace: openebs-system
+      namespace: storage
   interval: 1h
   path: ./infrastructure/controllers/actions-runner-system/actions-runner-controller/runners
   prune: true
