@@ -13,6 +13,7 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              ExternalDNS ({{ $labels.job }}) has not synced successfully in the last five minutes
+              ExternalDNS ({{ $labels.job }}) has not synced successfully in the
+              last five minutes
           labels:
             severity: critical
