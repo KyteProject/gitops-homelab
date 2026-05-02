@@ -18,14 +18,14 @@ spec:
           app:
             image:
               repository: ghcr.io/unpoller/unpoller
-              tag: v2.21.0@sha256:a08b532be181256318211b6170691e316d29ac04575bc54d59620189953f03aa
+              tag: v2.39.0@sha256:1cf63ad43121acc6995da1bd636063de9023b4bfc16599a4297951a6fb6b7fd2
             env:
-              TZ: Europe/London
-              UP_UNIFI_DEFAULT_ROLE: homelab
-              UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:8080
+              TZ: America/Chicago
+              UP_INFLUXDB_DISABLE: true
+              UP_PROMETHEUS_HTTP_LISTEN: 0.0.0.0:80
+              UP_UNIFI_DEFAULT_ROLE: gitops-homelab
               UP_UNIFI_DEFAULT_URL: https://192.168.1.1
               UP_UNIFI_DEFAULT_VERIFY_SSL: false
-              UP_INFLUXDB_DISABLE: true
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -36,10 +36,10 @@ spec:
                 spec:
                   httpGet:
                     path: /health
-                    port: &port 8080
+                    port: &port 80
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
             resources:
@@ -50,7 +50,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -65,5 +65,3 @@ spec:
       app:
         endpoints:
           - port: http
-            interval: 2m # Unifi API only polls at 2m intervals
-            scrapeTimeout: 10s
