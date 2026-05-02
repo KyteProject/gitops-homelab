@@ -19,10 +19,6 @@
     ':timezone(Europe/London)',
   ],
   dependencyDashboardTitle: 'Renovate Dashboard 🤖',
-  suppressNotifications: [
-    'prEditedNotification',
-    'prIgnoreNotification',
-  ],
   ignorePaths: [
     '**/*.sops.*',
     '**/archive/**',
@@ -34,16 +30,13 @@
       '/(^|/)clusters/.+\\.ya?ml$/',
     ],
   },
-  'helm-values': {
-    managerFilePatterns: [
-      '/(^|/)infrastructure/controllers/.+\\.ya?ml$/',
-      '/(^|/)clusters/.+\\.ya?ml$/',
-    ],
-  },
   kubernetes: {
     managerFilePatterns: [
       '/(^|/)infrastructure/controllers/.+\\.ya?ml$/',
       '/(^|/)clusters/.+\\.ya?ml$/',
     ],
+  },
+  registryAliases: {
+    "mirror.gcr.io": "docker.io",
   },
 }
