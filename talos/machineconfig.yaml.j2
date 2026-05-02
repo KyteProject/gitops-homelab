@@ -1,11 +1,11 @@
 ---
 version: v1alpha1
 machine:
-  type: {{ machinetype }}
+  type: {{ ENV.MACHINE_TYPE }}
   token: op://homelab/talos/MACHINE_TOKEN
   ca:
     crt: op://homelab/talos/MACHINE_CA_CRT
-    {% if machinetype == 'controlplane' %}
+    {% if ENV.MACHINE_TYPE == 'controlplane' %}
     key: op://homelab/talos/MACHINE_CA_KEY
     {% endif %}
   certSANs:
@@ -16,7 +16,7 @@ machine:
     - "ifrit.aeon.lan"
     - "ramuh.aeon.lan"
   kubelet:
-    image: ghcr.io/siderolabs/kubelet:v1.35.0
+    image: ghcr.io/siderolabs/kubelet:v1.36.0
     extraConfig:
       featureGates:
         ImageVolume: true
@@ -84,7 +84,7 @@ machine:
   features:
     rbac: true
     stableHostname: true
-    {% if machinetype == 'controlplane' %}
+    {% if ENV.MACHINE_TYPE == 'controlplane' %}
     kubernetesTalosAPIAccess:
       enabled: true
       allowedRoles: ["os:admin"]
@@ -129,10 +129,10 @@ cluster:
     serviceSubnets: ["10.245.0.0/16"]
   ca:
     crt: op://homelab/talos/CLUSTER_CA_CRT
-    {% if machinetype == 'controlplane' %}
+    {% if ENV.MACHINE_TYPE == 'controlplane' %}
     key: op://homelab/talos/CLUSTER_CA_KEY
     {% endif %}
-  {% if machinetype == 'controlplane' %}
+  {% if ENV.MACHINE_TYPE == 'controlplane' %}
   coreDNS:
     disabled: true
   discovery:
@@ -157,7 +157,7 @@ cluster:
   serviceAccount:
     key: op://homelab/talos/CLUSTER_SERVICEACCOUNT_KEY
   apiServer:
-    image: registry.k8s.io/kube-apiserver:v1.35.0
+    image: registry.k8s.io/kube-apiserver:v1.36.0
     extraArgs:
       enable-aggregator-routing: true
       feature-gates: ImageVolume=true,ResourceHealthStatus=true
@@ -170,14 +170,14 @@ cluster:
       - "ramuh.aeon.lan"
     disablePodSecurityPolicy: true
   controllerManager:
-    image: registry.k8s.io/kube-controller-manager:v1.35.0
+    image: registry.k8s.io/kube-controller-manager:v1.36.0
     extraArgs:
       bind-address: 0.0.0.0
   proxy:
     disabled: true
-    image: registry.k8s.io/kube-proxy:v1.35.0
+    image: registry.k8s.io/kube-proxy:v1.36.0
   scheduler:
-    image: registry.k8s.io/kube-scheduler:v1.35.0
+    image: registry.k8s.io/kube-scheduler:v1.36.0
     extraArgs:
       bind-address: 0.0.0.0
     config:
