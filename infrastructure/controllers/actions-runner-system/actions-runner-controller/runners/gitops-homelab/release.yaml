@@ -9,13 +9,13 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: 0.13.1
+    tag: 0.14.1
   url: oci://ghcr.io/actions/actions-runner-controller-charts/gha-runner-scale-set
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app k8s-gitops-runner
+  name: gitops-homelab-runner
 spec:
   chartRef:
     kind: OCIRepository
@@ -29,7 +29,8 @@ spec:
     containerMode:
       type: kubernetes
       kubernetesModeWorkVolumeClaim:
-        accessModes: ["ReadWriteOnce"]
+        accessModes:
+          - ReadWriteOnce
         resources:
           requests:
             storage: 25Gi
@@ -41,7 +42,7 @@ spec:
       spec:
         containers:
           - name: runner
-            image: ghcr.io/home-operations/actions-runner:2.331.0@sha256:17e4be4e4664067b9a5f2e43d0e66e0a249654f3783a0a3f17448844a5422be5
+            image: ghcr.io/home-operations/actions-runner:2.334.0@sha256:95d91d7f8d241e319ef2f4fec08f417aa1606b96fbb327643f75c303acd30002
             command:
               - /home/runner/run.sh
             env:
@@ -55,8 +56,8 @@ spec:
               - mountPath: /var/run/secrets/talos.dev
                 name: talos
                 readOnly: true
-        serviceAccountName: *app
+        serviceAccountName: gitops-homelab-runner
         volumes:
           - name: talos
             secret:
-              secretName: *app
+              secretName: gitops-homelab-runner
