@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: &app external-dns-unifi
+  name: external-dns-unifi
 spec:
   chartRef:
     kind: OCIRepository
@@ -18,7 +18,7 @@ spec:
           webhook:
             image:
               repository: ghcr.io/kashalls/external-dns-unifi-webhook
-              tag: v0.8.1@sha256:e9b7bf621768c490110fb154c94a4f610f254c9f0c540140ea429c601a8475dd
+              tag: v0.8.2@sha256:7f0ddbbc83a36a2a9d762e25eef9cafcb3adf0493068a27d72ae71087eafe6f0
             env:
               UNIFI_HOST: https://unifi.internal
             envFrom:
@@ -34,7 +34,7 @@ spec:
                     port: &port 8080
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness:
                 enabled: true
@@ -45,7 +45,7 @@ spec:
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
             resources: &resources
               requests:
@@ -56,12 +56,12 @@ spec:
             securityContext: &securityContext
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
         containers:
           app:
             image:
               repository: registry.k8s.io/external-dns/external-dns
-              tag: v0.20.0@sha256:ddc7f4212ed09a21024deb1f470a05240837712e74e4b9f6d1f2632ff10672e7
+              tag: v0.21.0@sha256:f53faaf71cb270d1ca9dce6ea0c94bfebf1a18696263487f0fbc74b9bf2bd7ff
             args:
               - --domain-filter=omux.io
               - --events
@@ -85,13 +85,13 @@ spec:
                     port: &port 7979
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
             resources: *resources
             securityContext: *securityContext
         serviceAccount:
-          name: *app
+          name: external-dns-unifi
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
