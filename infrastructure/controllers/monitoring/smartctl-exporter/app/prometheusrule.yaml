@@ -9,11 +9,12 @@ spec:
       rules:
         - alert: SmartDeviceHighTemperature
           expr: |-
-            smartctl_device_temperature > 65
+            smartctl_device_temperature > 60
           for: 5m
           annotations:
             summary: >-
-              Mounted drive {{ $labels.device }} on device {{ $labels.instance }} has a temperature higher than {{ $value }}°C
+              Mounted drive {{ $labels.device }} on device {{ $labels.instance
+              }} has a temperature higher than {{ $value }}°C
           labels:
             severity: critical
 
@@ -23,7 +24,8 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              Mounted drive {{ $labels.device }} on device {{ $labels.instance }} did not pass its SMART test
+              Mounted drive {{ $labels.device }} on device {{ $labels.instance
+              }} did not pass its SMART test
           labels:
             severity: critical
 
@@ -33,7 +35,8 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              Mounted drive {{ $labels.device }} on device {{ $labels.instance }} is in a critical state
+              Mounted drive {{ $labels.device }} on device {{ $labels.instance
+              }} is in a critical state
           labels:
             severity: critical
 
@@ -43,7 +46,8 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              Mounted drive {{ $labels.device }} on device {{ $labels.instance }} has media errors
+              Mounted drive {{ $labels.device }} on device {{ $labels.instance
+              }} has media errors
           labels:
             severity: critical
 
@@ -53,7 +57,8 @@ spec:
           for: 5m
           annotations:
             summary: >-
-              Device {{ $labels.device }} on instance {{ $labels.instance }} is under available spare threashold
+              Device {{ $labels.device }} on instance {{ $labels.instance }} is
+              under available spare threashold
           labels:
             severity: critical
 
@@ -62,7 +67,8 @@ spec:
             smartctl_device_interface_speed{speed_type="current"} != on(device, instance, namespace, pod) smartctl_device_interface_speed{speed_type="max"}
           annotations:
             summary: >-
-              Device {{ $labels.device }} on instance {{ $labels.instance }} interface is slower then it should be
+              Device {{ $labels.device }} on instance {{ $labels.instance }}
+              interface is slower then it should be
           for: 5m
           labels:
             severity: critical
