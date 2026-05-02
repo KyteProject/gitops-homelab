@@ -1,0 +1,44 @@
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: node-exporter
+spec:
+  staticConfigs:
+    - targets:
+        - tank.lan:9100
+  metricsPath: /metrics
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: node-exporter
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: ScrapeConfig
+metadata:
+  name: smartctl-exporter
+spec:
+  staticConfigs:
+    - targets:
+        - tank.lan:9633
+  metricsPath: /metrics
+  relabelings:
+    - action: replace
+      targetLabel: job
+      replacement: smartctl-exporter
+# ---
+# apiVersion: monitoring.coreos.com/v1alpha1
+# kind: ScrapeConfig
+# metadata:
+#   name: jetkvm
+# spec:
+#   staticConfigs:
+#     - targets:
+#         - m0-kvm.internal
+#         - m1-kvm.internal
+#         - m2-kvm.internal
+#   metricsPath: /metrics
+#   relabelings:
+#     - action: replace
+#       targetLabel: job
+#       replacement: jetkvm
