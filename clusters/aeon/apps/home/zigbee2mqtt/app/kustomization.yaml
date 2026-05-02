@@ -4,4 +4,4 @@ kind: Kustomization
 resources:
   - ./externalsecret.yaml
   - ./release.yaml
-  - ./scaledobject.yaml
+  # - ./scaledobject.yaml
