@@ -65,6 +65,8 @@ spec:
       mode: dsr
     localRedirectPolicies:
       enabled: true
+    l2announcements:
+      enabled: true
     operator:
       dashboards:
         enabled: true

@@ -14,12 +14,12 @@ machine:
           - vlanId: 20
             dhcp: false
             addresses:
-              - 192.168.20.6/24
+              - 192.168.20.8/24
             mtu: 1500
           - vlanId: 40
             dhcp: false
             addresses:
-              - 192.168.40.2/24
+              - 192.168.40.3/24
             mtu: 1500
       # shiva
       - deviceSelector: { busPath: 0-1.0 }
