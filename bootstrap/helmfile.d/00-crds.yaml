@@ -3,21 +3,15 @@
 # It is not intended to be used with helmfile apply or sync.
 
 helmDefaults:
-  args: ["--include-crds", "--no-hooks"] # Prevent helmfile apply or sync
+  args: [ "--include-crds", "--no-hooks" ] # Prevent helmfile apply or sync
   postRenderer: bash
-  postRendererArgs:
-    [-c, 'yq ea --exit-status ''select(.kind == "CustomResourceDefinition")''']
+  postRendererArgs: [ -c, "yq ea --exit-status 'select(.kind == \"CustomResourceDefinition\")'" ]
 
 releases:
   - name: envoy-gateway
     namespace: networking
     chart: oci://mirror.gcr.io/envoyproxy/gateway-helm
     version: 1.7.2
-
-  - name: keda
-    namespace: monitoring
-    chart: oci://ghcr.io/home-operations/charts-mirror/keda
-    version: 5.22.2
 
   - name: kube-prometheus-stack
     namespace: monitoring
