@@ -9,5 +9,6 @@ resources:
   - gotenberg/ks.yaml
   # - n8n/ks.yaml
   - tika/ks.yaml
+  - windmill/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace

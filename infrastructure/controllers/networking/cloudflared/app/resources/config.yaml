@@ -1,6 +1,26 @@
 ---
 ingress:
-  - hostname: "*.omux.io"
+  - hostname: hass.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - hostname: home-assistant.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - hostname: flux-webhook.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - hostname: echo.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - hostname: echo-server.omux.io
     service: https://envoy-external.networking.svc.cluster.local
     originRequest:
       http2Origin: true

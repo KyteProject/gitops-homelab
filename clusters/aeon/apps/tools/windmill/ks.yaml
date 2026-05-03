@@ -1,0 +1,23 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: &app windmill
+  namespace: &namespace tools
+spec:
+  commonMetadata:
+    labels:
+      app.kubernetes.io/name: *app
+  dependsOn:
+    - name: onepassword-connect-store
+      namespace: external-secrets
+    - name: cloudnative-pg-cluster
+      namespace: database
+  interval: 1h
+  path: ./clusters/aeon/apps/tools/windmill/app
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: *namespace
