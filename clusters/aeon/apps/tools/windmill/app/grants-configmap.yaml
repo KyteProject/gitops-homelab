@@ -37,7 +37,8 @@ data:
 
     for dbname in ${INIT_POSTGRES_DBNAME}; do
       echo "Applying Windmill role grants on ${dbname} ..."
-      psql --dbname "${dbname}" -v app_user="${INIT_POSTGRES_USER}" <<'SQL'
+      app_user_escaped="$(printf '%s' "${INIT_POSTGRES_USER}" | sed 's/"/""/g')"
+      psql --dbname "${dbname}" <<SQL
       DO $$
       BEGIN
           IF NOT EXISTS (SELECT 1 FROM pg_roles WHERE rolname = 'windmill_user') THEN
@@ -59,8 +60,8 @@ data:
       ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO windmill_user;
       ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO windmill_user;
       GRANT windmill_user TO windmill_admin;
-      GRANT windmill_admin TO :"app_user";
-      GRANT windmill_user TO :"app_user";
+      GRANT windmill_admin TO "${app_user_escaped}";
+      GRANT windmill_user TO "${app_user_escaped}";
       GRANT USAGE ON SCHEMA public TO windmill_admin;
       GRANT USAGE ON SCHEMA public TO windmill_user;
       SQL
