@@ -8,6 +8,7 @@ resources:
   - glance/ks.yaml
   # - homepage/ks.yaml
   # - immich/ks.yaml
+  - radicale/ks.yaml
   - paperless/ks.yaml
   - thelounge/ks.yaml
   # - vikunja/ks.yaml
