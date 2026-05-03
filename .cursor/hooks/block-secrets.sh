@@ -4,11 +4,33 @@
 
 set -euo pipefail
 
-input=$(cat)
-file_path=$(printf '%s' "$input" | jq -r '.file_path // empty')
+emit_allow() {
+  echo '{"permission":"allow"}'
+}
+
+emit_deny() {
+  local path="$1"
+  local pattern="$2"
+
+  # Build JSON safely to avoid invalid escaping from regex patterns.
+  jq -nc \
+    --arg p "$path" \
+    --arg pat "$pattern" \
+    '{
+      permission: "deny",
+      user_message: ("Blocked: " + $p + " matches a secret-file pattern (" + $pat + "). Edit .cursor/hooks/block-secrets.sh to adjust.")
+    }'
+}
+
+input="$(cat || true)"
+file_path="$(
+  printf '%s' "$input" \
+    | jq -r '.file_path // .path // empty' 2>/dev/null \
+    || true
+)"
 
 if [[ -z "$file_path" ]]; then
-  echo '{"permission": "allow"}'
+  emit_allow
   exit 0
 fi
 
@@ -16,7 +38,7 @@ fi
 deny_patterns=(
   '\.env($|\.)'
   '/\.env\.'
-  'secrets?\.(yaml|yml|json|toml|ini|env)$'
+  '(^|/)secrets?\.(yaml|yml|json|toml|ini|env)$'
   'credentials\.(json|yaml|yml|toml)$'
   'service[-_]account.*\.json$'
   '\.pem$'
@@ -34,14 +56,9 @@ deny_patterns=(
 
 for pattern in "${deny_patterns[@]}"; do
   if [[ "$file_path" =~ $pattern ]]; then
-    cat <<JSON
-{
-  "permission": "deny",
-  "user_message": "Blocked: $file_path matches a secret-file pattern (${pattern}). Edit .cursor/hooks/block-secrets.sh to adjust."
-}
-JSON
+    emit_deny "$file_path" "$pattern"
     exit 0
   fi
 done
 
-echo '{"permission": "allow"}'
+emit_allow
