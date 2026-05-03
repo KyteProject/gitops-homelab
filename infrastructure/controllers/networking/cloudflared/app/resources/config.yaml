@@ -1,5 +1,15 @@
 ---
 ingress:
+  - hostname: cal.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
+  - hostname: radicale.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
   - hostname: hass.omux.io
     service: https://envoy-external.networking.svc.cluster.local
     originRequest:
