@@ -56,6 +56,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - cal.omux.io
         parentRefs:
           - name: envoy-internal
             namespace: networking
@@ -64,7 +65,7 @@ spec:
       data:
         existingClaim: "{{ .Release.Name }}"
         globalMounts:
-          - path: /data
+          - path: /radicale-data
       config:
         type: configMap
         name: radicale-config
