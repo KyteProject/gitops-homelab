@@ -4,6 +4,4 @@ globs:
 alwaysApply: true
 ---
 
-## DO NOT TRY TO RUN OR START ANY SERVICES
-
-This means do not use `npm run dev`, `pnpm dev`, `go run ...`. The user will already have these services running.
+Before running any kubectl commands, ensure you are in the root project directory and have loaded the kubeconfig file from `./infrastrucutre/kubeconfig`. Otherwsie no commands will work as you won't have the cluster context.
