@@ -1,0 +1,66 @@
+---
+description: Idiomatic Python conventions for this project (typing, async, testing, tooling).
+globs: **/*.py
+---
+
+# Python conventions
+
+## Baseline
+
+- Target the latest stable Python the repo supports; declare in `pyproject.toml`.
+- PEP 8 enforced by `ruff format` + `ruff check`.
+- Type hints on all public functions; strict `mypy` / `pyright` in CI.
+- Prefer standard library; add third-party only with clear justification.
+
+## Style
+
+- Functions do one thing; extract helpers before nesting more than two levels.
+- Composition over inheritance; protocols (`typing.Protocol`) for structural typing.
+- Dataclasses / Pydantic for data containers; no ad-hoc dicts for typed payloads.
+- F-strings for formatting; avoid `%` and `.format` except in legacy code.
+
+## Typing
+
+- `any` only as a last resort; prefer `object`, generics, or a proper protocol.
+- `Optional[X]` via `X | None`.
+- `Literal`, `TypedDict`, and discriminated unions for precise domain modelling.
+- Return-type annotations are mandatory on public callables.
+
+## Async
+
+- `async def` for I/O-bound concurrency.
+- Never block the event loop (no `time.sleep`, no CPU-heavy work) — offload via `asyncio.to_thread` or a process pool.
+- Use `asyncio.TaskGroup` (3.11+) for structured concurrency.
+- Timeouts on every external call (`asyncio.timeout(...)`).
+
+## Errors
+
+- Custom exception classes for domain errors; inherit from a package base.
+- Never catch bare `Exception` unless you re-raise or log+raise.
+- No exception-for-flow-control; use return values or sentinels.
+
+## Testing (pytest)
+
+- Tests live next to code (`tests/` or `_test.py`) and cover happy path + edge cases + error paths.
+- Parametrise with `@pytest.mark.parametrize` rather than copy-pasted bodies.
+- Use fixtures for shared setup; keep them narrow.
+- Coverage target ≥ 85% on non-trivial modules; meaningful branches, not padding.
+
+## Tooling
+
+- `ruff` for lint + format (replaces flake8/black/isort).
+- `mypy --strict` or `pyright strict`.
+- `uv` or `pip-tools` for dependency resolution; lockfile committed.
+- `pre-commit` with ruff + mypy + tests on changed files.
+
+## Performance
+
+- Profile with `cProfile` / `py-spy` before optimising.
+- Use generators / iterators for large sequences.
+- Vectorise with NumPy/Polars where appropriate; avoid Python-level loops on large arrays.
+
+## Output format when writing code
+
+- Application code and tests in separate blocks.
+- Include `pyproject.toml` / requirements snippet when external deps are introduced.
+- Call out any assumption made about Python version or environment.

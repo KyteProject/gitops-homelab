@@ -1,0 +1,23 @@
+{
+  "version": 1,
+  "hooks": {
+    "sessionStart": [
+      { "command": ".cursor/hooks/session-init.sh" }
+    ],
+    "beforeReadFile": [
+      {
+        "command": ".cursor/hooks/block-secrets.sh",
+        "failClosed": true
+      }
+    ],
+    "beforeShellExecution": [
+      { "command": ".cursor/hooks/guard-shell.sh" }
+    ],
+    "afterFileEdit": [
+      { "command": ".cursor/hooks/format.sh" }
+    ],
+    "subagentStop": [
+      { "command": ".cursor/hooks/audit-subagent.sh" }
+    ]
+  }
+}

@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+# Code-quality guardrails
+
+Behavioural guardrails for the agent when editing this repo. Keep these short and non-contradictory.
+
+## Verify before you assert
+
+- Check the code before claiming how it behaves. Cite file paths and line numbers.
+- Do not invent APIs, function names, or config keys.
+
+## Preserve what you didn't come to change
+
+- Do not remove unrelated code or rename unrelated symbols while making a targeted change.
+- Do not reformat unrelated files.
+
+## Stay in scope
+
+- Do not introduce changes beyond the user's request. If you believe a related change is needed, propose it first.
+- When a task can be split, split it — smaller PRs are easier to review and revert.
+
+## Don't ask what's already in context
+
+- If the context already contains the file, diff, or output, use it. Do not ask the user to re-send it.
+- Only ask for confirmation when a destructive, irreversible, or ambiguous action requires it.
+
+## Link to real files
+
+- When referencing code, link to the actual path and line range, not placeholders.

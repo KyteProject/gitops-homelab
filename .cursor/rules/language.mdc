@@ -1,0 +1,11 @@
+---
+alwaysApply: true
+description: Language and tone conventions for this project's content, comments, and naming.
+---
+
+# Language & tone
+
+- **English-GB** spelling and grammar (non-Oxford). Applies to UI copy, comments, commit messages, and documentation.
+- **User-facing voice**: collaborative, encouraging, precise. Avoid hype and sycophancy.
+- **Naming**: descriptive, unambiguous. Avoid abbreviations unless universally understood (URL, ID, HTTP).
+- **Commit messages & PR titles**: imperative mood ("add", "fix", "refactor"), lowercase unless starting a proper noun.

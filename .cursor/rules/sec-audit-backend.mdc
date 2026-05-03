@@ -1,0 +1,73 @@
+---
+description: Secure backend coding conventions — input validation, authentication, authorisation, API and database hardening.
+globs: internal/**/*.go, pkg/**/*.go, cmd/**/*.go, api/**/*.go, api/**/*.ts, api/**/*.js, api/**/*.py, api/**/*.rs, server/**/*.go, server/**/*.ts, server/**/*.js, server/**/*.py, server/**/*.rs, backend/**/*.go, backend/**/*.ts, backend/**/*.js, backend/**/*.py, backend/**/*.rs
+---
+
+# Backend security conventions
+
+Implementation-level rules. For audits / threat modelling, invoke the `security-auditor` subagent.
+
+## Input validation
+
+- Validate at the boundary (HTTP handler, RPC entry, queue consumer). Never trust downstream.
+- Use a schema validator (zod / joi / ajv / pydantic / go-playground/validator / validator crate). Reject unknown fields by default.
+- Validate length, type, range, format. Canonicalise inputs (unicode, path separators) before comparison.
+- File uploads: check magic bytes not just extensions; cap size; store outside the web root; scan if possible.
+
+## Authentication
+
+- Never implement password hashing from scratch — use `argon2id` (preferred) or `bcrypt` with sensible cost.
+- Enforce password policies via zxcvbn-style strength checks, not regex complexity rules.
+- Rate-limit authentication endpoints; lock-out with exponential backoff after failed attempts.
+- Session tokens are opaque, random, ≥128 bits of entropy. Rotate on privilege change.
+- JWT: pin algorithm (`RS256`/`EdDSA`, never `none`); validate `iss`, `aud`, `exp`, `nbf`; rotate signing keys with a kid.
+
+## Authorisation
+
+- Authorise **every** protected endpoint at the object level. Check `subject → action → resource` (IDOR prevention).
+- Prefer a single, centralised policy check (middleware + explicit call) over scattered `if (user.role === ...)`.
+- Deny-by-default: new endpoints must explicitly declare their access policy.
+- Never expose internal IDs that carry authorisation meaning; use per-resource UUIDs.
+
+## Database access
+
+- Parameterised queries only. No string concatenation into SQL.
+- Least-privilege DB user for the app; no DDL permissions at runtime.
+- Encrypt at rest for sensitive columns (PII, tokens). Use a KMS-backed key.
+- Audit-log privileged actions (role change, data export, admin operations).
+- Row-level security where the DB supports it (Postgres RLS).
+
+## Headers & transport
+
+- TLS 1.2+; HSTS with `includeSubDomains`.
+- Security headers: `Content-Security-Policy`, `X-Content-Type-Options: nosniff`, `Referrer-Policy`, `Permissions-Policy`, `X-Frame-Options` or CSP `frame-ancestors`.
+- Cookies: `HttpOnly`, `Secure`, `SameSite=Lax` (or `Strict` for privileged actions). Session cookies scoped narrowly.
+
+## CORS & CSRF
+
+- CORS allowlist; never `Access-Control-Allow-Origin: *` with credentials.
+- State-changing endpoints either require a CSRF token or are unavailable to simple cross-origin requests (proper `Content-Type` + preflight).
+
+## SSRF & outbound calls
+
+- Outbound HTTP clients: deny private IP ranges (RFC1918, link-local, loopback, `0.0.0.0/8`, metadata IPs `169.254.169.254`).
+- DNS rebinding: resolve then validate IP before connecting.
+- Timeouts and size limits on every outbound call.
+
+## Rate limiting & abuse
+
+- Per-user and per-IP rate limits on expensive or auth-adjacent endpoints.
+- Idempotency keys on mutations reachable by retry or client-side retry logic.
+- WAF / bot protection at the edge where available.
+
+## Logging
+
+- Never log secrets, tokens, passwords, full card PANs, or full PII. Redact at the log boundary.
+- Log auth events (login, logout, failed login), authz denials, admin actions, security-relevant errors.
+- Include correlation IDs; route security events to a SIEM / dedicated audit stream.
+
+## API hygiene
+
+- Version APIs (`/v1/...`) and deprecate with a clear timeline.
+- Explicit error shapes — never leak stack traces to clients.
+- Document rate limits, auth requirements, and error codes in the spec.

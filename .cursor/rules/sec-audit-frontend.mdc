@@ -1,0 +1,78 @@
+---
+description: Secure frontend coding conventions — XSS prevention, output encoding, CSP, clickjacking, and client-side safety patterns.
+globs: web/**/*.ts, web/**/*.tsx, web/**/*.js, web/**/*.jsx, frontend/**/*.ts, frontend/**/*.tsx, frontend/**/*.js, frontend/**/*.jsx, apps/**/*.ts, apps/**/*.tsx, apps/**/*.js, apps/**/*.jsx
+---
+
+# Frontend security conventions
+
+Implementation-level rules for the browser runtime. For audits, use the `security-auditor` subagent.
+
+## XSS prevention
+
+- Prefer `textContent` / framework text bindings. Never set `innerHTML` with untrusted data.
+- When HTML is genuinely needed, sanitise with DOMPurify (or equivalent) — **not** hand-rolled regex.
+- React: avoid `dangerouslySetInnerHTML`. If unavoidable, sanitise via DOMPurify and wrap in a reviewed component.
+- URL attributes (`href`, `src`): validate scheme; block `javascript:` / `data:` unless explicitly whitelisted.
+- When rendering user content in attributes, ensure framework auto-escaping is in effect — no string-concatenated templates.
+
+## Content Security Policy
+
+- Default-deny CSP with explicit allowlists.
+- Prefer **nonces** or **hashes** over `unsafe-inline`.
+- No `unsafe-eval`. Avoid libraries that require it; find alternatives.
+- `connect-src` restricted to known APIs; `img-src`, `media-src` likewise.
+- Roll out progressively: report-only → enforce, with `report-uri`/`report-to` feeding a monitored endpoint.
+
+## Trusted Types (where available)
+
+- Enable Trusted Types in CSP for new apps (`require-trusted-types-for 'script'`).
+- Define policies for any DOM sink the app uses; fail hard on unsafe assignments.
+
+## Clickjacking
+
+- `Content-Security-Policy: frame-ancestors 'none'` (or explicit allowlist) — prefer over legacy `X-Frame-Options`.
+- Frame-busting JS only as a defensive fallback, and only in production builds (not during local development).
+
+## Open redirects
+
+- Any redirect target from the URL / form must be validated against an allowlist of paths or origins.
+- Never blindly redirect to `?return=...`; reject absolute URLs or external origins.
+
+## Browser hardening
+
+- **SRI** (`integrity` attribute) on every third-party script / stylesheet from a CDN.
+- **CORP** (`Cross-Origin-Resource-Policy`) and **COEP/COOP** (`Cross-Origin-Embedder-Policy`, `Cross-Origin-Opener-Policy`) where isolation is needed for SharedArrayBuffer / cross-origin resources.
+- `Referrer-Policy: strict-origin-when-cross-origin` by default.
+- Remove `Server` header leakage via the edge / CDN.
+
+## Token & session handling
+
+- Access tokens live in **memory** (React state / module-level variable), not `localStorage`.
+- Refresh tokens in `HttpOnly` cookies.
+- Clear tokens on logout and on unhandled auth errors.
+- Never log tokens; never include them in URL query strings.
+
+## Input validation (client-side)
+
+- Client-side validation is UX, not security — the server still validates.
+- Use the same schema (e.g. shared `zod` schema) on both sides when practical.
+- Sanitise file names / types before displaying; cap preview sizes.
+
+## Service workers & PWA
+
+- Scope service workers narrowly; review `fetch` handlers for open redirects / credential exposure.
+- Cache policy reviewed for sensitive endpoints — do not cache authenticated responses by accident.
+- Push notification payloads never carry secrets; fetch server-side on click.
+
+## Dependencies
+
+- SCA on every build (npm audit / Snyk / Socket).
+- No `postinstall` scripts from unfamiliar packages.
+- Pin versions; verify integrity via lockfile.
+- Remove unused dependencies aggressively.
+
+## Web forms & auth UX
+
+- `autocomplete` attributes set correctly (`new-password`, `current-password`, etc.).
+- Password reveal toggles only — no "show password" by default.
+- Avoid confirming the existence of accounts in error messages ("incorrect email or password", not "user not found").
