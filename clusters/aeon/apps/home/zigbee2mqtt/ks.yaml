@@ -6,7 +6,6 @@ metadata:
 spec:
   components:
     - ../../../../../../infrastructure/components/volsync
-    - ../../../../../../infrastructure/components/zeroscaler
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -16,7 +15,6 @@ spec:
     substitute:
       APP: zigbee2mqtt
       VOLSYNC_CAPACITY: 1Gi
-      ZEROSCALER_METRIC_JOB: zigbee_probe
   prune: true
   sourceRef:
     kind: GitRepository
