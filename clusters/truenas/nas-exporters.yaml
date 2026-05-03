@@ -1,0 +1,31 @@
+services:
+  node-exporter:
+    command:
+      - "--path.rootfs=/host"
+    image: quay.io/prometheus/node-exporter:v1.9.1
+    network_mode: host
+    pid: host
+    restart: unless-stopped
+    volumes:
+      - bind:
+          propagation: rslave
+        read_only: True
+        source: /
+        target: /host
+        type: bind
+  smartctl-exporter:
+    command:
+      - "--web.listen-address=:9633"
+    image: quay.io/prometheuscommunity/smartctl-exporter:v0.13.0
+    network_mode: host
+    privileged: True
+    restart: unless-stopped
+    user: "0:0"
+    volumes:
+      - source: /dev
+        target: /dev
+        type: bind
+      - read_only: True
+        source: /run/udev
+        target: /run/udev
+        type: bind
