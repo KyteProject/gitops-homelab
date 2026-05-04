@@ -56,7 +56,7 @@ spec:
       memory: "4Gi"
   storage:
     resizeInUseVolumes: true
-    size: 15Gi
+    size: 20Gi
     storageClass: openebs-hostpath
   enableSuperuserAccess: true
   superuserSecret:
