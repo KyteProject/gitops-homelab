@@ -20,6 +20,5 @@ resources:
   - sonarr/ks.yaml
   - tautulli/ks.yaml
   - tqm/ks.yaml
-  - unpackerr/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace
