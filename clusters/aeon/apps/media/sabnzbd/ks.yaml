@@ -5,8 +5,8 @@ metadata:
   name: sabnzbd
 spec:
   components:
-    - ../../../../../../infrastructure/components/volsync
     - ../../../../../../infrastructure/components/zeroscaler
+    - ../../../../../../infrastructure/components/volsync
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
