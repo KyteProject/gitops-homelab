@@ -7,7 +7,6 @@ resources:
   - changedetection/ks.yaml
   - chartdb/ks.yaml
   - gotenberg/ks.yaml
-  # - n8n/ks.yaml
   - tika/ks.yaml
   - windmill/ks.yaml
 components:
