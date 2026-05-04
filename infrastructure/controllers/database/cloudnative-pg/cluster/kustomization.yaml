@@ -7,5 +7,4 @@ resources:
   - prometheusrule.yaml
   - scheduledbackup.yaml
   - service.yaml
-  # - immich-cluster.yaml
-  # - immich-externalsecret.yaml
+  - objectstore.yaml

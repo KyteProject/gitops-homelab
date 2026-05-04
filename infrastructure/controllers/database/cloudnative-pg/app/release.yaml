@@ -4,13 +4,13 @@ kind: OCIRepository
 metadata:
   name: cloudnative-pg
 spec:
-  interval: 1h
+  interval: 15m
+  url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
+  ref:
+    tag: 0.27.1
   layerSelector:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
-  ref:
-    tag: 0.27.0
-  url: oci://ghcr.io/cloudnative-pg/charts/cloudnative-pg
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
@@ -21,18 +21,9 @@ spec:
   chartRef:
     kind: OCIRepository
     name: cloudnative-pg
-  install:
-    remediation:
-      retries: 3
-  upgrade:
-    cleanupOnFail: true
-    remediation:
-      strategy: rollback
-      retries: 3
   values:
-    crds:
-      create: true
     monitoring:
-      podMonitorEnabled: false
+      podMonitorEnabled: true
       grafanaDashboard:
         create: true
+        configMapName: cloudnative-pg-dashboard
