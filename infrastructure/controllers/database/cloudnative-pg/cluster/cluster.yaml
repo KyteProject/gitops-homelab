@@ -22,7 +22,7 @@ spec:
         parameters:
           barmanObjectName: &store cloudflare-r2
           serverName: postgres
-  imageName: ghcr.io/cloudnative-pg/postgresql:18.3-standard-trixie@sha256:e4f9958296aac318d23c12e5f97369b47a925ee6f26eef4e2064affceb2ddf36
+  imageName: ghcr.io/cloudnative-pg/postgresql:${POSTGRESQL_VERSION}
   instances: 3
   postgresql:
     extensions:
