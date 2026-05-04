@@ -78,7 +78,7 @@ spec:
           - "{{ .Release.Name }}.omux.io"
           - requests.omux.io
         parentRefs:
-          - name: envoy-external
+          - name: envoy-internal
             namespace: networking
     service:
       app:

@@ -45,4 +45,9 @@ ingress:
     originRequest:
       http2Origin: true
       originServerName: external.omux.io
+  - hostname: plex.omux.io
+    service: https://envoy-external.networking.svc.cluster.local
+    originRequest:
+      http2Origin: true
+      originServerName: external.omux.io
   - service: http_status:404
