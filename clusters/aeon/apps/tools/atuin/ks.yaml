@@ -14,10 +14,9 @@ spec:
   postBuild:
     substitute:
       APP: atuin
-      VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: default
+  targetNamespace: tools
