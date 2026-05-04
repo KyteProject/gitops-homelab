@@ -16,7 +16,7 @@ spec:
     - name: onepassword-connect-store
       namespace: external-secrets
     - name: volsync
-      namespace: storage
+      namespace: volsync-system
   interval: 1h
   path: ./clusters/aeon/apps/personal/vikunja/app
   postBuild:
