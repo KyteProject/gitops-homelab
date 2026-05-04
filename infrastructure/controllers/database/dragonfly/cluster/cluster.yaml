@@ -6,7 +6,7 @@ metadata:
   name: dragonfly
 spec:
   image: ghcr.io/dragonflydb/dragonfly:v1.36.0
-  replicas: 3
+  replicas: 2
   env:
     - name: MAX_MEMORY
       valueFrom:
@@ -22,7 +22,7 @@ spec:
     requests:
       cpu: 100m
     limits:
-      memory: 512Mi
+      memory: 256Mi
   topologySpreadConstraints:
     - maxSkew: 1
       topologyKey: "kubernetes.io/hostname"
