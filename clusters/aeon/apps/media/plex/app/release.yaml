@@ -15,8 +15,8 @@ spec:
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/plex
-              tag: 1.42.2.10156@sha256:9ad8a3506e1d8ebda873a668603c1a2c10e6887969564561be669efd65ae8871
+              repository: ghcr.io/home-operations/plex-next
+              tag: 1.43.1.10611@sha256:e41b5945ca383acc22dc966ace9d1418cbfd01438556065ebfff2b5544fcd1d4
             env:
               PLEX_ADVERTISE_URL: https://{{ .Release.Name }}.omux.io:443
               PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24,10.42.0.0/16,192.168.10.0/24
@@ -31,7 +31,7 @@ spec:
                     port: &port 32400
                   initialDelaySeconds: 0
                   periodSeconds: 10
-                  timeoutSeconds: 1
+                  timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
               startup:
@@ -49,7 +49,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       resourceClaims:
         - name: gpu
@@ -60,7 +60,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [44, 65538]
+        supplementalGroups: [ 44, 65538 ]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
@@ -85,18 +85,6 @@ spec:
                 subPath: transcode
               - path: /tmp
                 subPath: tmp
-    rawResources:
-      gpu:
-        apiVersion: resource.k8s.io/v1
-        kind: ResourceClaimTemplate
-        spec:
-          spec:
-            spec:
-              devices:
-                requests:
-                  - name: gpu
-                    exactly:
-                      deviceClassName: gpu.intel.com
     route:
       app:
         annotations:
@@ -108,8 +96,8 @@ spec:
           - name: envoy-external
             namespace: networking
         rules:
-          - # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
-            backendRefs:
+          # Ref: https://forums.plex.tv/t/external-srt-subtitles-are-not-working-w-reverse-proxy/886540
+          - backendRefs:
               - identifier: app
                 port: *port
             filters:

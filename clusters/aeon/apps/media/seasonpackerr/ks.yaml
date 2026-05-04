@@ -2,22 +2,18 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app cross-seed
-  namespace: &namespace media
+  name: seasonpackerr
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../../../infrastructure/components/zeroscaler
   interval: 1h
-  path: ./clusters/aeon/apps/media/cross-seed/app
+  path: ./clusters/aeon/apps/media/seasonpackerr/app
   postBuild:
     substitute:
-      APP: *app
+      APP: seasonpackerr
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: media

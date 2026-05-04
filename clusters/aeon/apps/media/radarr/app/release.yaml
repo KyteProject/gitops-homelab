@@ -52,7 +52,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -60,14 +60,10 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
+        supplementalGroups: [ 10000 ]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      config-cache:
-        existingClaim: "{{ .Release.Name }}-cache"
-        globalMounts:
-          - path: /config/MediaCover
       media:
         type: nfs
         server: tank.lan

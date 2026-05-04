@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: agregarr
+  name: brrpolice
 spec:
   chartRef:
     kind: OCIRepository
@@ -11,33 +11,45 @@ spec:
   interval: 1h
   values:
     controllers:
-      agregarr:
+      brrpolice:
         containers:
           app:
             image:
-              repository: ghcr.io/agregarr/agregarr
-              tag: v2.4.2@sha256:5f1390bc43fefbbfb67f38a7a8dd65b4086c1f187a37c8df5c6020a498e5d1b5
+              repository: ghcr.io/zariel/brrpolice
+              tag: v0.13.0@sha256:5be94b0835579314ab1d337c5fcd9dae9896db6da97edfd4fe89e1d41a88e32c
             env:
-              PORT: &port 80
+              BRRPOLICE_HTTP__PORT: &port 80
+              BRRPOLICE_LOGGING__LEVEL: info
+              BRRPOLICE_QBITTORRENT__BASE_URL: http://qbittorrent.media.svc.cluster.local
               TZ: Europe/London
             probes:
-              liveness: &probes
+              liveness:
                 enabled: true
                 custom: true
                 spec:
                   httpGet:
-                    path: /api/v1/status
+                    path: /healthz
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
-              readiness: *probes
+              readiness:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /readyz
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 10
+                  timeoutSeconds: 5
+                  failureThreshold: 3
             resources:
               requests:
                 cpu: 10m
               limits:
-                memory: 1Gi
+                memory: 64Mi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -50,28 +62,14 @@ spec:
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
     persistence:
-      config:
+      data:
         existingClaim: "{{ .Release.Name }}"
-        globalMounts:
-          - path: /app/config
-      tmpfs:
-        type: emptyDir
-        advancedMounts:
-          agregarr:
-            app:
-              - path: /app/config/logs
-                subPath: logs
-              - path: /tmp
-                subPath: tmp
-    route:
-      app:
-        hostnames:
-          - "{{ .Release.Name }}.omux.io"
-        parentRefs:
-          - name: envoy-internal
-            namespace: networking
     service:
       app:
         ports:
           http:
             port: *port
+    serviceMonitor:
+      app:
+        endpoints:
+          - port: http

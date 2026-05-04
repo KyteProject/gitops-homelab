@@ -2,7 +2,7 @@
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
 metadata:
-  name: sonarr
+  name: sabnzbd
 spec:
   chartRef:
     kind: OCIRepository
@@ -11,22 +11,18 @@ spec:
   interval: 1h
   values:
     controllers:
-      sonarr:
+      sabnzbd:
         annotations:
           reloader.stakater.com/auto: "true"
         containers:
           app:
             image:
-              repository: ghcr.io/home-operations/sonarr
-              tag: 4.0.17.2953@sha256:83607d2b741ec9469db09489e88c473ae6fdf7d85f3b55d4fa809b43e25a2a6c
+              repository: ghcr.io/home-operations/sabnzbd
+              tag: 5.0.1@sha256:c22ada9eb6f6306a4e94d3372c784a5330818f2021b2fa9233ff4ae92d9f3582
             env:
-              SONARR__APP__INSTANCENAME: Sonarr
-              SONARR__APP__THEME: dark
-              SONARR__AUTH__METHOD: External
-              SONARR__AUTH__REQUIRED: DisabledForLocalAddresses
-              SONARR__LOG__LEVEL: info
-              SONARR__SERVER__PORT: &port 80
-              SONARR__UPDATE__BRANCH: develop
+              SABNZBD__PORT: &port 80
+              SABNZBD__HOST_WHITELIST_ENTRIES: >-
+                {{ .Release.Name }}.omux.io, sab.omux.io
               TZ: Europe/London
             envFrom:
               - secretRef:
@@ -37,18 +33,23 @@ spec:
                 custom: true
                 spec:
                   httpGet:
-                    path: /ping
+                    path: /api?mode=version
                     port: *port
                   initialDelaySeconds: 0
                   periodSeconds: 10
                   timeoutSeconds: 5
                   failureThreshold: 3
               readiness: *probes
+              startup:
+                enabled: true
+                spec:
+                  periodSeconds: 10
+                  failureThreshold: 30
             resources:
               requests:
                 cpu: 100m
               limits:
-                memory: 4Gi
+                memory: 32Gi
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
@@ -60,7 +61,6 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [ 10000 ]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
@@ -71,7 +71,7 @@ spec:
       tmpfs:
         type: emptyDir
         advancedMounts:
-          sonarr:
+          sabnzbd:
             app:
               - path: /config/logs
                 subPath: logs
@@ -81,6 +81,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - sab.omux.io
         parentRefs:
           - name: envoy-internal
             namespace: networking

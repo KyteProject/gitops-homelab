@@ -6,19 +6,22 @@ resources:
   - agregarr/ks.yaml
   - autobrr/ks.yaml
   - bazarr/ks.yaml
-  - cross-seed/ks.yaml
+  - brrpolice/ks.yaml
+  # - cross-seed/ks.yaml
   - jellyseerr/ks.yaml
   - navidrome/ks.yaml
-  - nzbget/ks.yaml
+  # - nzbget/ks.yaml
   - plex/ks.yaml
   - prowlarr/ks.yaml
   - qbittorrent/ks.yaml
   - qui/ks.yaml
   - radarr/ks.yaml
   - recyclarr/ks.yaml
-  # - sabnzbd/ks.yaml
+  - sabnzbd/ks.yaml
+  - seasonpacker/ks.yaml
+  - seerr/ks.yaml
   - sonarr/ks.yaml
   - tautulli/ks.yaml
-  - tqm/ks.yaml
+  # - tqm/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace

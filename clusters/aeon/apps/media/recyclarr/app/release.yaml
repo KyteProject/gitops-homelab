@@ -15,7 +15,7 @@ spec:
         type: cronjob
         cronjob:
           schedule: "@daily"
-          timeZone: &timeZone Europe/London
+          timeZone: Europe/London
           concurrencyPolicy: Forbid
           successfulJobsHistory: 1
           failedJobsHistory: 1
@@ -27,7 +27,7 @@ spec:
             args:
               - sync
             env:
-              TZ: *timeZone
+              RECYCLARR_DATA_DIR: /tmp
             envFrom:
               - secretRef:
                   name: "{{ .Release.Name }}-secret"
@@ -39,7 +39,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -47,7 +47,7 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
+        supplementalGroups: [ 10000 ]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"

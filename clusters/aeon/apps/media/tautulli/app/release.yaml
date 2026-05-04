@@ -21,7 +21,7 @@ spec:
               tag: 2.17.0@sha256:b90b30e15d1b6d12fc726fac1ef9778ad92f405ac8f8ccb30a34d7f6673c113d
             env:
               TAUTULLI_HTTP_PORT: &port 80
-              TAUTULLI_HTTP_BASE_URL: https://{{ .Release.Name }}.k13.dev
+              TAUTULLI_HTTP_BASE_URL: https://{{ .Release.Name }}.omux.io
               TZ: Europe/London
             envFrom:
               - secretRef:
@@ -47,7 +47,7 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              capabilities: { drop: [ "ALL" ] }
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
@@ -55,14 +55,10 @@ spec:
         runAsGroup: 568
         fsGroup: 568
         fsGroupChangePolicy: OnRootMismatch
-        supplementalGroups: [10000]
+        supplementalGroups: [ 10000 ]
     persistence:
       config:
         existingClaim: "{{ .Release.Name }}"
-      config-cache:
-        existingClaim: "{{ .Release.Name }}-cache"
-        globalMounts:
-          - path: /config/cache
       tmpfs:
         type: emptyDir
         advancedMounts:
