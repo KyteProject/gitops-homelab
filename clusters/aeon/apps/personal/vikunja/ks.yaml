@@ -2,12 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app vikunja
-  namespace: &namespace personal
+  name: vikunja
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
@@ -21,12 +17,12 @@ spec:
   path: ./clusters/aeon/apps/personal/vikunja/app
   postBuild:
     substitute:
-      APP: *app
+      APP: vikunja
       VOLSYNC_CAPACITY: 10Gi
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: personal
   wait: false

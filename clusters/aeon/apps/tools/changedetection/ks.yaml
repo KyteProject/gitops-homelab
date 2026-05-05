@@ -2,12 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app changedetection
-  namespace: &namespace tools
+  name: changedetection
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
@@ -17,11 +13,11 @@ spec:
   path: ./clusters/aeon/apps/tools/changedetection/app
   postBuild:
     substitute:
-      APP: *app
+      APP: changedetection
       VOLSYNC_CAPACITY: 2Gi
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: tools

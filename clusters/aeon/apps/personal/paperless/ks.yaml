@@ -2,12 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app paperless
-  namespace: &namespace personal
+  name: paperless
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   components:
     - ../../../../../../infrastructure/components/volsync
   dependsOn:
@@ -19,35 +15,31 @@ spec:
   path: ./clusters/aeon/apps/personal/paperless/app
   postBuild:
     substitute:
-      APP: *app
+      APP: paperless
       VOLSYNC_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: personal
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
 # metadata:
-#   name: &app paperless-ai
-#   namespace: &namespace personal
+#   name: paperless-ai
 # spec:
-#   commonMetadata:
-#     labels:
-#       app.kubernetes.io/name: *app
 #   components:
-#    - ../../../../../../infrastructure/components/volsync
+#     - ../../../../../../infrastructure/components/volsync
 #   interval: 1h
 #   path: ./clusters/aeon/apps/personal/paperless/ai
 #   postBuild:
 #     substitute:
-#       APP: *app
+#       APP: paperless-ai
 #       VOLSYNC_CAPACITY: 1Gi
 #   prune: true
-  # sourceRef:
-  #   kind: GitRepository
-  #   name: flux-system
-  #   namespace: flux-system
-#   targetNamespace: *namespace
+#   sourceRef:
+#     kind: GitRepository
+#     name: flux-system
+#     namespace: flux-system
+#   targetNamespace: personal

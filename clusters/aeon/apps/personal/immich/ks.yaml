@@ -2,12 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app immich
-  namespace: &namespace personal
+  name: immich
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   # components:
   #   - ../../../../../../infrastructure/components/volsync
   dependsOn:
@@ -23,7 +19,7 @@ spec:
   path: ./clusters/aeon/apps/personal/immich/app
   postBuild:
     substitute:
-      APP: *app
+      APP: immich
       HOSTNAME: photos.omux.io
       APP_UID: "568"
       APP_GID: "568"
@@ -35,7 +31,7 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: personal
   timeout: 5m
   wait: true
 ---
@@ -43,11 +39,7 @@ apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
   name: immich-db
-  namespace: personal
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: immich-db
   dependsOn:
     - name: cloudnative-pg
       namespace: database
@@ -63,5 +55,5 @@ spec:
     name: flux-system
     namespace: flux-system
   targetNamespace: database
-  wait: true
   timeout: 5m
+  wait: true

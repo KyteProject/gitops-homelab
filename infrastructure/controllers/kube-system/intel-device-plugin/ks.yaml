@@ -2,12 +2,8 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app intel-device-plugin-operator
-  namespace: &namespace kube-system
+  name: intel-device-plugin-operator
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   interval: 30m
   path: ./infrastructure/controllers/kube-system/intel-device-plugin/app
   prune: true
@@ -15,19 +11,15 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: kube-system
   timeout: 5m
   wait: true
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: &app intel-device-plugin-gpu
-  namespace: &namespace kube-system
+  name: intel-device-plugin-gpu
 spec:
-  commonMetadata:
-    labels:
-      app.kubernetes.io/name: *app
   dependsOn:
     - name: intel-device-plugin-operator
   interval: 30m
@@ -37,6 +29,6 @@ spec:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
-  targetNamespace: *namespace
+  targetNamespace: kube-system
   timeout: 5m
   wait: true
