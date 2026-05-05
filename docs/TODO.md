@@ -44,7 +44,7 @@
 - [ ] wrtag
 - [ ] [openfaas](https://www.openfaas.com/)
 - [ ] [Bitfocus](https://bitfocus.io/companion)
-- [ ] [Kopia](https://kopia.io/)
+- [x] [Kopia](https://kopia.io/)
 - [ ] [Gramps](https://www.grampsweb.org/)
 
 clusters/aeon/apps
