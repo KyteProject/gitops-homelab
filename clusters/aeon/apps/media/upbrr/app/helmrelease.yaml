@@ -20,7 +20,7 @@ spec:
               tag: main@sha256:b658f6573e22a00ee77189641a0b12175492a91f7a54dad2a399343196edf012
             env:
               UPBRR_WEB_PORT: &port 80
-              TZ: America/Chicago
+              TZ: Europe/London
             probes:
               liveness: &probes
                 enabled: true
@@ -60,8 +60,8 @@ spec:
         existingClaim: "{{ .Release.Name }}"
       media:
         type: nfs
-        server: tank.internal
-        path: /mnt/tank/media
+        server: tank.lan
+        path: /mnt/tank/Media
       tmpfs:
         type: emptyDir
         advancedMounts:
@@ -74,7 +74,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.k13.dev"
+          - "{{ .Release.Name }}.omux.io"
         parentRefs:
           - name: envoy-internal
             namespace: networking
