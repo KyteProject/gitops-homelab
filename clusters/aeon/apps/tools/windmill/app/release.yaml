@@ -13,6 +13,9 @@ spec:
         name: windmill
         namespace: flux-system
   interval: 1h
+  # The three windmill deployments do not settle inside Flux's 5m default,
+  # which left every release revision failed and the HelmRelease stalled.
+  timeout: 15m
   values:
     postgresql:
       enabled: false
