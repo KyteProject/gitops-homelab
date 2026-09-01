@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: ghcr.io/bjw-s-labs/radicale
-              tag: 3.7.2@sha256:cb8493c8d329807e1adf7a96c3a2f5a087aeb3f251078c9a0ebb1d92379f6943
+              tag: 3.7.8@sha256:edabe3f44f3f24c3bc2581dccd2944461b33c453cff4e33776959064b908aa21
             env:
               TZ: Europe/London
             probes:
