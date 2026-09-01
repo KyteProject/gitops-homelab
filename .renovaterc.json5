@@ -15,13 +15,15 @@
   prConcurrentLimit: 10,
   prHourlyLimit: 5,
   dependencyDashboardTitle: 'Renovate Dashboard',
-  // Supply-chain cooling-off. Nothing is proposed until it has been public for
-  // two weeks, giving a compromised or yanked release time to be caught.
-  // 'strict' means held updates are not raised as PRs at all; they are listed
-  // under "Pending Status Checks" on the dependency dashboard, where ticking the
-  // box forces an individual update through once you have verified it.
+  // Supply-chain release-age signal. Renovate can only evaluate this where the
+  // datasource publishes a release timestamp. Most of our images live on GHCR
+  // and quay without an org.opencontainers.image.created annotation, so their
+  // age is undeterminable and a 'strict' filter holds them forever rather than
+  // for 14 days. 'none' keeps the signal on PRs where it does resolve without
+  // letting a missing timestamp block an upgrade. The real gate is
+  // automerge:false plus review, with Trivy scanning what actually runs.
   minimumReleaseAge: '14 days',
-  internalChecksFilter: 'strict',
+  internalChecksFilter: 'none',
   // Known vulnerabilities bypass the wait, since the risk of staying put is
   // higher than the risk of moving. These arrive labelled for review.
   osvVulnerabilityAlerts: true,
