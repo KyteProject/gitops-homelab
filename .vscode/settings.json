@@ -6,7 +6,9 @@
   "editor.guides.bracketPairsHorizontal": true,
   "editor.guides.highlightActiveBracketPair": true,
   "editor.hover.delay": 1500,
-  "editor.rulers": [100],
+  "editor.rulers": [
+    100
+  ],
   "editor.stickyScroll.enabled": false,
   "explorer.autoReveal": false,
   "files.associations": {
@@ -25,12 +27,32 @@
   },
   "vs-kubernetes": {
     "vs-kubernetes.kubeconfig": "./infrastructure/kubeconfig",
-    "vs-kubernetes.knownKubeconfigs": ["./infrastructure/kubeconfig"]
+    "vs-kubernetes.knownKubeconfigs": [
+      "./infrastructure/kubeconfig"
+    ]
   },
-  "sops.defaults.ageKeyFile": "age.key",
+  "window.zoomLevel": 0,
   "yaml.schemaStore.enable": true,
   "yaml.schemas": {
     "kubernetes": "./infrastructure/**/*.yaml",
     "clusters": "./clusters/**/*.yaml"
+  },
+  "[just]": {
+    "editor.defaultFormatter": "nefrob.vscode-just-syntax"
+  },
+  "[yaml]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json5]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
   }
 }
