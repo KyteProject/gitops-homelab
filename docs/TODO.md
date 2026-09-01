@@ -26,6 +26,9 @@
 ## App shortlist
 
 - [ ] Advanture Log
+- [ ] [Dawarich](https://github.com/Freika/dawarich)
+- [ ] [Ghostfolio](https://github.com/ghostfolio/ghostfolio)
+- [ ] Kite
 - [ ] Sonarqube
 - [ ] Monica
 - [ ] Maloja

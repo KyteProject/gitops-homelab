@@ -42,3 +42,4 @@ config.xml
 .decrypted~*
 .envrc
 .tmp/
+.claude/
