@@ -25,3 +25,8 @@ spec:
     cdi:
       staticPath: /var/cdi/static
       dynamicPath: /var/cdi/dynamic
+    kubeletPlugin:
+      # No xpumd daemon is deployed, so health monitoring has nothing to talk to
+      # and logs a socket error every 10s. Device details still come from the driver.
+      healthMonitoring:
+        enabled: false
