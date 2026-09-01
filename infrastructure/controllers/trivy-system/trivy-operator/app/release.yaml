@@ -34,6 +34,8 @@ spec:
       # three-node cluster. Completed jobs are also kept forever by default.
       scanJobsConcurrentLimit: 2
       scanJobTTL: 24h
-    # Talos does not expose the host filesystem the node collector expects.
-    nodeCollector:
-      enabled: false
+      # Talos has a read-only host filesystem and no /etc/systemd, so the
+      # node-collector job these two scanners spawn cannot start. The chart has
+      # no nodeCollector.enabled key; disabling the scanners is the control.
+      infraAssessmentScannerEnabled: false
+      clusterComplianceEnabled: false
