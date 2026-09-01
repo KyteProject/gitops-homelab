@@ -1,6 +1,6 @@
 ---
 # yaml-language-server: $schema=https://json.schemastore.org/github-workflow.json
-name: Image Pull
+name: Flate
 
 on:
   pull_request:
@@ -16,7 +16,7 @@ permissions:
 
 jobs:
   filter:
-    name: Image Pull - Filter
+    name: Flate - Filter
     runs-on: ubuntu-latest
     outputs:
       changed-files: ${{ steps.changed-files.outputs.changed_files }}
@@ -32,12 +32,14 @@ jobs:
   flate:
     if: ${{ needs.filter.outputs.changed-files != '[]' }}
     needs: filter
-    name: Image Pull - Flate
+    name: Flate
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    outputs:
-      images: ${{ steps.flate.outputs.images }}
+    strategy:
+      matrix:
+        resource:
+          - helmrelease
+          - kustomization
+      fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
@@ -54,38 +56,39 @@ jobs:
 
       - name: Run Flate
         id: flate
-        run: |
-          echo 'images<<EOF' >> $GITHUB_OUTPUT
-          flate diff images -p ./infrastructure/flux/cluster -o json >> $GITHUB_OUTPUT
+        env:
+          FLATE_OUTPUT: github
+          FLATE_PATH: ./infrastructure/flux/cluster
+          KIND: ${{ matrix.resource }}
+        run: |-
+          echo 'diff<<EOF' >> $GITHUB_OUTPUT
+          flate diff $KIND >> $GITHUB_OUTPUT
           echo 'EOF' >> $GITHUB_OUTPUT
 
-  pull:
-    if: ${{ needs.flate.outputs.images != '[]' }}
-    needs: flate
-    name: Image Pull - Pull Images
-    runs-on: gitops-homelab-runner
-    strategy:
-      matrix:
-        image: ${{ fromJSON(needs.flate.outputs.images) }}
-      max-parallel: 4
-      fail-fast: false
-    steps:
-      - name: Setup Mise
-        uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - if: ${{ steps.flate.outputs.diff != '' }}
+        name: Generate Token
+        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3.2.0
+        id: app-token
         with:
-          cache: false
-          tool_versions: |
-            talosctl latest
+          client-id: ${{ secrets.BOT_APP_CLIENT_ID }}
+          private-key: ${{ secrets.BOT_APP_PRIVATE_KEY }}
+          permission-pull-requests: write
 
-      - name: Pull Image
-        env:
-          IMAGE: ${{ matrix.image }}
-        run: talosctl --nodes $NODE image pull $IMAGE
+      - if: ${{ steps.flate.outputs.diff != '' }}
+        name: Add Comment
+        uses: mshick/add-pr-comment@ec328af66588ab8f77cdeb2c264f14aba45bbf59 # v3.12.0
+        with:
+          repo-token: ${{ steps.app-token.outputs.token }}
+          message-id: ${{ github.event.pull_request.number }}/flux/${{ matrix.resource }}
+          message: |-
+            ```diff
+            ${{ steps.flate.outputs.diff }}
+            ```
 
   success:
     if: ${{ !cancelled() }}
-    needs: [flate, pull]
-    name: Image Pull - Success
+    needs: flate
+    name: Flate - Success
     runs-on: ubuntu-latest
     steps:
       - name: Any jobs failed?

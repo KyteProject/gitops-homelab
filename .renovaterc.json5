@@ -1,28 +1,20 @@
 {
   $schema: 'https://docs.renovatebot.com/renovate-schema.json',
   extends: [
-    'config:recommended',
-    'docker:enableMajor',
-    'helpers:pinGitHubActionDigests',
+    'github>home-operations/renovate-presets#8.1.0',
+    'github>home-operations/renovate-presets//apps/grafanaDashboards.json5#8.1.0',
+    'github>home-operations/renovate-presets//apps/talosFactory.json5#8.1.0',
     'github>kyteproject/gitops-homelab//.renovate/autoMerge.json5',
-    'github>kyteproject/gitops-homelab//.renovate/customManagers.json5',
-    'github>kyteproject/gitops-homelab//.renovate/grafanaDashboards.json5',
     'github>kyteproject/gitops-homelab//.renovate/groups.json5',
     'github>kyteproject/gitops-homelab//.renovate/labels.json5',
-    'github>kyteproject/gitops-homelab//.renovate/overrides.json5',
-    'github>kyteproject/gitops-homelab//.renovate/semanticCommits.json5',
-    ':automergeBranch',
-    ':dependencyDashboard',
-    ':disableRateLimiting',
     ':gitSignOff',
-    ':semanticCommits',
     ':timezone(Europe/London)',
   ],
   // Temporary: throttle the post-outage backlog into reviewable batches.
   // Remove both once the queue is cleared to restore ':disableRateLimiting'.
   prConcurrentLimit: 10,
   prHourlyLimit: 5,
-  dependencyDashboardTitle: 'Renovate Dashboard 🤖',
+  dependencyDashboardTitle: 'Renovate Dashboard',
   ignorePaths: [
     '**/*.sops.*',
     '**/archive/**',
@@ -30,17 +22,12 @@
   ],
   flux: {
     managerFilePatterns: [
-      '/(^|/)infrastructure/controllers/.+\\.ya?ml$/',
-      '/(^|/)clusters/.+\\.ya?ml$/',
+      '/(^|/)(bootstrap|clusters|infrastructure)/.+\\.ya?ml$/',
     ],
   },
   kubernetes: {
     managerFilePatterns: [
-      '/(^|/)infrastructure/controllers/.+\\.ya?ml$/',
-      '/(^|/)clusters/.+\\.ya?ml$/',
+      '/(^|/)(bootstrap|clusters|infrastructure)/.+\\.ya?ml$/',
     ],
-  },
-  registryAliases: {
-    "mirror.gcr.io": "docker.io",
   },
 }
