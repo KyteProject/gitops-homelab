@@ -22,7 +22,9 @@ spec:
     requests:
       cpu: 100m
     limits:
-      memory: 256Mi
+      # Dragonfly requires 256Mi per proactor thread. With --proactor_threads=2
+      # anything below 512Mi fails to start. Drop threads to 1 before lowering this.
+      memory: 512Mi
   topologySpreadConstraints:
     - maxSkew: 1
       topologyKey: "kubernetes.io/hostname"
