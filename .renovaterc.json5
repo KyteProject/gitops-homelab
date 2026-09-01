@@ -15,6 +15,20 @@
   prConcurrentLimit: 10,
   prHourlyLimit: 5,
   dependencyDashboardTitle: 'Renovate Dashboard',
+  // Supply-chain cooling-off. Nothing is proposed until it has been public for
+  // two weeks, giving a compromised or yanked release time to be caught.
+  // 'strict' means held updates are not raised as PRs at all; they are listed
+  // under "Pending Status Checks" on the dependency dashboard, where ticking the
+  // box forces an individual update through once you have verified it.
+  minimumReleaseAge: '14 days',
+  internalChecksFilter: 'strict',
+  // Known vulnerabilities bypass the wait, since the risk of staying put is
+  // higher than the risk of moving. These arrive labelled for review.
+  osvVulnerabilityAlerts: true,
+  vulnerabilityAlerts: {
+    minimumReleaseAge: null,
+    addLabels: ['security'],
+  },
   ignorePaths: [
     '**/*.sops.*',
     '**/archive/**',
