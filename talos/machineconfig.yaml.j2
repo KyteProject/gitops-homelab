@@ -79,7 +79,7 @@ machine:
         # ImageVolume: true
         # ResourceHealthStatus: true
       serializeImagePulls: false
-    image: ghcr.io/siderolabs/kubelet:v1.36.0
+    image: ghcr.io/siderolabs/kubelet:v1.37.0
     extraMounts:
       - destination: /var/openebs/local
         source: /var/openebs/local
@@ -195,12 +195,12 @@ cluster:
     extraArgs:
       enable-aggregator-routing: true
       feature-gates: HPAScaleToZero=true
-    image: registry.k8s.io/kube-apiserver:v1.36.0
+    image: registry.k8s.io/kube-apiserver:v1.37.0
   controllerManager:
     extraArgs:
       bind-address: 0.0.0.0
       feature-gates: HPAScaleToZero=true
-    image: registry.k8s.io/kube-controller-manager:v1.36.0
+    image: registry.k8s.io/kube-controller-manager:v1.37.0
 
   coreDNS:
     disabled: true
@@ -216,7 +216,7 @@ cluster:
 
   proxy:
     disabled: true
-    image: registry.k8s.io/kube-proxy:v1.36.0
+    image: registry.k8s.io/kube-proxy:v1.37.0
 
   secretboxEncryptionSecret: op://homelab/talos/CLUSTER_SECRETBOXENCRYPTIONSECRET
 
@@ -240,7 +240,7 @@ cluster:
                     whenUnsatisfiable: ScheduleAnyway
     extraArgs:
       bind-address: 0.0.0.0
-    image: registry.k8s.io/kube-scheduler:v1.36.0
+    image: registry.k8s.io/kube-scheduler:v1.37.0
 
   serviceAccount:
     key: op://homelab/talos/CLUSTER_SERVICEACCOUNT_KEY
