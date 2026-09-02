@@ -36,6 +36,9 @@
         commitMessageTopic: "{{{groupName}}} group",
       },
       minimumGroupSize: 5,
+      // No Rook release supports Kubernetes v1.37 yet, and talosctl refuses the
+      // 1.36 to 1.37 upgrade path. Lift this once Rook states v1.37 support.
+      allowedVersions: "<1.37.0",
     },
     {
       description: "Rook-Ceph Group",
