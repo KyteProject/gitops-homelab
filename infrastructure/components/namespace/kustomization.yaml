@@ -1,6 +1,8 @@
 ---
 apiVersion: kustomize.config.k8s.io/v1alpha1
 kind: Component
+# The Namespace object itself now lives beside each namespace directory as
+# ./namespace.yaml. This component only wires the per-namespace Flux Alert and
+# Provider objects for GitHub commit statuses and Alertmanager.
 resources:
   - ./alerts
-  - ./namespace
