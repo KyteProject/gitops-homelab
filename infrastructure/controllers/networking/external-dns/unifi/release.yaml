@@ -10,6 +10,10 @@ spec:
     namespace: flux-system
   interval: 1h
   values:
+    global:
+      # the ServiceAccount is created by rbac.yaml and owned by kustomize,
+      # so Helm must not try to create and adopt one of the same name
+      createDefaultServiceAccount: false
     controllers:
       external-dns-unifi:
         annotations:
@@ -93,6 +97,9 @@ spec:
         serviceAccount:
           name: external-dns-unifi
     defaultPodOptions:
+      # app-template 5.x defaults this to false; this app reads its own
+      # ServiceAccount token (it has RBAC bound to it)
+      automountServiceAccountToken: true
       securityContext:
         runAsNonRoot: true
         runAsUser: 568

@@ -18,6 +18,14 @@ spec:
       strategy: rollback
       retries: 3
   values:
+    global:
+      # the ServiceAccount is created by rbac.yaml and owned by kustomize,
+      # so Helm must not try to create and adopt one of the same name
+      createDefaultServiceAccount: false
+    defaultPodOptions:
+      # app-template 5.x defaults this to false; this app reads its own
+      # ServiceAccount token (it has RBAC bound to it)
+      automountServiceAccountToken: true
     controllers:
       dragonfly-operator:
         replicas: 1
