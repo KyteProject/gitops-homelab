@@ -1,0 +1,16 @@
+---
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: Restore
+metadata:
+  name: "${APP}"
+spec:
+  credentialProjection:
+    enabled: true
+  policy:
+    onMissingSnapshot: Continue # start empty if no snapshot exists yet
+  source:
+    fromPolicy:
+      name: "${APP}"
+      offset: 0 # 0 = latest snapshot
+  target:
+    populator: {}

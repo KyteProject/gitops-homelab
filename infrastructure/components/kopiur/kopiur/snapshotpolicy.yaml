@@ -1,0 +1,29 @@
+---
+apiVersion: kopiur.home-operations.com/v1alpha1
+kind: SnapshotPolicy
+metadata:
+  name: "${APP}"
+spec:
+  compression:
+    compressor: zstd
+  credentialProjection:
+    enabled: true
+  repository:
+    kind: ClusterRepository
+    name: nas
+  retention:
+    keepLatest: 3
+    keepHourly: 24
+    keepDaily: 7
+    keepWeekly: 4
+  sources:
+    - pvc:
+        name: "${APP}"
+  verification:
+    deep:
+      schedule:
+        cron: H 5 1 * * # first of the month, 5am
+    quick:
+      schedule:
+        cron: H 3 * * * # daily, 3am
+  volumeSnapshotClassName: "${KOPIUR_SNAPSHOTCLASS:=csi-ceph-block}"
