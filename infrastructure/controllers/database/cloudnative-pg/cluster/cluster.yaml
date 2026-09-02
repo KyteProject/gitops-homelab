@@ -7,6 +7,10 @@ metadata:
   annotations:
     cnpg.io/skipEmptyWalArchiveCheck: enabled
 spec:
+  # Scheduling must stay soft. Instance PVCs use openebs-hostpath, so each PV is
+  # pinned to the node that first bound it. A required anti-affinity rule, or a
+  # DoNotSchedule spread constraint, would leave a restarted instance Pending
+  # forever whenever its pinned node already hosts another instance.
   affinity:
     podAntiAffinityType: preferred
   bootstrap:
@@ -61,4 +65,6 @@ spec:
   superuserSecret:
     name: cloudnative-pg-secret
   monitoring:
-    enablePodMonitor: true
+    # Deprecated and slated for removal upstream. The PodMonitor is now hand
+    # managed in podmonitor.yaml.
+    enablePodMonitor: false
