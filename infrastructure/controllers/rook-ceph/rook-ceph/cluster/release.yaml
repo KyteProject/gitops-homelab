@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.19.5
+    tag: v1.20.6
   url: oci://ghcr.io/rook/rook-ceph-cluster
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -22,6 +22,13 @@ spec:
     name: rook-ceph-cluster
   interval: 1h
   values:
+    # Pin Ceph to the running version. The v1.20.6 chart defaults cephImage.tag
+    # to v20.2.4, which would carry a Ceph major (Squid 19 to Tentacle 20) along
+    # with the Rook operator upgrade. Rook v1.20 supports both, so keep them
+    # separate and do the Ceph major as its own deliberate change.
+    cephImage:
+      repository: quay.io/ceph/ceph
+      tag: v19.2.3
     monitoring:
       enabled: true
       createPrometheusRules: true

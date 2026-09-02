@@ -1,0 +1,34 @@
+---
+# yaml-language-server: $schema=https://k8s-schemas.home-operations.com/helm.toolkit.fluxcd.io/helmrelease_v2.json
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: ceph-csi-drivers
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: ceph-csi-drivers
+  interval: 1h
+  values:
+    drivers:
+      cephfs:
+        enabled: true
+        # carried over from the rook-ceph chart's csi.cephFSKernelMountOptions,
+        # which v1.20 removed. Required by the cluster's requireMsgr2: true.
+        kernelMountOptions:
+          ms_mode: prefer-crc
+        name: rook-ceph.cephfs.csi.ceph.com
+        snapshotPolicy: volumeSnapshot
+        # chart default is 1; the cluster already runs 2, keep it that way
+        controllerPlugin:
+          replicas: 2
+      nfs:
+        enabled: false
+      nvmeof:
+        enabled: false
+      rbd:
+        enabled: true
+        name: rook-ceph.rbd.csi.ceph.com
+        snapshotPolicy: volumeSnapshot
+        controllerPlugin:
+          replicas: 2
