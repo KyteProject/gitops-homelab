@@ -57,6 +57,32 @@ spec:
           labels:
             severity: critical
 
+        # Backup age is deliberately measured from the barman-cloud plugin's own
+        # metric. The in-tree cnpg_collector_last_available_backup_timestamp and
+        # the cluster's status.lastSuccessfulBackup both froze on 2026-05-04 when
+        # this cluster moved from the in-tree barmanObjectStore method to the
+        # plugin, and neither has updated since.
+        - alert: PostgresBackupStale
+          expr: |-
+            (time() - max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp)) > 60 * 60 * 26
+          for: 30m
+          annotations:
+            summary: >-
+              No successful Postgres backup for over 26 hours; the schedule is daily at 01:00
+          labels:
+            severity: critical
+
+        - alert: PostgresBackupFailing
+          expr: |-
+            max(barman_cloud_cloudnative_pg_io_last_failed_backup_timestamp)
+              > max(barman_cloud_cloudnative_pg_io_last_available_backup_timestamp)
+          for: 30m
+          annotations:
+            summary: >-
+              The most recent Postgres backup attempt failed and no later one has succeeded
+          labels:
+            severity: critical
+
         - alert: DatabaseDeadlockConflicts
           expr: |-
             cnpg_pg_stat_database_deadlocks > 10
