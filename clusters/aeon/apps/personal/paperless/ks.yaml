@@ -5,7 +5,7 @@ metadata:
   name: paperless
 spec:
   components:
-    - ../../../../../../infrastructure/components/volsync
+    - ../../../../../../infrastructure/components/kopiur-migrate
   dependsOn:
     - name: openebs
       namespace: storage
@@ -16,7 +16,8 @@ spec:
   postBuild:
     substitute:
       APP: paperless
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_SRC_HOST: personal
+      KOPIUR_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository
@@ -30,13 +31,13 @@ spec:
 #   name: paperless-ai
 # spec:
 #   components:
-#     - ../../../../../../infrastructure/components/volsync
+#     - ../../../../../../infrastructure/components/kopiur-migrate
 #   interval: 1h
 #   path: ./clusters/aeon/apps/personal/paperless/ai
 #   postBuild:
 #     substitute:
 #       APP: paperless-ai
-#       VOLSYNC_CAPACITY: 1Gi
+#       KOPIUR_CAPACITY: 1Gi
 #   prune: true
 #   sourceRef:
 #     kind: GitRepository
