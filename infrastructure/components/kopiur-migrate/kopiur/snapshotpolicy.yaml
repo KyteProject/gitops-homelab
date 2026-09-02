@@ -17,6 +17,11 @@ spec:
     keepHourly: 24
     keepDaily: 7
     keepWeekly: 4
+  mover:
+    # run the mover as the workload's own uid/gid rather than the hardcoded
+    # 1000 default, so it can read files the app writes with 0600 permissions
+    inheritSecurityContextFrom:
+      pvcConsumer: {}
   sources:
     - pvc:
         name: "${APP}"
