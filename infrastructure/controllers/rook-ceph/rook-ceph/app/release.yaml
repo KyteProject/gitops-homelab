@@ -9,7 +9,7 @@ spec:
     mediaType: application/vnd.cncf.helm.chart.content.v1.tar+gzip
     operation: copy
   ref:
-    tag: v1.19.5
+    tag: v1.20.6
   url: oci://ghcr.io/rook/rook-ceph
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
@@ -23,8 +23,8 @@ spec:
   interval: 1h
   values:
     csi:
-      cephFSKernelMountOptions: ms_mode=prefer-crc
-      enableLiveness: true
+      # cephFSKernelMountOptions and enableLiveness were removed from this chart
+      # in v1.20; they now live on the Driver CRs managed by ceph-csi-drivers.
       serviceMonitor:
         enabled: true
     image:
