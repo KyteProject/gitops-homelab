@@ -9,6 +9,9 @@ kind: ClusterRole
 metadata:
   name: dragonfly-operator
 rules:
+  # Mirrors the upstream manager-role for the pinned operator version, plus the
+  # leader-election lease. Keep in step with the image tag in release.yaml:
+  # raw.githubusercontent.com/dragonflydb/dragonfly-operator/v1.6.1/manifests/dragonfly-operator.yaml
   - apiGroups: ["coordination.k8s.io"]
     resources: ["leases"]
     verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
@@ -16,17 +19,17 @@ rules:
     resources: ["events"]
     verbs: ["create", "patch"]
   - apiGroups: [""]
-    resources: ["pods", "services"]
+    resources: ["configmaps", "pods", "services"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  - apiGroups: [""]
+    resources: ["pods/status"]
+    verbs: ["get", "patch", "update"]
   - apiGroups: ["apps"]
     resources: ["statefulsets"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
-  # Required from operator v1.6.0 onward. controller-runtime blocks
-  # WaitForCacheSync on every informer, so a forbidden PDB informer takes the
-  # pod and statefulset caches down with it and the manager exits on startup.
   - apiGroups: ["policy"]
     resources: ["poddisruptionbudgets"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
