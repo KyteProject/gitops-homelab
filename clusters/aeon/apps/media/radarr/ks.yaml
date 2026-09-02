@@ -6,7 +6,7 @@ metadata:
 spec:
   components:
     - ../../../../../../infrastructure/components/zeroscaler
-    - ../../../../../../infrastructure/components/volsync
+    - ../../../../../../infrastructure/components/kopiur
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -15,7 +15,7 @@ spec:
   postBuild:
     substitute:
       APP: radarr
-      VOLSYNC_CAPACITY: 10Gi
+      KOPIUR_CAPACITY: 10Gi
   prune: true
   sourceRef:
     kind: GitRepository

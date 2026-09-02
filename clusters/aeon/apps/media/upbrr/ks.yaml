@@ -5,7 +5,7 @@ metadata:
   name: upbrr
 spec:
   components:
-    - ../../../../../../infrastructure/components/volsync
+    - ../../../../../../infrastructure/components/kopiur
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -16,7 +16,7 @@ spec:
   postBuild:
     substitute:
       APP: upbrr
-      VOLSYNC_CAPACITY: 5Gi
+      KOPIUR_CAPACITY: 5Gi
   prune: true
   sourceRef:
     kind: GitRepository

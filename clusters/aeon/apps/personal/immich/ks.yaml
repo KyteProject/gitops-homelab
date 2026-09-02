@@ -5,7 +5,7 @@ metadata:
   name: immich
 spec:
   # components:
-  #   - ../../../../../../infrastructure/components/volsync
+  #   - ../../../../../../infrastructure/components/kopiur
   dependsOn:
     - name: immich-db
       namespace: personal
@@ -23,9 +23,9 @@ spec:
       HOSTNAME: photos.omux.io
       APP_UID: "568"
       APP_GID: "568"
-      VOLSYNC_CAPACITY: 10Gi
-      VOLSYNC_ACCESSMODES: ReadWriteMany
-      VOLSYNC_STORAGECLASS: ceph-filesystem
+      KOPIUR_CAPACITY: 10Gi
+      KOPIUR_ACCESSMODES: ReadWriteMany
+      KOPIUR_STORAGECLASS: ceph-filesystem
   prune: true
   sourceRef:
     kind: GitRepository
