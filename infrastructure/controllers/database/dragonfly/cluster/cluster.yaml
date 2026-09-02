@@ -7,6 +7,10 @@ metadata:
 spec:
   image: ghcr.io/dragonflydb/dragonfly:v1.40.1
   replicas: 2
+  # The operator creates a NetworkPolicy that only admits port 6379 from within
+  # the database namespace, which blocks every consumer (authentik in security,
+  # paperless in personal, and so on). Defaults to true from v1.6.0.
+  networkPolicyEnabled: false
   env:
     - name: MAX_MEMORY
       valueFrom:
