@@ -24,6 +24,12 @@ rules:
   - apiGroups: ["networking.k8s.io"]
     resources: ["networkpolicies"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
+  # Required from operator v1.6.0 onward. controller-runtime blocks
+  # WaitForCacheSync on every informer, so a forbidden PDB informer takes the
+  # pod and statefulset caches down with it and the manager exits on startup.
+  - apiGroups: ["policy"]
+    resources: ["poddisruptionbudgets"]
+    verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
   - apiGroups: ["dragonflydb.io"]
     resources: ["dragonflies"]
     verbs: ["create", "delete", "get", "list", "patch", "update", "watch"]
