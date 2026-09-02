@@ -18,6 +18,12 @@ spec:
       krr:
         enabled: true
         type: job
+        # A Job's pod template is immutable, so a chart change makes Helm fail
+        # with "cannot patch krr with kind Job". Running it as a hook lets Helm
+        # delete the previous Job before creating the replacement.
+        annotations:
+          helm.sh/hook: post-install,post-upgrade
+          helm.sh/hook-delete-policy: before-hook-creation
         pod:
           restartPolicy: Never
         containers:
