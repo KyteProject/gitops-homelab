@@ -13,6 +13,13 @@ spec:
     recovery:
       database: postgres
       owner: postgres
+      # Without this, CloudNativePG defaults the owner credentials to the
+      # generated postgres-app secret, whose username is `app` and so never
+      # matches the declared owner. That mismatch retries several times a
+      # second forever. The owner here is the superuser, so point it at the
+      # same secret superuserSecret already uses.
+      secret:
+        name: cloudnative-pg-secret
       source: &src source
       recoveryTarget:
         targetTLI: "1"
