@@ -18,6 +18,11 @@ spec:
       APP: home-assistant
       KOPIUR_SRC_HOST: home
       KOPIUR_CAPACITY: 5Gi
+      # home-assistant writes .storage/auth as 0600 owned by 568, so the mover
+      # must run as 568 to read it. The 1000 default fails with PermissionDenied.
+      KOPIUR_MOVER_UID: "568"
+      KOPIUR_MOVER_GID: "568"
+      KOPIUR_MOVER_FSGROUP: "568"
   prune: true
   sourceRef:
     kind: GitRepository
