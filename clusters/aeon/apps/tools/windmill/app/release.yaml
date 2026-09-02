@@ -44,7 +44,7 @@ spec:
               - secretRef:
                   name: windmill-secret
           - name: init-windmill-roles
-            image: public.ecr.aws/docker/library/postgres:17
+            image: public.ecr.aws/docker/library/postgres:18
             imagePullPolicy: IfNotPresent
             envFrom:
               - secretRef:
