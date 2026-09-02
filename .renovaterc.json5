@@ -10,10 +10,6 @@
     ':gitSignOff',
     ':timezone(Europe/London)',
   ],
-  // Temporary: throttle the post-outage backlog into reviewable batches.
-  // Remove both once the queue is cleared to restore ':disableRateLimiting'.
-  prConcurrentLimit: 10,
-  prHourlyLimit: 5,
   dependencyDashboardTitle: 'Renovate Dashboard',
   // Supply-chain release-age signal. Renovate can only evaluate this where the
   // datasource publishes a release timestamp. Most of our images live on GHCR
