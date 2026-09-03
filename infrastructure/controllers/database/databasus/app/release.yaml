@@ -27,7 +27,9 @@ spec:
             image:
               repository: docker.io/databasus/databasus
               tag: v3.55.3@sha256:03b1e913fe4c15c933d0a35e85252aee465cb76c0b3d200535d4d8d570b5fa45
-            command: ["sh", "-c", "cp -a /app/ui/build/. /ui-build/"]
+            # -r not -a: -a preserves timestamps, which a non-root container cannot
+            # set on the emptyDir mount root ("cp: preserving times ... not permitted")
+            command: ["sh", "-c", "cp -r /app/ui/build/. /ui-build/"]
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
