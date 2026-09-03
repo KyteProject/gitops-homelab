@@ -76,14 +76,16 @@ spec:
         existingClaim: databasus
         globalMounts:
           - path: /databasus-data
-      # The dumps themselves land straight on the NAS rather than on the PVC,
-      # so they are not snapshotted twice and TrueNAS owns their retention.
+      # The dumps land straight on the NAS rather than on the PVC, so they are
+      # not snapshotted twice and TrueNAS owns their retention. The mount path
+      # is not arbitrary: databasus writes to /databasus-data/backups and the
+      # path is not configurable, so the share has to sit exactly there.
       backups:
         type: nfs
         server: tank.lan
         path: /mnt/tank/backups/databasus
         globalMounts:
-          - path: /backups
+          - path: /databasus-data/backups
       tmpfs:
         type: emptyDir
         globalMounts:
