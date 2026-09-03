@@ -19,6 +19,19 @@ spec:
           glance/id: databasus
           glance/name: Databasus
           glance/url: https://databasus.omux.io
+        initContainers:
+          # start.sh writes runtime-config.js into /app/ui/build, which is on the
+          # read-only root filesystem. Copy the built UI into an emptyDir so the
+          # app can write beside it without dropping readOnlyRootFilesystem.
+          copy-ui:
+            image:
+              repository: docker.io/databasus/databasus
+              tag: v3.55.3@sha256:03b1e913fe4c15c933d0a35e85252aee465cb76c0b3d200535d4d8d570b5fa45
+            command: ["sh", "-c", "cp -a /app/ui/build/. /ui-build/"]
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
@@ -66,6 +79,14 @@ spec:
         type: emptyDir
         globalMounts:
           - path: /tmp
+      ui-build:
+        type: emptyDir
+        advancedMounts:
+          databasus:
+            copy-ui:
+              - path: /ui-build
+            app:
+              - path: /app/ui/build
     route:
       app:
         hostnames:
