@@ -3,5 +3,10 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: kube-system
+  labels:
+    # drm-exporter claims GPUs with adminAccess so it can read metrics without
+    # exclusively consuming the iGPU on every node. DRA requires this label on
+    # the namespace before an adminAccess request is admitted.
+    resource.kubernetes.io/admin-access: "true"
   annotations:
     kustomize.toolkit.fluxcd.io/prune: disabled
