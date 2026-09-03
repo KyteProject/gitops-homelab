@@ -50,9 +50,13 @@ Confirm with `flux get ks -A` rather than trusting the upstream value.
 ## 4. Components and namespace creation
 
 - Upstream has a bare `components/alerts`. Here the equivalent is **`components/namespace`**, which
-  bundles both the namespace and the alert wiring.
-- Upstream ships a `namespace.yaml` with `name: _` as a placeholder. Here that is **redundant** -
-  `components/namespace` generates it from the kustomization's `namespace:` field. Delete it.
+  now carries **only** the Flux `Alert` and `Provider` wiring. It no longer creates the Namespace.
+- Upstream ships a `namespace.yaml` with `name: _` as a placeholder. **Keep it, and use the real
+  namespace name.** Every directory under `infrastructure/controllers/` and every app group under
+  `clusters/aeon/apps/` needs its own `namespace.yaml` listed in `resources`. Deleting it removes the
+  Namespace from the build entirely. Kustomize rewrites `metadata.name` on a Namespace regardless, so
+  `_` would render the same; the real name is used here because it is greppable and fails visibly
+  rather than silently if the parent kustomization ever loses its `namespace:` field.
 - `infrastructure/controllers/` has **no** aggregating `kustomization.yaml`; Flux auto-discovers
   subdirectories. Creating the directory is enough to deploy it.
 
@@ -66,6 +70,17 @@ grep -rnE 'kubernetes/apps|k13\.dev|tank\.internal|America/|onepassword-personal
 kubectl kustomize <dir> >/dev/null && echo OK
 ```
 
-Then check whether the port implies a wider migration. Upstream removing something wholesale (as
-with volsync being replaced by kopiur) means the copied directory is step one of several, not a
-self-contained change. Say so before landing it.
+Then check whether the port implies a wider migration. Upstream removing something wholesale (as with
+VolSync being replaced by Kopiur, now complete) means the copied directory is step one of several, not
+a self-contained change. Say so before landing it.
+
+Two porting traps worth checking explicitly, both learned the hard way:
+
+- **Do not copy the hardened `securityContext` blindly.** Some images manage their own users and must
+  start as root. `databasus` bundles PostgreSQL, creates a `postgres` and a `databasus` user, chowns
+  their trees and drops privileges with `gosu`; under `runAsUser: 1000` with `drop: [ALL]` it never
+  starts. Read the image's entrypoint before deciding.
+- **Verify NFS paths against the server.** `showmount -e tank.lan` lists the real exports. A plausible
+  looking path fails at mount time, and the export must be offered to all three node IPs. Where an app
+  chowns its own data directory, the share must also be owned by the UID that app expects, because the
+  export maps every client identity to a single UID.

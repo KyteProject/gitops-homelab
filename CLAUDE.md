@@ -8,8 +8,6 @@ A GitOps homelab: a three-node Talos Linux cluster (`aeon`) reconciled entirely 
 repository. There is no build, no test suite, and no application source code. "Correct" means the
 manifests render and Flux converges; the cluster is the runtime.
 
-Heavily referenced on [buroa/k8s-gitops](https://github.com/buroa/k8s-gitops). Directory layouts differ - see "Porting from upstream" below.
-
 ## Commands
 
 The command runner is **just**. `Taskfile.yaml` and `.taskfiles/` still exist and still work, but the
@@ -143,11 +141,18 @@ Kopiur cannot adopt the VolSync ones because the path is not overridable, so the
 `Discovered` records. They are still restorable by naming `source.identity` explicitly on a Restore.
 
 **The mover UID has to match the UID that owns the files.** It is set explicitly per app via
-`KOPIUR_MOVER_UID`/`_GID`/`_FSGROUP`, defaulting to 1000; home-assistant overrides to 568 because it
-writes `.storage/auth` as 0600. Apps that back up successfully on the default do so because their
-files happen to be world-readable, which is luck rather than design. Do not switch the component to
-inheriting the workload identity: that mints a *privileged* mover for any app running as root
-(paperless does), which Kopiur refuses unless the whole namespace opts in.
+`KOPIUR_MOVER_UID`/`_GID`/`_FSGROUP`, **defaulting to 568** because that is what nearly every workload
+here runs as. The exceptions override it: `paperless` and `databasus` both use 1000. Apps that back up
+successfully on a mismatched UID do so because their files happen to be world-readable, which is luck
+rather than design - navidrome was fine for months and then failed the moment it wrote a 0600 cache
+file. When adding an app, check its `runAsUser` against the default rather than assuming.
+
+Do not switch the component to inheriting the workload identity. That mints a *privileged* mover for
+any app running as root (paperless does), which Kopiur refuses unless the whole namespace opts in.
+
+**To stop an app being snapshotted, set `KOPIUR_SUSPEND: "true"` - do not remove the component.** The
+PVC is defined by `components/kopiur` and carries an immutable `dataSourceRef`, so dropping the
+component prunes the volume rather than just stopping the backups.
 
 A failed snapshot is silent. `kubectl get snapshot -A --field-selector=status.phase=Failed`.
 
@@ -169,6 +174,12 @@ hooks are all checked in and shared rather than living on one machine.
   appear applied for months while doing nothing.
 - **`PersistentVolumeClaim.spec.dataSourceRef` is immutable once bound.** Swapping a component that
   changes it wedges the Kustomization.
+- **A major upgrade can change a default that nothing in this repo sets.** external-dns v0.22.0 moved
+  the default annotation prefix to `external-dns.kubernetes.io/` with no fallback, so every
+  `external-dns.alpha.kubernetes.io/` annotation here was ignored and `--policy=sync` deleted the
+  records. The Cloudflare instance failed loudly; the UniFi one reported "All records are already up
+  to date" while removing them. Both now pin `--annotation-prefix` explicitly. When a chart or image
+  bump is flagged breaking, read the release notes for changed *defaults*, not just removed keys.
 
 ### Language and commits
 
@@ -198,8 +209,24 @@ When lifting config from other repos, check for non-transferrable values, these 
 | `openebs` in `openebs-system` | `openebs` in `storage` |
 | `snapshot-controller` in `kube-system` | `snapshot-controller` in `storage` |
 
-Upstream also uses a `namespace.yaml` with `name: _` as a placeholder; here the namespace comes from
-the `components/namespace` component, so that file is redundant.
+Upstream uses a `namespace.yaml` with `name: _` as a placeholder. **Keep the file, but use the real
+namespace name.** `components/namespace` no longer creates the Namespace - it carries only the Flux
+`Alert` and `Provider` wiring - so every directory under `infrastructure/controllers/` and every app
+group under `clusters/aeon/apps/` needs its own `namespace.yaml` listed in `resources`. Kustomize
+rewrites `metadata.name` on a Namespace unconditionally, so `_` and the real name render identically;
+the real name is used here because it is greppable and a build that lost its `namespace:` field would
+emit an invalid object rather than a silently wrong one.
+
+**Do not port the hardened security context blindly.** Some images manage their own users and must
+start as root: `databasus` bundles PostgreSQL, creates a `postgres` and a `databasus` user, chowns
+their trees and drops privileges with `gosu`. Applying `runAsUser: 1000` plus `drop: [ALL]` to such an
+image means it never starts. Read the image's entrypoint before copying a `securityContext`.
+
+**Verify NFS paths against the server, not the manifest.** `showmount -e tank.lan` lists the real
+exports. A path that merely looks plausible fails at mount time with `No such file or directory`, and
+the share must also be exported to all three node IPs. Note the exports map every client identity to a
+single UID, so an app that chowns its own data directory cannot use an NFS mount at that path unless
+the share is owned by the UID the app expects.
 
 Finish with a grep for leftovers and a `kubectl kustomize` build.
 

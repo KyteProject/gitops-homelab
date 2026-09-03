@@ -164,9 +164,18 @@ kubectl get snapshotpolicy,snapshotschedule,restore -A
 
 `PermissionDenied ... unable to open file` on a snapshot means the mover UID cannot read the app's
 files. The mover identity is explicit per app via `KOPIUR_MOVER_UID`/`_GID`/`_FSGROUP` in the app's
-ks.yaml, defaulting to 1000. home-assistant overrides to 568 because it writes `.storage/auth` as
-0600. Do not switch to inheriting the workload identity: that mints a privileged mover for any app
-running as root, and Kopiur refuses it.
+ks.yaml, defaulting to **568**; `paperless` and `databasus` override to 1000. Compare the policy's
+mover UID against the app's `runAsUser` - a mismatch can pass for months and then fail the first time
+the app writes a `0600` file, which is how both home-assistant and navidrome broke.
+
+```bash
+kubectl get snapshotpolicy <app> -n <ns> -o jsonpath='{.spec.mover.podSecurityContext.runAsUser}'
+kubectl get pods -n <ns> -l app.kubernetes.io/name=<app> -o jsonpath='{.items[0].spec.securityContext.runAsUser}'
+```
+
+Do not switch to inheriting the workload identity: that mints a privileged mover for any app running
+as root, and Kopiur refuses it. To opt an app out entirely, set `KOPIUR_SUSPEND: "true"` rather than
+removing the component, which would prune the PVC along with it.
 
 ## Step 8: force a reconcile
 

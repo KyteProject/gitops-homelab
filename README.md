@@ -27,7 +27,7 @@ time of writing that is Kubernetes v1.36.0 on Talos v1.13.9.
 │   └── truenas/         compose file for the exporters that run on the NAS, not on the cluster
 ├── docs/
 ├── infrastructure/
-│   ├── components/      reusable kustomize components: namespace, kopiur, kopiur-migrate, volsync, zeroscaler
+│   ├── components/      reusable kustomize components: namespace, kopiur, zeroscaler
 │   ├── controllers/     the platform, one directory per namespace
 │   ├── flux/            the entrypoint Kustomizations, and the OCI, Helm and Git sources
 │   ├── netboot/         PXE boot helper, runs off-cluster
@@ -103,11 +103,12 @@ need secrets before External Secrets exists, the Talos machine config and `boots
 carry `op://` references and are piped through `op inject` at apply time, so the 1Password CLI has to
 be signed in for those tasks.
 
-**Backups.** Migrating from VolSync to Kopiur. Both components live in `infrastructure/components/`
-and both are in use while that proceeds, alongside a transitional `kopiur-migrate` component that
-pins the old VolSync snapshot identity for a one-time restore, because the two write to different
-repository paths. Which apps sit on which is changing, so read the app's `ks.yaml` rather than
-trusting a list. Cutting a live app over is destructive and order-dependent; see `CLAUDE.md`.
+**Backups.** Kopiur. VolSync is retired, and its HelmRelease, components and CRDs are gone. An app
+opts in by adding `components/kopiur` to its `ks.yaml`; snapshots run hourly into a single Kopia
+repository on NFS at `tank.lan:/mnt/tank/kopia`. Two details bite, both covered in `CLAUDE.md`: the
+mover UID has to match the UID that owns the files, and an app is opted out with
+`KOPIUR_SUSPEND: "true"` rather than by removing the component, because the component also defines
+the PVC.
 
 **Observability.** kube-prometheus-stack, Grafana, Gatus, Karma, VictoriaLogs with Fluent Bit
 shipping into it, and a set of exporters, all under `infrastructure/controllers/monitoring/`.
@@ -157,8 +158,12 @@ task talos:kubeconfig
 task k9s
 ```
 
-`task volsync:snapshot` and `task volsync:restore` still exist for the VolSync side of the backup
-migration. `task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets.
+`task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets. Note that
+`r2:empty` deletes immediately and is not a dry run, whatever an older description may have claimed.
+
+A `just` port of the runner also exists (`.justfile` plus `just/`), with the same recipes under
+module names, for example `just flux not-ready` and `just kube browse-pvc`. Both runners work; Task
+is still the documented one until `.taskfiles/` is retired.
 
 ### Validating a change
 
@@ -207,7 +212,7 @@ Four workflows in `.github/workflows/`:
 
 ## Conventions
 
-`CLAUDE.md` at the root and `.cursor/rules/` hold these in full. The short version:
+`CLAUDE.md` at the root and `.claude/rules/` hold these in full, and both are checked in. The short version:
 
 - British English, no Oxford comma. No emojis and no em dashes anywhere, including commit messages.
 - Conventional Commits, single line, imperative, lowercase, no trailing full stop, no body or footer.
