@@ -1,4 +1,4 @@
 [env]
-KUBECONFIG = '{{config_root}}/kubeconfig'
+KUBECONFIG = '{{config_root}}/infrastructure/kubeconfig'
 MINIJINJA_CONFIG_FILE = '{{config_root}}/.minijinja.toml'
-TALOSCONFIG = '{{config_root}}/talos/clusterconfig/talosconfig'
+TALOSCONFIG = '{{config_root}}/talos/talosconfig'
