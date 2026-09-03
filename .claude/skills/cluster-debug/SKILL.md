@@ -165,8 +165,7 @@ kubectl get snapshotpolicy,snapshotschedule,restore -A
 `PermissionDenied ... unable to open file` on a snapshot means the mover UID cannot read the app's
 files. The mover identity is explicit per app via `KOPIUR_MOVER_UID`/`_GID`/`_FSGROUP` in the app's
 ks.yaml, defaulting to **568**; `paperless` and `databasus` override to 1000. Compare the policy's
-mover UID against the app's `runAsUser` - a mismatch can pass for months and then fail the first time
-the app writes a `0600` file, which is how both home-assistant and navidrome broke.
+mover UID against the app's `runAsUser`: a mismatch passes until the app writes a `0600` file.
 
 ```bash
 kubectl get snapshotpolicy <app> -n <ns> -o jsonpath='{.spec.mover.podSecurityContext.runAsUser}'

@@ -1,13 +1,13 @@
 ---
 name: port-upstream
-description: Adapt config copied from the buroa/k8s-gitops upstream to this repo. Use when files are pasted in from that repo and need paths, namespaces and conventions remapped.
+description: Adapt config copied from any reference home-ops repo to this one. Use when files are pasted in from an external repo and need paths, namespaces and conventions remapped.
 ---
 
-# Porting from the upstream repo
+# Porting from a reference repo
 
 Config copied across is never drop-in: the directory layout differs, and every environment-specific
-value is buroa's. Work through all four sections below - partial ports fail at reconcile time, not
-at review time.
+value belongs to the source repo. Work through all four sections below - partial ports fail at
+reconcile time, not at review time.
 
 ## 1. Directory layout
 
@@ -25,16 +25,16 @@ so a wrong path can still look plausible - verify with `kubectl kustomize`.
 
 ## 2. Environment values
 
-| Setting | Upstream | Here |
+| Setting | Source repo | Here |
 | --- | --- | --- |
-| Domain | `k13.dev` | `omux.io` |
-| NFS server | `tank.internal` | `tank.lan` |
+| Domain | theirs | `omux.io` |
+| NFS server | theirs, often `tank.internal` | `tank.lan` |
 | Media path | `/mnt/tank/media` | `/mnt/tank/Media` (capital M) |
 | Timezone | `America/Chicago` | `Europe/London` |
 | Secret store | `onepassword-personal` | `onepassword-connect` |
 | Gateways | varies | `envoy-internal` / `envoy-external` in `networking` |
 
-1Password item keys differ too. `key: kopiur` upstream may need to be an existing item such as
+1Password item keys differ too. `key: kopiur` in the source may need to be an existing item such as
 `volsync-template` - and if the resource shares a backing store with an existing one, the password
 must match or the repository will not open.
 

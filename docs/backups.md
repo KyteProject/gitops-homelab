@@ -101,16 +101,13 @@ postBuild:
     KOPIUR_MOVER_FSGROUP: "568"
 ```
 
-The default is **568**, which is what nearly every workload here runs as. `paperless` and `databasus`
-override to 1000 because they do not. Apps that back up successfully on a mismatched UID do so because
-their files happen to be world-readable, which is luck rather than design: `home-assistant` had been
-failing silently since the cutover because it writes `.storage/auth` as `0600`, and `navidrome` was
-fine for months until it wrote a `0600` cache file. When adding an app, check its `runAsUser` against
-the default rather than assuming.
+The default is **568**, which is what nearly every workload here runs as; `paperless` and `databasus`
+override to 1000. **When adding an app, check its `runAsUser` against the default.** A mismatch is not
+caught at deploy time. It passes for as long as the app's files stay world-readable, then fails the
+first time it writes a `0600` file.
 
 Do **not** switch the component to inheriting the workload's identity. That mints a *privileged*
-mover for any app running as root, which paperless does, and Kopiur refuses it unless the whole
-namespace opts in.
+mover for any app running as root, which Kopiur refuses unless the whole namespace opts in.
 
 ### Opting an app out
 
@@ -141,27 +138,22 @@ Kopiur cannot adopt the VolSync snapshots because the path is not overridable, s
 
 `infrastructure/controllers/database/databasus/`
 
-Databasus takes scheduled logical dumps and writes them to `tank.lan:/mnt/tank/backups/databasus`,
-mounted straight from the NAS with app-template's `type: nfs`. **The mount path is not arbitrary.**
-Databasus writes to `/databasus-data/backups` and that path is not configurable, so the share has to
-be mounted exactly there. Mounted anywhere else the app silently writes dumps to the PVC instead,
-which is what happened when it was first ported.
+Databasus takes scheduled logical dumps to `tank.lan:/mnt/tank/backups/databasus`, mounted with
+app-template's `type: nfs`. Three constraints, all load-bearing:
 
-Two things had to be true on the NAS side for that mount to work, and both are easy to miss. The
-export maps client identities to a single UID, and databasus chowns its backup directory to its own
-`databasus` user (65532), so the share must be owned `65532:65532` or the chown fails and the
-container never starts. `showmount -e tank.lan` is the quickest way to confirm an export exists and
-is offered to all three node IPs.
+- **The mount path is fixed.** Databasus writes to `/databasus-data/backups` and that is not
+  configurable, so the share mounts exactly there. Mounted anywhere else it silently writes dumps to
+  the PVC instead.
+- **The share must be owned `65532:65532`.** Databasus chowns that directory to its own user, and the
+  export maps every client to a single UID, so a mismatched owner means the chown fails and the
+  container never starts.
+- **It runs as root.** The image bundles PostgreSQL, manages a `postgres` and a `databasus` user and
+  drops privileges with `gosu`. Hardened defaults stop it booting.
 
-The container also **must run as root**: the image bundles PostgreSQL, creates a `postgres` and a
-`databasus` user, chowns their trees and drops privileges itself with `gosu`. The usual hardened
-`runAsUser: 1000` plus `drop: [ALL]` stops it starting entirely.
-
-Its PVC holds only `pgdata`, `instance.json` and a log, and **Kopiur is suspended for it**
-(`KOPIUR_SUSPEND: "true"`). `pgdata` is `0700` and owned by `postgres`, so no unprivileged mover can
-read it, and the dumps that matter already live on the NAS with TrueNAS owning retention. The dumps
-deliberately do not go on the PVC: compressed dumps deduplicate badly, and putting them there would
-have Kopiur re-snapshotting the same data hourly for no gain.
+Kopiur is suspended for it (`KOPIUR_SUSPEND: "true"`). The PVC holds only `pgdata`, `instance.json`
+and a log; `pgdata` is `0700` owned by `postgres` so no unprivileged mover can read it, and the dumps
+that matter are on the NAS with TrueNAS owning retention. Keeping dumps off the PVC is deliberate:
+compressed dumps deduplicate badly and Kopiur would re-snapshot them hourly for no gain.
 
 **This is not the primary Postgres backup.** For the CNPG clusters it is strictly weaker than
 barman-cloud: scheduled dumps, no PITR. It earns its place on the one failure barman cannot cover.

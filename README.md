@@ -103,12 +103,10 @@ need secrets before External Secrets exists, the Talos machine config and `boots
 carry `op://` references and are piped through `op inject` at apply time, so the 1Password CLI has to
 be signed in for those tasks.
 
-**Backups.** Kopiur. VolSync is retired, and its HelmRelease, components and CRDs are gone. An app
-opts in by adding `components/kopiur` to its `ks.yaml`; snapshots run hourly into a single Kopia
-repository on NFS at `tank.lan:/mnt/tank/kopia`. Two details bite, both covered in `CLAUDE.md`: the
-mover UID has to match the UID that owns the files, and an app is opted out with
-`KOPIUR_SUSPEND: "true"` rather than by removing the component, because the component also defines
-the PVC.
+**Backups.** Kopiur. An app opts in by adding `components/kopiur` to its `ks.yaml`; snapshots run
+hourly into a single Kopia repository on NFS at `tank.lan:/mnt/tank/kopia`. Two rules, both in
+`CLAUDE.md`: the mover UID must match the UID owning the files, and an app is opted out with
+`KOPIUR_SUSPEND: "true"` rather than by removing the component, which would prune its PVC.
 
 **Observability.** kube-prometheus-stack, Grafana, Gatus, Karma, VictoriaLogs with Fluent Bit
 shipping into it, and a set of exporters, all under `infrastructure/controllers/monitoring/`.
@@ -158,12 +156,11 @@ task talos:kubeconfig
 task k9s
 ```
 
-`task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets. Note that
-`r2:empty` deletes immediately and is not a dry run, whatever an older description may have claimed.
+`task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets. **`r2:empty`
+deletes immediately; it is not a dry run.**
 
-A `just` port of the runner also exists (`.justfile` plus `just/`), with the same recipes under
-module names, for example `just flux not-ready` and `just kube browse-pvc`. Both runners work; Task
-is still the documented one until `.taskfiles/` is retired.
+A `just` port exists alongside (`.justfile` plus `just/`), same recipes under module names, for
+example `just flux not-ready` and `just kube browse-pvc`. Both work; Task is the documented one.
 
 ### Validating a change
 
@@ -224,10 +221,6 @@ Four workflows in `.github/workflows/`:
   look applied for months while doing nothing.
 - `PersistentVolumeClaim.spec.dataSourceRef` is immutable once bound. Swapping a component that
   changes it will wedge the Kustomization.
-
-Config lifted from upstream repos, chiefly [buroa/k8s-gitops](https://github.com/buroa/k8s-gitops),
-needs remapping on the way in: paths, namespaces, the domain and the timezone all differ. `CLAUDE.md`
-has the table.
 
 ## Thanks
 
