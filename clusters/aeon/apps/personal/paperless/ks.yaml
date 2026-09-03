@@ -5,7 +5,7 @@ metadata:
   name: paperless
 spec:
   components:
-    - ../../../../../../infrastructure/components/kopiur-migrate
+    - ../../../../../../infrastructure/components/kopiur
   dependsOn:
     - name: openebs
       namespace: storage
@@ -16,7 +16,6 @@ spec:
   postBuild:
     substitute:
       APP: paperless
-      KOPIUR_SRC_HOST: personal
       KOPIUR_CAPACITY: 5Gi
   prune: true
   sourceRef:
@@ -31,7 +30,7 @@ spec:
 #   name: paperless-ai
 # spec:
 #   components:
-#     - ../../../../../../infrastructure/components/kopiur-migrate
+#     - ../../../../../../infrastructure/components/kopiur
 #   interval: 1h
 #   path: ./clusters/aeon/apps/personal/paperless/ai
 #   postBuild:

@@ -5,7 +5,7 @@ metadata:
   name: changedetection
 spec:
   components:
-    - ../../../../../../infrastructure/components/kopiur-migrate
+    - ../../../../../../infrastructure/components/kopiur
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
@@ -14,7 +14,6 @@ spec:
   postBuild:
     substitute:
       APP: changedetection
-      KOPIUR_SRC_HOST: tools
       KOPIUR_CAPACITY: 2Gi
   prune: true
   sourceRef:
