@@ -23,7 +23,6 @@ includes:
   r2: .taskfiles/r2
   talos: .taskfiles/talos/Taskfile.yaml
   workstation: .taskfiles/workstation/Taskfile.yaml
-  volsync: .taskfiles/volsync
 
 tasks:
 
