@@ -26,7 +26,7 @@ tasks:
       - which aws op
 
   empty:
-    desc: Empty a bucket (dry-run by default, use --force to actually delete) [BUCKET=required]
+    desc: Permanently delete every object in a bucket, no dry run [BUCKET=required]
     prompt: |
       WARNING: This will permanently delete all objects in bucket '{{.BUCKET}}'.
       Are you sure you want to continue?
