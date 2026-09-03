@@ -23,6 +23,13 @@ spec:
   interval: 1h
   values:
     cleanPrometheusOperatorObjectNames: true
+    defaultRules:
+      disabled:
+        # Every HPA in this cluster comes from components/zeroscaler, which
+        # hardcodes minReplicas 0 and maxReplicas 1. Such an HPA is "maxed out"
+        # whenever its app is awake, which is the normal state, so this alert
+        # can never carry signal here.
+        KubeHpaMaxedOut: true
     alertmanager:
       route:
         main:
