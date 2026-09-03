@@ -55,14 +55,21 @@ spec:
             securityContext:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: true
-              capabilities: { drop: ["ALL"] }
+              # The image starts as root, creates the postgres (999) and
+              # databasus (65532) trees, chowns them, then drops privileges
+              # itself with gosu. These are the capabilities that flow needs.
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "DAC_OVERRIDE", "FOWNER", "SETUID", "SETGID"]
     defaultPodOptions:
       securityContext:
-        runAsNonRoot: true
-        runAsUser: 1000
-        runAsGroup: 1000
-        fsGroup: 1000
-        fsGroupChangePolicy: OnRootMismatch
+        # Not negotiable for this image: it bundles PostgreSQL and manages two
+        # internal users, so it must start as root. It drops to postgres and
+        # databasus via gosu. fsGroup is omitted because the app owns the
+        # directory permissions itself.
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
     persistence:
       # Job definitions, schedules and history. Snapshotted hourly by Kopiur.
       data:
