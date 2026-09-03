@@ -9,8 +9,6 @@ spec:
   dependsOn:
     - name: rook-ceph-cluster
       namespace: rook-ceph
-    - name: volsync
-      namespace: volsync-system
   interval: 1h
   path: ./clusters/aeon/apps/media/upbrr/app
   postBuild:

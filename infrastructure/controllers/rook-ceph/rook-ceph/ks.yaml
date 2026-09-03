@@ -21,8 +21,6 @@ metadata:
 spec:
   dependsOn:
     - name: rook-ceph
-    - name: volsync
-      namespace: volsync-system
   healthChecks:
     - apiVersion: ceph.rook.io/v1
       kind: CephCluster
