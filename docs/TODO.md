@@ -80,7 +80,6 @@ Full assessment: https://claude.ai/code/artifact/12a61137-d45d-4d83-a6fa-b33c542
 - [ ] Netbox
 - [ ] wikijs (or similar)
 - [ ] Penpot
-- [ ] Radicale
 - [ ] Zipline
 - [ ] Gitsave
 - [ ] Crowdsec
@@ -89,16 +88,6 @@ Full assessment: https://claude.ai/code/artifact/12a61137-d45d-4d83-a6fa-b33c542
 - [ ] wrtag
 - [ ] [openfaas](https://www.openfaas.com/)
 - [ ] [Bitfocus](https://bitfocus.io/companion)
-- [x] [Kopia](https://kopia.io/)
 - [ ] [Gramps](https://www.grampsweb.org/)
 
-clusters/aeon/apps
-home: home-assistant, mosquitto, zigbee2mqtt
-media: agregarr, autobrr, bazarr, cross-seed, jellyseerr, navidrome, nzbget, plex, prowlarr, qbittorrent, qui, radarr, recyclarr, sonarr, tautulli, tqm
-personal: actual, glance, hoarder, homepage, immich, paperless, thelounge, vikunja
-security: authentik
-tools: atuin, changedetection, chartdb, gotenberg, tika, windmill
-
-infrastructure/controllers
-database: cloudnative-pg, dragonfly
-monitoring: blackbox-exporter, fluent-bit, gatus, grafana, karma, kromgo, krr, kube-prometheus-stack, prometheus-adapter, silence-operator, smartctl-exporter, unpoller, victoria-logs
+- Some kind of watcher/feed app that monitors all apps/controllers source control and reports the number of maintainers, when the last release was, when the last commit , number of open issues .etc. Intent is to monitor and risk assess active or inactive services, and flag if something should be replaced. This could be a single maintainer risk, unpatched security issues for too long, dead project .etc
