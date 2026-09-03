@@ -1,0 +1,4 @@
+
+## DO NOT TRY TO RUN OR START ANY SERVICES
+
+This means do not use `npm run dev`, `pnpm dev`, `go run ...`. The user will already have these services running.

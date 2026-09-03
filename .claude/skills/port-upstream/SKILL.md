@@ -1,14 +1,13 @@
 ---
-description: Adapt config copied from the buroa/k8s-gitops upstream to this repo - path, namespace and convention remapping.
-globs: infrastructure/**/*.yaml, clusters/**/*.yaml
+name: port-upstream
+description: Adapt config copied from the buroa/k8s-gitops upstream to this repo. Use when files are pasted in from that repo and need paths, namespaces and conventions remapped.
 ---
-
 
 # Porting from the upstream repo
 
-This homelab is derived from `buroa/k8s-gitops`. Config copied across is never drop-in: the
-directory layout differs, and every environment-specific value is buroa's. Work through all four
-sections below - partial ports fail at reconcile time, not at review time.
+Config copied across is never drop-in: the directory layout differs, and every environment-specific
+value is buroa's. Work through all four sections below - partial ports fail at reconcile time, not
+at review time.
 
 ## 1. Directory layout
 
