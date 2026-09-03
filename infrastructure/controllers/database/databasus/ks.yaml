@@ -17,6 +17,11 @@ spec:
     substitute:
       APP: databasus
       KOPIUR_CAPACITY: 5Gi
+      # The dumps live on the NAS with TrueNAS owning retention, so the PVC
+      # holds only pgdata (postgres-owned, 0700 and unreadable by the mover),
+      # instance.json and a log. Nothing worth snapshotting, and snapshotting it
+      # would need a namespace-wide privileged mover.
+      KOPIUR_SUSPEND: "true"
       # databasus runs as 1000 to match the kopia share ownership, not the 568
       # default, so the mover must follow it or it cannot read the volume.
       KOPIUR_MOVER_UID: "1000"

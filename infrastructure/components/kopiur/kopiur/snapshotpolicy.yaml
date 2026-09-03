@@ -4,6 +4,10 @@ kind: SnapshotPolicy
 metadata:
   name: "${APP}"
 spec:
+  # Opt an app out of snapshotting without removing this component: the PVC is
+  # defined here and carries an immutable dataSourceRef, so dropping the
+  # component would prune the volume rather than just stop the backups.
+  suspend: ${KOPIUR_SUSPEND:=false}
   adoption: Adopt
   compression:
     compressor: zstd
