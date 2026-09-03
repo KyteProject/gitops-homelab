@@ -1,6 +1,11 @@
 ---
-description: Secure backend coding conventions — input validation, authentication, authorisation, API and database hardening.
-globs: internal/**/*.go, pkg/**/*.go, cmd/**/*.go, api/**/*.go, api/**/*.ts, api/**/*.js, api/**/*.py, api/**/*.rs, server/**/*.go, server/**/*.ts, server/**/*.js, server/**/*.py, server/**/*.rs, backend/**/*.go, backend/**/*.ts, backend/**/*.js, backend/**/*.py, backend/**/*.rs
+paths:
+  - "internal/**/*.go"
+  - "pkg/**/*.go"
+  - "cmd/**/*.go"
+  - "api/**/*.{go,ts,js,py,rs}"
+  - "server/**/*.{go,ts,js,py,rs}"
+  - "backend/**/*.{go,ts,js,py,rs}"
 ---
 
 # Backend security conventions
@@ -16,7 +21,7 @@ Implementation-level rules. For audits / threat modelling, invoke the `security-
 
 ## Authentication
 
-- Never implement password hashing from scratch — use `argon2id` (preferred) or `bcrypt` with sensible cost.
+- Never implement password hashing from scratch - use `argon2id` (preferred) or `bcrypt` with sensible cost.
 - Enforce password policies via zxcvbn-style strength checks, not regex complexity rules.
 - Rate-limit authentication endpoints; lock-out with exponential backoff after failed attempts.
 - Session tokens are opaque, random, ≥128 bits of entropy. Rotate on privilege change.
@@ -69,5 +74,5 @@ Implementation-level rules. For audits / threat modelling, invoke the `security-
 ## API hygiene
 
 - Version APIs (`/v1/...`) and deprecate with a clear timeline.
-- Explicit error shapes — never leak stack traces to clients.
+- Explicit error shapes - never leak stack traces to clients.
 - Document rate limits, auth requirements, and error codes in the spec.

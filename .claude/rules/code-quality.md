@@ -1,6 +1,3 @@
----
-alwaysApply: true
----
 
 # Code-quality guardrails
 
@@ -19,7 +16,7 @@ Behavioural guardrails for the agent when editing this repo. Keep these short an
 ## Stay in scope
 
 - Do not introduce changes beyond the user's request. If you believe a related change is needed, propose it first.
-- When a task can be split, split it — smaller PRs are easier to review and revert.
+- When a task can be split, split it - smaller PRs are easier to review and revert.
 
 ## Don't ask what's already in context
 

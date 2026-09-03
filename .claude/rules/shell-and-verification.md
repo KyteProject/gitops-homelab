@@ -1,7 +1,3 @@
----
-alwaysApply: true
----
-
 # Shell and verification guardrails
 
 Hard-won in this repo. Each line below cost a real mistake.
