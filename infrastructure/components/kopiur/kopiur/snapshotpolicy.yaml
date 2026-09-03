@@ -22,10 +22,14 @@ spec:
     # match the workload's. Set explicitly rather than inherited from the pod:
     # inheriting silently mints a *privileged* mover for any app running as root
     # (paperless does), which kopiur refuses unless the whole namespace opts in.
+    # Default 568, which is what every app here runs as except paperless. The
+    # mover has to match the workload or it cannot read files the app wrote with
+    # restrictive permissions. Do not inherit from the pod: an app running as
+    # root would mint a privileged mover, which kopiur refuses namespace-wide.
     podSecurityContext:
-      runAsUser: ${KOPIUR_MOVER_UID:=1000}
-      runAsGroup: ${KOPIUR_MOVER_GID:=1000}
-      fsGroup: ${KOPIUR_MOVER_FSGROUP:=1000}
+      runAsUser: ${KOPIUR_MOVER_UID:=568}
+      runAsGroup: ${KOPIUR_MOVER_GID:=568}
+      fsGroup: ${KOPIUR_MOVER_FSGROUP:=568}
   sources:
     - pvc:
         name: "${APP}"
