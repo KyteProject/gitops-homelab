@@ -21,9 +21,10 @@ reg_split() { # <ref> -> "<host> <repo>"
     */*)   host="docker.io";  repo="$ref" ;;
     *)     host="docker.io";  repo="library/$ref" ;;
   esac
-  [ "$host" = "docker.io" ] && host="registry-1.docker.io"
+  [[ "$host" == "docker.io" ]] && host="registry-1.docker.io"
   case "$repo" in */*) ;; *) repo="library/$repo" ;; esac
   echo "$host" "$repo"
+  return 0
 }
 
 reg_token() { # <host> <repo>
@@ -35,30 +36,39 @@ reg_token() { # <host> <repo>
     *)                    realm="https://$host/token?service=$host" ;;
   esac
   curl -fsS "$realm&scope=repository:$repo:pull" | jq -r '.token // .access_token // empty'
+  return 0
 }
 
 # Tags, cosign artefacts stripped, version sorted.
 reg_tags() { # <ref>
+  local ref="$1"
   local host repo tok
-  read -r host repo < <(reg_split "$1")
+  read -r host repo < <(reg_split "$ref")
   tok=$(reg_token "$host" "$repo")
   curl -fsS -H "Authorization: Bearer $tok" "https://$host/v2/$repo/tags/list?n=1000" |
     jq -r '.tags[]' | grep -Ev '^sha256-|\.(sig|att|sbom)$' | sort -V
+  return 0
 }
 
 # Digest for one tag, for the `tag@sha256:...` form the manifests use.
 reg_digest() { # <ref> <tag>
+  local ref="$1" tag="$2"
   local host repo tok
-  read -r host repo < <(reg_split "$1")
+  read -r host repo < <(reg_split "$ref")
   tok=$(reg_token "$host" "$repo")
   curl -fsSI -H "Authorization: Bearer $tok" \
     -H 'Accept: application/vnd.oci.image.index.v1+json,application/vnd.docker.distribution.manifest.list.v2+json,application/vnd.oci.image.manifest.v1+json,application/vnd.docker.distribution.manifest.v2+json' \
-    "https://$host/v2/$repo/manifests/$2" | tr -d '\r' |
+    "https://$host/v2/$repo/manifests/$tag" | tr -d '\r' |
     awk -F': ' 'tolower($1)=="docker-content-digest"{print $2}'
+  return 0
 }
 
 # True if the tag exists. This is the "confirm before landing" check.
 # Quiet on a missing tag, so it reads as a plain conditional.
 reg_exists() { # <ref> <tag>
-  [ -n "$(reg_digest "$1" "$2" 2>/dev/null)" ]
+  local ref="$1" tag="$2"
+  local digest
+  digest=$(reg_digest "$ref" "$tag" 2>/dev/null)
+  [[ -n "$digest" ]] && return 0
+  return 1
 }
