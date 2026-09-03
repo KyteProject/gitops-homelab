@@ -153,8 +153,9 @@ A failed snapshot is silent. `kubectl get snapshot -A --field-selector=status.ph
 
 ## Conventions that bite
 
-These are drawn from `.cursor/rules/`, which is the tracked source of truth for agent guidance
-(`.claude/` is gitignored, so anything written there is local-only).
+These are drawn from `.claude/rules/`, which is the tracked source of truth for agent guidance.
+`.cursor/` no longer exists and `.claude/` is no longer gitignored, so rules, skills, agents and
+hooks are all checked in and shared rather than living on one machine.
 
 - **The shell is zsh.** `for x in $LIST` iterates *once* over the whole string - unquoted variables
   do not word-split. Use an array. Quote glob arguments (`--include='*.yaml'`) and URLs containing

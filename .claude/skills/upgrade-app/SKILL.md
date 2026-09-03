@@ -54,11 +54,22 @@ Three shapes of version live in this repo:
 
 ## Step 2: find the target version
 
+`crane` is the usual tool for this, but **it is not installed on this machine and is not in
+`just/resources/Brewfile`**. Use the helper beside this skill, which does the same job over the
+registry API with curl and jq:
+
 ```bash
-crane ls ghcr.io/<org>/<image> | grep -E '^v?[0-9]+\.[0-9]+' | sort -V | tail -5
-crane digest ghcr.io/<org>/<image>:<tag>
-crane ls ghcr.io/bjw-s-labs/helm/app-template | sort -V | tail -5
+source .claude/skills/upgrade-app/registry.sh
+
+reg_tags   ghcr.io/<org>/<image> | grep -E '^v?[0-9]+\.[0-9]+' | tail -5
+reg_tags   ghcr.io/bjw-s-labs/helm/app-template | tail -5
+reg_digest ghcr.io/<org>/<image> <tag>
+reg_exists ghcr.io/<org>/<image> <tag> && echo ok
 ```
+
+It handles docker.io, ghcr.io and quay.io, strips cosign `.sig` and `sha256-` artefacts from the tag
+list, and version sorts. If `crane` is ever added to the Brewfile, `crane ls` and `crane digest` are
+drop-in replacements for `reg_tags` and `reg_digest`.
 
 **Confirm the tag exists before committing a manifest that pins it.** A consistent reference is not
 the same as a valid one.
