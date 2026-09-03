@@ -1,0 +1,68 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: cyberchef
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      cyberchef:
+        annotations:
+          glance/description: The Cyber Swiss Army Knife
+          glance/icon: mdi:chef-hat
+          glance/id: cyberchef
+          glance/name: Cyberchef
+          glance/url: https://cyberchef.omux.io
+        containers:
+          app:
+            image:
+              repository: docker.io/mpepping/cyberchef
+              tag: v11.4.0@sha256:a004ba65ac2cb4d7bfcea65a85d19208dae643b661ea9bfd21247073b61f2c93
+            env:
+              TZ: Europe/London
+            resources:
+              requests:
+                cpu: 25m
+                memory: 128Mi
+              limits:
+                memory: 128Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      # The image is nginx-unprivileged: pid file and all temp paths are under
+      # /tmp, so this emptyDir is what makes readOnlyRootFilesystem possible.
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: &port 8000
+    service:
+      app:
+        controller: cyberchef
+        ports:
+          http:
+            port: *port

@@ -7,7 +7,12 @@ resources:
   - atuin/ks.yaml
   - changedetection/ks.yaml
   - chartdb/ks.yaml
+  - cyberchef/ks.yaml
+  - docmost/ks.yaml
   - gotenberg/ks.yaml
+  - it-tools/ks.yaml
+  - leafwiki/ks.yaml
+  - omni-tools/ks.yaml
   - tika/ks.yaml
   - windmill/ks.yaml
 components:

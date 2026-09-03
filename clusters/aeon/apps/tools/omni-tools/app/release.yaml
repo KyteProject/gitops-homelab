@@ -1,0 +1,77 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: omni-tools
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      omni-tools:
+        annotations:
+          glance/description: Collection of useful tools and utilities
+          glance/icon: mdi:toolbox
+          glance/id: omni-tools
+          glance/name: Omni Tools
+          glance/url: https://omni-tools.omux.io
+        containers:
+          app:
+            image:
+              repository: docker.io/iib0011/omni-tools
+              tag: 0.6@sha256:ceb5acc317daf387634f7f212cefe4722fd1243ad1cba74203f25254195b6c69
+            env:
+              TZ: Europe/London
+            resources:
+              requests:
+                cpu: 100m
+                memory: 128Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      # Stock nginx image, so unlike cyberchef and it-tools it writes its pid to
+      # /var/run and its temp files under /var/cache/nginx. All three paths have
+      # to be writable for a non-root user on a read-only root filesystem.
+      tmp:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+      nginx-cache:
+        type: emptyDir
+        globalMounts:
+          - path: /var/cache/nginx
+      nginx-run:
+        type: emptyDir
+        globalMounts:
+          - path: /var/run
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: &port 80
+    service:
+      app:
+        controller: omni-tools
+        ports:
+          http:
+            port: *port

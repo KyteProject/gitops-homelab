@@ -1,0 +1,83 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: leafwiki
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      leafwiki:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          glance/description: Simple wiki
+          glance/icon: mdi:leaf
+          glance/id: leafwiki
+          glance/name: LeafWiki
+          glance/url: https://leafwiki.omux.io
+        containers:
+          app:
+            image:
+              repository: ghcr.io/perber/leafwiki
+              tag: v0.12.1@sha256:2e70745f69a43eb32a74d7962c1334c57ea56f2487fb3a1b8d4c0d0fa6185209
+            env:
+              # LEAFWIKI_ALLOW_INSECURE is deliberately unset: the gateway
+              # terminates TLS and forwards X-Forwarded-Proto, which is what
+              # leafwiki checks before it will set secure auth cookies.
+              LEAFWIKI_DATA_DIR: /app/data
+              LEAFWIKI_PORT: &port 8080
+              TZ: Europe/London
+            envFrom:
+              - secretRef:
+                  name: leafwiki-secret
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 10m
+                memory: 64Mi
+              limits:
+                memory: 256Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+              # Left writable as upstream had it: the entrypoint execs the binary
+              # without dropping privileges, and what it writes outside
+              # LEAFWIKI_DATA_DIR has not been established.
+              readOnlyRootFilesystem: false
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 568
+        runAsGroup: 568
+        fsGroup: 568
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      data:
+        existingClaim: leafwiki
+        globalMounts:
+          - path: /app/data
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    service:
+      app:
+        controller: leafwiki
+        ports:
+          http:
+            port: *port

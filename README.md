@@ -6,11 +6,13 @@ cluster is the runtime, and a change is correct when the manifests render and Fl
 
 ## The cluster
 
+
 | Node  | Role          | Address       |
 | ----- | ------------- | ------------- |
 | shiva | control plane | 192.168.10.10 |
 | ifrit | control plane | 192.168.10.11 |
 | ramuh | control plane | 192.168.10.12 |
+
 
 All three nodes are control planes and also run workloads. The Kubernetes and Talos versions are
 declared in `infrastructure/controllers/system-upgrade/tuppr/upgrades/` and rolled out node by node
@@ -37,6 +39,8 @@ time of writing that is Kubernetes v1.36.0 on Talos v1.13.9.
 └── .taskfiles/        the Task definitions included by Taskfile.yaml
 ```
 
+
+
 ## How Flux reconciles this
 
 `infrastructure/flux/cluster/ks.yaml` defines the whole chain, in strict order:
@@ -53,7 +57,7 @@ cluster-apps          ./clusters/aeon/apps                   workloads, one dire
 defaults into every child: `crds: CreateReplace`, `cleanupOnFail`, and `RemediateOnFailure` with two
 retries. Individual HelmReleases rarely need to restate any of that.
 
-**There is no `kustomization.yaml` at `infrastructure/controllers/`, nor at `clusters/aeon/apps/`.**
+**There is no** `kustomization.yaml` **at** `infrastructure/controllers/`**, nor at** `clusters/aeon/apps/`**.**
 Flux walks the subdirectories itself. Adding a platform namespace means creating
 `infrastructure/controllers/<namespace>/kustomization.yaml` and nothing else; it is picked up on the
 next reconcile.
@@ -156,8 +160,8 @@ task talos:kubeconfig
 task k9s
 ```
 
-`task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets. **`r2:empty`
-deletes immediately; it is not a dry run.**
+`task r2:ls` and `task r2:empty BUCKET=<bucket>` cover the Cloudflare R2 buckets. `r2:empty`
+**deletes immediately; it is not a dry run.**
 
 A `just` port exists alongside (`.justfile` plus `just/`), same recipes under module names, for
 example `just flux not-ready` and `just kube browse-pvc`. Both work; Task is the documented one.
@@ -178,34 +182,38 @@ request, described below.
 Every step needs the 1Password CLI signed in.
 
 1. `task talos:generate-schematic`, then `task talos:generate-iso VERSION=<version>` to build the
-   installer image from the Talos factory.
+  installer image from the Talos factory.
 2. `task talos:apply-node NODE=<node>` for each node. The task renders `talos/machineconfig.yaml.j2`,
-   injects the `op://` references, applies the per-node patch from `talos/controlplane/<node>.yaml`,
+  injects the `op://` references, applies the per-node patch from `talos/controlplane/<node>.yaml`,
    and adds `--insecure` on its own when the node has no config yet. There are also
    `talos:init-node` and `talos:init-all` tasks, but they still reference a `controlplane.yaml.j2`
    that is no longer in the tree and will fail their preconditions.
 3. `task bootstrap:talos` runs `talosctl bootstrap` and writes the kubeconfig.
 4. `task bootstrap:controllers` applies the op-injected `bootstrap/resources.yaml`, then runs the
-   helmfile in `bootstrap/helmfile.d/`: Cilium, CoreDNS, Spegel, cert-manager, External Secrets,
+  helmfile in `bootstrap/helmfile.d/`: Cilium, CoreDNS, Spegel, cert-manager, External Secrets,
    1Password Connect, flux-operator and flux-instance, in that order.
 5. Flux takes over from `infrastructure/flux/cluster/ks.yaml` and reconciles the rest.
+
+
 
 ## CI
 
 Four workflows in `.github/workflows/`:
 
 - **Flate** renders the before and after of every HelmRelease and Kustomization touched by a pull
-  request and posts the result as a comment. That rendered diff is the review artefact, not the
-  source diff, which for a version bump is two lines and tells you nothing. The same bump can render
-  a hundred hunks across a dozen objects.
+request and posts the result as a comment. That rendered diff is the review artefact, not the
+source diff, which for a version bump is two lines and tells you nothing. The same bump can render
+a hundred hunks across a dozen objects.
 - **Image Pull** extracts every image the pull request introduces and pulls it onto the nodes from a
-  self-hosted runner, so a bad reference fails on the PR and the rollout is warm on merge.
+self-hosted runner, so a bad reference fails on the PR and the rollout is warm on merge.
 - **Renovate** runs hourly. `automerge` is false on every rule, so nothing reaches the cluster
-  without a human merge. `minimumReleaseAge` is 14 days, but `internalChecksFilter` is deliberately
-  `none`: most images here live on GHCR and quay without a creation timestamp, and a strict filter
-  would hold them back permanently rather than for two weeks. Config is `.renovaterc.json5` plus
-  `.renovate/*.json5`, extending the shared `home-operations/renovate-presets`.
+without a human merge. `minimumReleaseAge` is 14 days, but `internalChecksFilter` is deliberately
+`none`: most images here live on GHCR and quay without a creation timestamp, and a strict filter
+would hold them back permanently rather than for two weeks. Config is `.renovaterc.json5` plus
+`.renovate/*.json5`, extending the shared `home-operations/renovate-presets`.
 - **Label Sync** reconciles `.github/labels.yaml`.
+
+
 
 ## Conventions
 
@@ -214,13 +222,15 @@ Four workflows in `.github/workflows/`:
 - British English, no Oxford comma. No emojis and no em dashes anywhere, including commit messages.
 - Conventional Commits, single line, imperative, lowercase, no trailing full stop, no body or footer.
 - The shell is zsh. Unquoted variables do not word-split, so use arrays for lists and quote globs
-  and any URL containing `?` or `&`.
+and any URL containing `?` or `&`.
 - Stage explicit paths. Never `git add -A`, `git add .` or `git add <directory>`.
 - Confirm an image tag actually exists in the registry before pinning it, and confirm a chart value
-  key exists with `helm show values`. Helm silently ignores keys that do not exist, so a setting can
-  look applied for months while doing nothing.
+key exists with `helm show values`. Helm silently ignores keys that do not exist, so a setting can
+look applied for months while doing nothing.
 - `PersistentVolumeClaim.spec.dataSourceRef` is immutable once bound. Swapping a component that
-  changes it will wedge the Kustomization.
+changes it will wedge the Kustomization.
+
+
 
 ## Thanks
 

@@ -1,0 +1,87 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: docmost
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      docmost:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          glance/description: Wiki
+          glance/icon: mdi:book-open-page-variant
+          glance/id: docmost
+          glance/name: Docmost
+          glance/url: https://docmost.omux.io
+        initContainers:
+          init-db:
+            image:
+              repository: ghcr.io/home-operations/postgres-init
+              tag: 18.6@sha256:b6d3af974df781c673d37e49bdddfa14a6f5be28b18d2cb7713f0449bea4057b
+            envFrom: &envFrom
+              - secretRef:
+                  name: docmost-secret
+        containers:
+          app:
+            image:
+              repository: docker.io/docmost/docmost
+              tag: 0.95.0@sha256:41c8d777cf23c74e78f94e676aec328b7d7856f48df5e573543dac68d371e37c
+            env:
+              APP_URL: https://docmost.omux.io
+              MAIL_DRIVER: smtp
+              MAIL_FROM_ADDRESS: docmost@omux.io
+              MAIL_FROM_NAME: Docmost
+              PORT: &port 3000
+              TZ: Europe/London
+            envFrom: *envFrom
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 256Mi
+              limits:
+                memory: 1Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        # The image runs as node (1000) and its data directory is owned by
+        # 1000:1000. KOPIUR_MOVER_* in ks.yaml has to match.
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      data:
+        existingClaim: docmost
+        globalMounts:
+          - path: /app/data/storage
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    service:
+      app:
+        controller: docmost
+        ports:
+          http:
+            port: *port
