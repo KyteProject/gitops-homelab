@@ -47,6 +47,7 @@ spec:
       app:
         hostnames:
           - "{{ .Release.Name }}.omux.io"
+          - "ittools.omux.io"
         parentRefs:
           - name: envoy-internal
             namespace: networking
