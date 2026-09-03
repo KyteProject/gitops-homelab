@@ -8,6 +8,5 @@ resources:
   - cloudnative-pg/ks.yaml
   - databasus/ks.yaml
   - dragonfly/ks.yaml
-  - whodb/ks.yaml
 components:
   - ../../components/namespace
