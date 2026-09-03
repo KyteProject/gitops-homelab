@@ -249,8 +249,13 @@ Keep the list alphabetised. Commented-out entries are dormant apps, not mistakes
 ```bash
 kubectl kustomize clusters/aeon/apps/<group>/<app>/app     # does it build
 yq e 'true' clusters/aeon/apps/<group>/<app>/ks.yaml       # YAML syntax
-crane manifest <image-repository>:<tag> > /dev/null        # does the tag exist
 helm show values oci://ghcr.io/bjw-s-labs/helm/app-template --version 5.1.0   # does the key exist
+
+# Does the tag exist. `crane` is not installed here; this helper does the same
+# job over the registry API with curl and jq.
+source .claude/skills/upgrade-app/registry.sh
+reg_exists <image-repository> <tag> && echo ok
+reg_digest <image-repository> <tag>        # for the tag@sha256:... form
 ```
 
 The build renders `${APP}` literally because `postBuild` substitution happens in-cluster. That is
