@@ -84,7 +84,7 @@ spec:
     route:
       app:
         hostnames:
-          - "{{ .Release.Name }}.k13.dev"
+          - "{{ .Release.Name }}.omux.io"
         parentRefs:
           - name: envoy-internal
             namespace: networking
