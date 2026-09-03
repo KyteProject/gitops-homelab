@@ -1,0 +1,74 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: whodb
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      whodb:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          glance/description: Database browser
+          glance/icon: mdi:database-search
+          glance/id: whodb
+          glance/name: WhoDB
+          glance/url: https://whodb.omux.io
+        containers:
+          app:
+            image:
+              repository: docker.io/clidey/whodb
+              tag: 0.127.0@sha256:6872c12f892076f9588b86e5e6913150ce8c59a77ae9529dc59809c808720cc5
+            env:
+              TZ: Europe/London
+            envFrom:
+              - secretRef:
+                  name: "{{ .Release.Name }}-secret"
+            probes:
+              liveness:
+                enabled: true
+              readiness:
+                enabled: true
+            resources:
+              requests:
+                cpu: 30m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: &port 8080
+    service:
+      app:
+        ports:
+          http:
+            port: *port
