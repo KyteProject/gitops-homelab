@@ -8,3 +8,7 @@ spec:
     name: "${APP}"
   schedule:
     cron: H * * * *
+    # Suspending only the SnapshotPolicy is not enough: the schedule keeps
+    # firing Snapshot objects at a suspended policy, and each one runs a mover
+    # and fails. Both have to be gated off the same switch.
+    suspend: ${KOPIUR_SUSPEND:=false}
