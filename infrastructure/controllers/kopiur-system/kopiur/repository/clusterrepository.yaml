@@ -21,6 +21,15 @@ spec:
       name: kopiur-nas-secret
       namespace: kopiur-system
       key: KOPIA_PASSWORD
+  parameters:
+    epoch:
+      # Kopia only compacts index blobs when an epoch closes, and the epoch was
+      # held open by the 24h default while eleven hourly policies wrote to it:
+      # epochs 93 and 94 accumulated 687 and 1113 uncompacted blobs against a
+      # 1000 warning threshold. Closing every 6h keeps a live epoch to a few
+      # hundred. advanceOnCount (20) is already exceeded many times over, so
+      # duration is the only gate that matters here.
+      minDuration: 6h
   moverDefaults:
     cache:
       capacity: 1Mi # Ignored
