@@ -15,7 +15,7 @@ spec:
       rootless: true
       # Chart 17.1.5 is built against appVersion 15.0.7. Forgejo 16 exists but
       # the chart has not caught up, so the image tracks the chart.
-      tag: 15.0.7-rootless
+      tag: 16.0.3-rootless
     deployment:
       annotations:
         reloader.stakater.com/auto: "true"
