@@ -1,0 +1,34 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: forgejo
+spec:
+  components:
+    - ../../../../../../infrastructure/components/kopiur
+  dependsOn:
+    - name: onepassword-connect-store
+      namespace: external-secrets
+    - name: dragonfly-cluster
+      namespace: database
+    - name: kopiur
+      namespace: kopiur-system
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  interval: 1h
+  path: ./clusters/aeon/apps/personal/forgejo/app
+  postBuild:
+    substitute:
+      APP: forgejo
+      KOPIUR_CAPACITY: 50Gi
+      # The rootless image runs as 1000:1000 and owns everything under /data,
+      # so the mover has to follow it rather than take the 568 default.
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGROUP: "1000"
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: personal

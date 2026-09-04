@@ -1,0 +1,156 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: forgejo
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: forgejo
+  interval: 1h
+  values:
+    image:
+      registry: code.forgejo.org
+      repository: forgejo/forgejo
+      rootless: true
+      # Chart 17.1.5 is built against appVersion 15.0.7. Forgejo 16 exists but
+      # the chart has not caught up, so the image tracks the chart.
+      tag: 15.0.7-rootless
+    deployment:
+      annotations:
+        reloader.stakater.com/auto: "true"
+    strategy:
+      type: Recreate
+    containerSecurityContext:
+      allowPrivilegeEscalation: false
+      readOnlyRootFilesystem: true
+      runAsNonRoot: true
+      runAsUser: 1000
+      runAsGroup: 1000
+      capabilities:
+        # The built-in SSH server chroots into the git home before serving.
+        add: ["SYS_CHROOT"]
+        drop: ["ALL"]
+    podSecurityContext:
+      fsGroup: 1000
+      fsGroupChangePolicy: OnRootMismatch
+    persistence:
+      # Owned by components/kopiur, which names the claim after ${APP}.
+      claimName: forgejo
+      create: false
+    gitea:
+      admin:
+        existingSecret: forgejo-secret
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+      config:
+        actions:
+          DEFAULT_ACTIONS_URL: https://github.com
+          ENABLED: true
+          LOG_COMPRESSION: zstd
+        cache:
+          ADAPTER: redis
+          ENABLED: true
+          HOST: &redis redis://dragonfly.database.svc.cluster.local:6379/6?pool_size=100&idle_timeout=180s
+        cron:
+          ENABLED: true
+        cron.archive_cleanup:
+          ENABLED: true
+          OLDER_THAN: 2h
+          RUN_AT_START: true
+          SCHEDULE: "@every 1h"
+        database:
+          DB_TYPE: sqlite3
+          PATH: /data/gitea/forgejo.db
+        indexer:
+          ISSUE_INDEXER_TYPE: bleve
+          REPO_INDEXER_ENABLED: true
+        mailer:
+          ENABLED: true
+          FROM: forgejo@omux.io
+          PROTOCOL: smtp
+          # maddy takes unauthenticated submissions in-cluster on 25 and relays
+          # them upstream with credentials of its own.
+          SMTP_ADDR: smtp-relay.networking.svc.cluster.local
+          SMTP_PORT: 25
+        metrics:
+          ENABLED: true
+        openid:
+          ENABLE_OPENID_SIGNIN: false
+          ENABLE_OPENID_SIGNUP: false
+        queue:
+          CONN_STR: *redis
+          TYPE: redis
+        repository:
+          DEFAULT_BRANCH: main
+          DEFAULT_PRIVATE: private
+          DEFAULT_REPO_UNITS: repo.code,repo.releases,repo.issues,repo.pulls,repo.actions
+          DISABLED_REPO_UNITS: repo.ext_wiki,repo.ext_issues
+          ENABLE_PUSH_CREATE_USER: true
+          ROOT: /data/git/repositories
+        repository.pull-request:
+          DEFAULT_MERGE_STYLE: squash
+        security:
+          INSTALL_LOCK: true
+          REVERSE_PROXY_TRUSTED_PROXIES: 10.244.0.0/16
+        server:
+          APP_DATA_PATH: /data/gitea
+          DOMAIN: git.omux.io
+          MAX_UPLOAD_SIZE: 4096
+          ROOT_URL: https://git.omux.io
+          # Not git.omux.io: that name resolves to the internal gateway, which
+          # serves HTTP only. SSH needs the LoadBalancer address below.
+          SSH_DOMAIN: git-ssh.omux.io
+          SSH_LISTEN_PORT: 2222
+          SSH_PORT: 22
+          SSH_SERVER_HOST_KEYS: ssh/ssh_host_ed25519_key
+          START_SSH_SERVER: true
+        service:
+          DISABLE_REGISTRATION: true
+          ENABLE_NOTIFY_MAIL: true
+          SHOW_REGISTRATION_BUTTON: false
+        service.explore:
+          DISABLE_ORGANIZATIONS_PAGE: true
+          DISABLE_USERS_PAGE: true
+          REQUIRE_SIGNIN_VIEW: false
+        session:
+          PROVIDER: redis
+          PROVIDER_CONFIG: *redis
+          SESSION_LIFE_TIME: "1209600"
+        ui:
+          DEFAULT_THEME: forgejo-dark
+        webhook:
+          ALLOWED_HOST_LIST: "*"
+    httpRoute:
+      enabled: true
+      hostnames:
+        - git.omux.io
+      parentRefs:
+        - name: envoy-internal
+          namespace: networking
+          sectionName: https
+    service:
+      ssh:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: git-ssh.omux.io
+          lbipam.cilium.io/ips: 192.168.20.84
+        port: 22
+        type: LoadBalancer
+    postgresql:
+      enabled: false
+    postgresql-ha:
+      enabled: false
+    redis-cluster:
+      enabled: false
+    valkey-cluster:
+      enabled: false
+    test:
+      enabled: false
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        memory: 1Gi

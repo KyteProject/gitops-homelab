@@ -1,0 +1,109 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: trek
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      trek:
+        annotations:
+          reloader.stakater.com/auto: "true"
+          glance/description: Travel and trip planner
+          glance/icon: mdi:map-marker-path
+          glance/id: trek
+          glance/name: TREK
+          glance/url: https://trek.omux.io
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: docker.io/mauriceboe/trek
+              tag: 4.2.0@sha256:281a44079910053089a77be73ca2148a0e131c80ca728ca1f71a28133b2eaef4
+            env:
+              ALLOWED_ORIGINS: https://trek.omux.io
+              APP_URL: https://trek.omux.io
+              FORCE_HTTPS: "true"
+              NODE_ENV: production
+              PORT: &port 3000
+              TRUST_PROXY: "1"
+              TZ: Europe/London
+            envFrom:
+              - secretRef:
+                  name: trek-secret
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /api/health
+                    port: *port
+                  initialDelaySeconds: 15
+                  periodSeconds: 30
+              readiness: *probes
+            resources:
+              requests:
+                cpu: 50m
+                memory: 256Mi
+              limits:
+                memory: 512Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              # The image starts as root, chowns /app/data and /app/uploads to
+              # node, then drops to it with gosu. These are the capabilities
+              # that flow needs, and match what upstream's compose file grants.
+              capabilities:
+                drop: ["ALL"]
+                add: ["CHOWN", "SETUID", "SETGID"]
+    defaultPodOptions:
+      securityContext:
+        # Not negotiable for this image: the entrypoint chowns its data
+        # directories before dropping privileges, so it has to start as root.
+        # fsGroup is omitted because the app sets the ownership itself.
+        runAsNonRoot: false
+        runAsUser: 0
+        runAsGroup: 0
+        seccompProfile:
+          type: RuntimeDefault
+    persistence:
+      # Upstream keeps uploads on a second, unsnapshotted volume. One claim with
+      # two subPaths puts both under Kopiur instead.
+      data:
+        existingClaim: trek
+        advancedMounts:
+          trek:
+            app:
+              - path: /app/data
+                subPath: data
+              - path: /app/uploads
+                subPath: uploads
+      tmp:
+        type: emptyDir
+        globalMounts:
+          # XDG_CACHE_HOME points at /tmp/kf6-cache, so /tmp has to be writable
+          # for the itinerary extractor.
+          - path: /tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    service:
+      app:
+        controller: trek
+        ports:
+          http:
+            port: *port
