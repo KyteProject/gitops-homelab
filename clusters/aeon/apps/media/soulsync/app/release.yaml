@@ -20,8 +20,8 @@ spec:
               repository: docker.io/boulderbadgedad/soulsync
               tag: latest@sha256:307c4d0578ac42862f0ef8d1e71debd6ff8d59c1e7987f0c8572d7062ac34c55
             env:
-              PGID: "568"
-              PUID: "568"
+              PGID: "1000"
+              PUID: "1000"
               PYTHONPATH: /app
               SOULSYNC_CONFIG_PATH: /app/config/config.json
               TZ: Europe/London
@@ -49,12 +49,16 @@ spec:
               allowPrivilegeEscalation: false
               readOnlyRootFilesystem: false
               capabilities: { drop: ["ALL"] }
+    # This image manages its own user: the entrypoint runs groupmod to move its
+    # built-in uid/gid onto PUID/PGID, which needs them to already match or it
+    # fails with "groupmod: Permission denied" as an unprivileged user. It ships
+    # 1000, so 1000 it stays, and KOPIUR_MOVER_* in ks.yaml matches.
     defaultPodOptions:
       securityContext:
         runAsNonRoot: true
-        runAsUser: 568
-        runAsGroup: 568
-        fsGroup: 568
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
         fsGroupChangePolicy: OnRootMismatch
         supplementalGroups: [10000]
     # Upstream provisioned two inline PVCs; kopiur templates a single claim
