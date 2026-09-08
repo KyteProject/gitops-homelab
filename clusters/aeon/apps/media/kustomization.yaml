@@ -4,7 +4,7 @@ kind: Kustomization
 namespace: media
 resources:
   - namespace.yaml
-  - agregarr/ks.yaml
+  # - agregarr/ks.yaml
   - audiobookshelf/ks.yaml
   - autobrr/ks.yaml
   - bazarr/ks.yaml
