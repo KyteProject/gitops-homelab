@@ -81,8 +81,6 @@ spec:
         advancedMounts:
           qbittorrent:
             app:
-              - path: /config/qBittorrent/logs
-                subPath: logs
               - path: /tmp
                 subPath: tmp
     route:
