@@ -5,10 +5,18 @@ namespace: media
 resources:
   - namespace.yaml
   - agregarr/ks.yaml
+  - audiobookshelf/ks.yaml
   - autobrr/ks.yaml
   - bazarr/ks.yaml
+  - beets/ks.yaml
+  - bookboss/ks.yaml
   - brrpolice/ks.yaml
   - jellyfin/ks.yaml
+  - kavita/ks.yaml
+  - koito/ks.yaml
+  - komga/ks.yaml
+  # - maintainerr/ks.yaml
+  - musicgrabber/ks.yaml
   - navidrome/ks.yaml
   # - plex/ks.yaml
   - prowlarr/ks.yaml
@@ -19,7 +27,9 @@ resources:
   - sabnzbd/ks.yaml
   - seerr/ks.yaml
   - sonarr/ks.yaml
+  - soulsync/ks.yaml
   # - tautulli/ks.yaml
   - upbrr/ks.yaml
+  - wizarr/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace
