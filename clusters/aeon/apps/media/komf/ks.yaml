@@ -1,0 +1,28 @@
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1
+kind: Kustomization
+metadata:
+  name: komf
+spec:
+  components:
+    - ../../../../../../infrastructure/components/kopiur
+  dependsOn:
+    - name: onepassword-connect-store
+      namespace: external-secrets
+    - name: rook-ceph-cluster
+      namespace: rook-ceph
+  interval: 1h
+  path: ./clusters/aeon/apps/media/komf/app
+  postBuild:
+    substitute:
+      APP: komf
+      KOPIUR_CAPACITY: 2Gi
+      KOPIUR_MOVER_UID: 1000
+      KOPIUR_MOVER_GID: 1000
+      KOPIUR_MOVER_FSGROUP: 1000
+  prune: true
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+    namespace: flux-system
+  targetNamespace: media

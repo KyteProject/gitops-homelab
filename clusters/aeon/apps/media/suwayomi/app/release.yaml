@@ -1,0 +1,113 @@
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: suwayomi
+spec:
+  chartRef:
+    kind: OCIRepository
+    name: app-template
+    namespace: flux-system
+  interval: 1h
+  values:
+    controllers:
+      suwayomi:
+        annotations:
+          reloader.stakater.com/auto: "true"
+        strategy: Recreate
+        containers:
+          app:
+            image:
+              repository: ghcr.io/suwayomi/suwayomi-server
+              tag: v2.3.2360
+            # The wiki says settings are JVM flags only; the container image
+            # additionally rewrites server.conf from these on every start.
+            env:
+              TZ: Europe/London
+              BIND_IP: 0.0.0.0
+              BIND_PORT: &port 4567
+              WEB_UI_ENABLED: true
+              WEB_UI_FLAVOR: WebUI
+              # Komga reads .cbz, so downloads must be archives not loose pages.
+              DOWNLOAD_AS_CBZ: true
+              AUTO_DOWNLOAD_CHAPTERS: true
+              AUTO_DOWNLOAD_IGNORE_REUPLOADS: true
+              AUTO_DOWNLOAD_EXCLUDE_UNREAD: false
+              AUTO_DOWNLOAD_NEW_CHAPTERS_LIMIT: 0
+              UPDATE_INTERVAL: 12
+              MAX_SOURCES_IN_PARALLEL: 6
+            probes:
+              liveness: &probes
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  initialDelaySeconds: 0
+                  periodSeconds: 30
+                  timeoutSeconds: 10
+                  failureThreshold: 3
+              readiness: *probes
+              startup:
+                enabled: true
+                custom: true
+                spec:
+                  httpGet:
+                    path: /
+                    port: *port
+                  periodSeconds: 10
+                  failureThreshold: 60
+            resources:
+              requests:
+                cpu: 50m
+                memory: 512Mi
+              limits:
+                memory: 2Gi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: false
+              capabilities: { drop: ["ALL"] }
+    defaultPodOptions:
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        runAsGroup: 1000
+        fsGroup: 1000
+        fsGroupChangePolicy: OnRootMismatch
+        supplementalGroups: [10000]
+    # There is no env var for server.downloadsPath, so the share is mounted at
+    # the default downloads location instead of relocating it. Komga then reads
+    # the same directory.
+    persistence:
+      data:
+        existingClaim: "{{ .Release.Name }}"
+        globalMounts:
+          - path: /home/suwayomi/.local/share/Tachidesk
+      manga:
+        type: nfs
+        server: tank.lan
+        path: /mnt/tank/Media/media/manga
+        globalMounts:
+          - path: /home/suwayomi/.local/share/Tachidesk/downloads
+      tmpfs:
+        type: emptyDir
+        globalMounts:
+          - path: /tmp
+    route:
+      app:
+        hostnames:
+          - "{{ .Release.Name }}.omux.io"
+          - manga.omux.io
+        parentRefs:
+          - name: envoy-internal
+            namespace: networking
+        rules:
+          - backendRefs:
+              - identifier: app
+                port: *port
+    service:
+      app:
+        ports:
+          http:
+            port: *port
