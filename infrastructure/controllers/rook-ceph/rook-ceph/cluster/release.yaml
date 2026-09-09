@@ -67,6 +67,19 @@ spec:
           cluster: ["169.254.255.0/24"]
         connections:
           requireMsgr2: true
+      # CVE-2025-30156 remediation. Squid 19.2.6 added the aes256k CephX key type
+      # and flags the old `aes` keys, two of them at HEALTH_ERR, which blocks this
+      # HelmRelease and every Kustomization that dependsOn rook-ceph-cluster.
+      # Rotating via Rook rather than `ceph auth rotate` keeps the keyring Secrets
+      # in step; the raw command leaves them stale (rook#18240).
+      # csi keys stay on `aes` until the nodes run Talos v1.13.10, which backports
+      # aes256k to the 6.18 kernel. Bumping keyGeneration is one-way.
+      security:
+        cephx:
+          daemon:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
       storage:
         useAllNodes: true
         useAllDevices: false
