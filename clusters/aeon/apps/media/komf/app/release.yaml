@@ -14,6 +14,24 @@ spec:
       komf:
         annotations:
           reloader.stakater.com/auto: "true"
+        # komf 2.x calls ConfigLoader.loadDirectory, which throws
+        # NoSuchFileException if /config/application.yml is absent rather than
+        # falling back to defaults. Seed an empty one so the app can then manage
+        # it through its own config API; every real setting comes from KOMF_*
+        # env vars, which are applied after the file is read.
+        initContainers:
+          init-config:
+            image:
+              repository: docker.io/library/busybox
+              tag: "1.36"
+            command:
+              - sh
+              - -c
+              - "[ -f /config/application.yml ] || echo '{}' > /config/application.yml"
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities: { drop: ["ALL"] }
         containers:
           app:
             image:
