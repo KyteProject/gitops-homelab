@@ -31,6 +31,6 @@ resources:
   - suwayomi/ks.yaml
   # - tautulli/ks.yaml
   - upbrr/ks.yaml
-  - wizarr/ks.yaml
+  # - wizarr/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace

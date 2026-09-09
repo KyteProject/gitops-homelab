@@ -21,6 +21,16 @@
 - [ ] HA Dashboard for homelab/NAS
 - [ ] Documentation
 - [ ] Setup music systems (navidrome, tagging, organising .etc)
+- [ ] **Move the day-to-day git remote to forgejo, but leave the Flux sync source off-cluster.**
+      Forgejo now runs in `personal`, so hosting this repo on it is tempting. The catch is ordering,
+      not preference: the FluxInstance syncs `https://github.com/kyteproject/gitops-homelab` at
+      `./infrastructure/flux/cluster`, and that reconcile is what creates forgejo, so forgejo cannot
+      be the source at bootstrap. The expensive failure is not a dead cluster (nothing reconciles
+      then anyway) but a partial one - Flux up, rook-ceph or forgejo's PVC down - where Flux can no
+      longer fetch the fix for the thing that is broken. Shape that works: push to forgejo, let its
+      built-in push mirror replicate to GitHub, and keep the FluxInstance pointed at the mirror.
+      Restoring forgejo's Kopiur snapshot needs a cluster, kopiur and a ClusterRepository, all of
+      which come from this repo, so a copy has to live somewhere the cluster does not own.
 - [ ]
 
 ## Upgrade backlog
