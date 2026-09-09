@@ -17,9 +17,9 @@ spec:
     substitute:
       APP: komf
       KOPIUR_CAPACITY: 2Gi
-      KOPIUR_MOVER_UID: 1000
-      KOPIUR_MOVER_GID: 1000
-      KOPIUR_MOVER_FSGROUP: 1000
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGROUP: "1000"
   prune: true
   sourceRef:
     kind: GitRepository

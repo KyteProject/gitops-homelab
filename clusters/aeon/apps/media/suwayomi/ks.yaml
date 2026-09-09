@@ -17,9 +17,9 @@ spec:
       KOPIUR_CAPACITY: 10Gi
       # The image is USER suwayomi (uid 1000) with its home baked in, so the
       # mover has to match it rather than the 568 default.
-      KOPIUR_MOVER_UID: 1000
-      KOPIUR_MOVER_GID: 1000
-      KOPIUR_MOVER_FSGROUP: 1000
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGROUP: "1000"
   prune: true
   sourceRef:
     kind: GitRepository
