@@ -72,13 +72,21 @@ spec:
       # HelmRelease and every Kustomization that dependsOn rook-ceph-cluster.
       # Rotating via Rook rather than `ceph auth rotate` keeps the keyring Secrets
       # in step; the raw command leaves them stale (rook#18240).
-      # csi keys stay on `aes` until the nodes run Talos v1.13.10, which backports
-      # aes256k to the 6.18 kernel. Bumping keyGeneration is one-way.
+      # Bumping keyGeneration is one-way. csi waited for Talos v1.13.10, which
+      # backports aes256k to the 6.18 kernel; without it the krbd and kcephfs
+      # mounts cannot speak the new key type. keepPriorKeyCountMax keeps the
+      # previous generation valid so mounts already established stay up and
+      # migrate as their pods reschedule.
       security:
         cephx:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
+            keyType: aes256k
+          csi:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keepPriorKeyCountMax: 1
             keyType: aes256k
       storage:
         useAllNodes: true
