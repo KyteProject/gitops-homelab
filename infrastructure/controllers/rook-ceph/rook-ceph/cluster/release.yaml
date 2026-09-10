@@ -88,6 +88,12 @@ spec:
             keyGeneration: 2
             keepPriorKeyCountMax: 1
             keyType: aes256k
+          # Nothing mirrors here, but the entity exists and is counted by
+          # AUTH_INSECURE_CLIENT_KEY_TYPE until it carries a modern key.
+          rbdMirrorPeer:
+            keyRotationPolicy: KeyGeneration
+            keyGeneration: 2
+            keyType: aes256k
       storage:
         useAllNodes: true
         useAllDevices: false
