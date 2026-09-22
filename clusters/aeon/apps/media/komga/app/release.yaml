@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/gotson/komga
-              tag: 1.25.0@sha256:c4f9885fc077e2e9cd684dc95e8f6cfa5e33b100b46712b2de7f5cc2ff59e6fb
+              tag: 1.27.1@sha256:9cf102f5fb78e2e020700c53eca757e4f4d4e347121b0a16380822760337cca9
             env:
               TZ: Europe/London
               SERVER_PORT: &port 8080
