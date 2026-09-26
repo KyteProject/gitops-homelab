@@ -33,7 +33,7 @@ spec:
               # Not ghcr.io/johanohly/airtrail: that path denies anonymous pulls.
               # The project publishes to Docker Hub under johly.
               repository: docker.io/johly/airtrail
-              tag: v3.12.0@sha256:c5616704defabd82d2dde97e93a5417e59c7acfdb06c0e589209257543b50f8c
+              tag: v3.13.0@sha256:b49918c441cd52ffd2ef795738e58031abbcfd1e8094a4365672282bb6b805b1
             env:
               ORIGIN: https://airtrail.omux.io
               TZ: Europe/London
