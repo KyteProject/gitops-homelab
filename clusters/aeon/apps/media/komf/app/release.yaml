@@ -36,7 +36,7 @@ spec:
           app:
             image:
               repository: docker.io/sndxr/komf
-              tag: 2.0.1
+              tag: 2.1.0
             env:
               TZ: Europe/London
               # komga's SERVER_PORT is 8080 here, not the chart default 25600.
