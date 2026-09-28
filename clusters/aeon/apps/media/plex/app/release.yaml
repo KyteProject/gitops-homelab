@@ -16,7 +16,7 @@ spec:
           app:
             image:
               repository: ghcr.io/home-operations/plex-next
-              tag: 1.43.3.10896@sha256:bbf0f4390ab8fb68ada361c41f43c7b906c9879f15331210bc59bfd732fd9144
+              tag: 1.43.4.10903@sha256:bbc1f1443223674df777d0d87f755ecb809f2782fd645d51d3a1e6ac961e65bf
             env:
               PLEX_ADVERTISE_URL: https://{{ .Release.Name }}.omux.io:443
               PLEX_NO_AUTH_NETWORKS: 192.168.1.0/24,10.42.0.0/16,192.168.10.0/24
