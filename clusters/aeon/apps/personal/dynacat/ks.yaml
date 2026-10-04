@@ -2,18 +2,20 @@
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
 metadata:
-  name: homepage
+  name: dynacat
 spec:
   dependsOn:
     - name: onepassword-connect-store
       namespace: external-secrets
   interval: 1h
-  path: ./clusters/aeon/apps/personal/homepage/app
+  # Deliberately no postBuild block. The config carries ${JELLYFIN_TOKEN} and
+  # two NAVIDROME_* variables for Dynacat to expand from its own environment,
+  # and Flux only substitutes when postBuild is set. Adding one blanks them.
+  path: ./clusters/aeon/apps/personal/dynacat/app
   prune: true
   sourceRef:
     kind: GitRepository
     name: flux-system
     namespace: flux-system
   targetNamespace: personal
-  timeout: 5m
   wait: true

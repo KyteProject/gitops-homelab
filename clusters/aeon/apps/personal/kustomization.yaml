@@ -6,10 +6,10 @@ resources:
   - namespace.yaml
   # - actual/ks.yaml
   - airtrail/ks.yaml
+  - dynacat/ks.yaml
   # - hoarder/ks.yaml
   - forgejo/ks.yaml
-  - glance/ks.yaml
-  # - homepage/ks.yaml
+  # - glance/ks.yaml
   # - immich/ks.yaml
   - radicale/ks.yaml
   - paperless/ks.yaml

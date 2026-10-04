@@ -9,7 +9,7 @@ resources:
   - gatus/ks.yaml
   - grafana/ks.yaml
   - karma/ks.yaml
-  # - kromgo/ks.yaml
+  - kromgo/ks.yaml
   - krr/ks.yaml
   - kube-prometheus-stack/ks.yaml
   - silence-operator/ks.yaml
