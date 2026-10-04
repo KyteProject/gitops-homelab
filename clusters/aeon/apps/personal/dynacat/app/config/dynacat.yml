@@ -1,0 +1,569 @@
+server:
+  port: 80
+  proxied: true
+  # Dynacat creates this directory at startup, so it cannot sit on the read-only
+  # root filesystem. Backed by the emptyDir in release.yaml.
+  cache-dir: /cache
+
+branding:
+  app-name: aeon
+  logo-text: ae
+
+theme:
+  background-color: 222 16 7
+  primary-color: 142 55 58
+  positive-color: 142 55 58
+  negative-color: 358 70 62
+  contrast-multiplier: 1.3
+  text-saturation-multiplier: 0.9
+
+pages:
+  - name: Services
+    slug: services
+    head-widgets:
+      - type: rss
+        title: Reading
+        style: horizontal-cards
+        limit: 12
+        cache: 2h
+        feeds:
+          - url: https://selfh.st/rss/
+            title: selfh.st
+          - url: https://ciechanow.ski/atom.xml
+          - url: https://www.joshwcomeau.com/rss.xml
+            title: Josh Comeau
+          - url: https://samwho.dev/rss.xml
+          - url: https://ishadeed.com/feed.xml
+            title: Ahmad Shadeed
+          - url: https://awesomekling.github.io/feed.xml
+          - url: https://blog.cloudflare.com/rss
+            title: Cloudflare Blog
+
+    columns:
+      - size: full
+        widgets:
+          - type: split-column
+            max-columns: 2
+            widgets:
+              - type: monitor
+                title: Media
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: Jellyfin
+                    url: https://jellyfin.omux.io
+                    icon: sh:jellyfin
+                  - title: Navidrome
+                    url: https://music.omux.io
+                    icon: sh:navidrome
+                  - title: Komga
+                    url: https://komga.omux.io
+                    icon: sh:komga
+                  - title: Suwayomi
+                    url: https://manga.omux.io
+                    icon: sh:suwayomi
+                  - title: Audiobookshelf
+                    url: https://audiobookshelf.omux.io
+                    icon: sh:audiobookshelf
+                  - title: Bookboss
+                    url: https://bookboss.omux.io
+                    icon: mdi:bookshelf
+                  - title: Koito
+                    url: https://koito.omux.io
+                    icon: sh:koito
+
+              - type: monitor
+                title: Automation
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: Sonarr
+                    url: https://sonarr.omux.io
+                    icon: sh:sonarr
+                  - title: Radarr
+                    url: https://radarr.omux.io
+                    icon: sh:radarr
+                  - title: Prowlarr
+                    url: https://prowlarr.omux.io
+                    icon: sh:prowlarr
+                  - title: Bazarr
+                    url: https://bazarr.omux.io
+                    icon: sh:bazarr
+                  - title: Seerr
+                    url: https://requests.omux.io
+                    icon: sh:jellyseerr
+                  - title: Autobrr
+                    url: https://autobrr.omux.io
+                    icon: sh:autobrr
+                  - title: Upbrr
+                    url: https://upbrr.omux.io
+                    icon: mdi:arrow-up-box
+                  - title: Komf
+                    url: https://komf.omux.io
+                    icon: mdi:tag-text
+
+      - size: full
+        widgets:
+          - type: split-column
+            max-columns: 2
+            widgets:
+              - type: monitor
+                title: Downloaders
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: qBittorrent
+                    url: https://qb.omux.io
+                    icon: sh:qbittorrent
+                  - title: SABnzbd
+                    url: https://sab.omux.io
+                    icon: sh:sabnzbd
+                  - title: qui
+                    url: https://qui.omux.io
+                    icon: sh:qui
+                  - title: SoulSync
+                    url: https://soulsync.omux.io
+                    icon: mdi:music-box-multiple
+                  - title: Musicgrabber
+                    url: https://musicgrabber.omux.io
+                    icon: mdi:music-note
+                  - title: Beets
+                    url: https://beets.omux.io
+                    icon: sh:beets
+
+              - type: monitor
+                title: Tools
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: CyberChef
+                    url: https://cyberchef.omux.io
+                    icon: sh:cyberchef
+                  - title: IT Tools
+                    url: https://ittools.omux.io
+                    icon: sh:it-tools
+                  - title: Omni Tools
+                    url: https://omni.omux.io
+                    icon: mdi:wrench-cog
+                  - title: ChartDB
+                    url: https://chartdb.omux.io
+                    icon: mdi:table-eye
+                  - title: Docmost
+                    url: https://docmost.omux.io
+                    icon: sh:docmost
+                  - title: LeafWiki
+                    url: https://leafwiki.omux.io
+                    icon: sh:leafwiki
+                  # changedetection and windmill are commented out of
+                  # clusters/aeon/apps/tools/kustomization.yaml, so they have no
+                  # route to check. Drop `disabled` when they come back.
+                  - title: Changedetection
+                    url: https://changedetection.omux.io
+                    icon: sh:changedetection
+                    disabled: true
+                  - title: Atuin
+                    url: https://sh.omux.io
+                    icon: sh:atuin
+                  - title: Windmill
+                    url: https://windmill.omux.io
+                    icon: sh:windmill
+                    disabled: true
+
+          - type: split-column
+            max-columns: 2
+            widgets:
+              - type: monitor
+                title: Personal
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: Paperless
+                    url: https://paperless.omux.io
+                    icon: sh:paperless-ngx
+                  - title: Radicale
+                    url: https://cal.omux.io
+                    icon: sh:radicale
+                  - title: The Lounge
+                    url: https://irc.omux.io
+                    icon: sh:the-lounge
+                  - title: Trek
+                    url: https://trek.omux.io
+                    icon: sh:trek
+                  - title: AirTrail
+                    url: https://airtrail.omux.io
+                    icon: sh:airtrail
+                  - title: Forgejo
+                    url: https://git.omux.io
+                    icon: sh:forgejo
+                  - title: Glance
+                    url: https://g.omux.io
+                    icon: sh:glance
+
+              - type: monitor
+                title: Home
+                cache: 2m
+                style: compact
+                show-history: true
+                sites:
+                  - title: Home Assistant
+                    url: https://hass.omux.io
+                    icon: sh:home-assistant
+                  - title: Zigbee2MQTT
+                    url: https://zigbee.omux.io
+                    icon: sh:zigbee2mqtt
+
+      - size: small
+        widgets:
+          - type: playing
+            title: Now Playing
+            cache: 30s
+            hosts:
+              - url: jellyfin:http://jellyfin.media.svc.cluster.local:8096
+                token: ${JELLYFIN_TOKEN}
+              - url: navidrome:http://navidrome.media.svc.cluster.local:8080
+                username: ${NAVIDROME_USERNAME}
+                token: ${NAVIDROME_PASSWORD}
+
+          - type: custom-api
+            title: Cluster
+            title-url: /cluster
+            cache: 1m
+            url: http://kromgo.monitoring.svc.cluster.local/cluster_node_count
+            subrequests:
+              pods:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_pod_count
+              cpu:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_cpu_usage
+              memory:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_memory_usage
+              alerts:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_alert_count
+            template: |
+              <div class="flex flex-column gap-10">
+                <div class="flex items-center">
+                  <div class="color-subdue">Nodes</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ .JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Pods</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "pods").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">CPU</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "cpu").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Memory</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "memory").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Alerts</div>
+                  <div class="value-separator"></div>
+                  {{ $alerts := (.Subrequest "alerts").JSON.Int "message" }}
+                  <div class="{{ if gt $alerts 0 }}color-negative{{ else }}color-positive{{ end }}">{{ $alerts }}</div>
+                </div>
+              </div>
+
+          - type: bookmarks
+            groups:
+              - title: Platform
+                links:
+                  - title: Grafana
+                    url: https://grafana.omux.io
+                  - title: Gatus
+                    url: https://status.omux.io
+                  - title: Flux
+                    url: https://flux.omux.io
+                  - title: Forgejo
+                    url: https://git.omux.io
+              - title: Identity
+                links:
+                  - title: Authentik
+                    url: https://auth.omux.io
+
+  - name: Cluster
+    slug: cluster
+    columns:
+      - size: small
+        widgets:
+          - type: custom-api
+            title: Versions
+            cache: 10m
+            url: http://kromgo.monitoring.svc.cluster.local/talos_version
+            subrequests:
+              kubernetes:
+                url: http://kromgo.monitoring.svc.cluster.local/kubernetes_version
+              flux:
+                url: http://kromgo.monitoring.svc.cluster.local/flux_version
+              age:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_age_days
+              uptime:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_uptime_days
+            template: |
+              <div class="flex flex-column gap-10">
+                <div class="flex items-center">
+                  <div class="color-subdue">Talos</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ .JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Kubernetes</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "kubernetes").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Flux</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "flux").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Cluster age</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "age").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Node uptime</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "uptime").JSON.String "message" }}</div>
+                </div>
+              </div>
+
+          - type: custom-api
+            title: Storage
+            title-url: https://rook.omux.io
+            cache: 1m
+            url: http://kromgo.monitoring.svc.cluster.local/cluster_ceph_health
+            subrequests:
+              usage:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_ceph_usage
+              capacity:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_ceph_capacity
+              osds:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_ceph_osds_up
+            template: |
+              <div class="flex flex-column gap-10">
+                <div class="flex items-center">
+                  <div class="color-subdue">Ceph</div>
+                  <div class="value-separator"></div>
+                  {{ $health := .JSON.String "message" }}
+                  <div class="{{ if eq $health "OK" }}color-positive{{ else }}color-negative{{ end }}">{{ $health }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Used</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "usage").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Capacity</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "capacity").JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">OSDs up</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "osds").JSON.String "message" }}</div>
+                </div>
+              </div>
+
+          - type: custom-api
+            title: GPU
+            cache: 1m
+            url: http://kromgo.monitoring.svc.cluster.local/cluster_gpu_usage
+            subrequests:
+              power:
+                url: http://kromgo.monitoring.svc.cluster.local/cluster_gpu_power
+            template: |
+              <div class="flex flex-column gap-10">
+                <div class="flex items-center">
+                  <div class="color-subdue">Busiest engine</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ .JSON.String "message" }}</div>
+                </div>
+                <div class="flex items-center">
+                  <div class="color-subdue">Draw</div>
+                  <div class="value-separator"></div>
+                  <div class="color-highlight">{{ (.Subrequest "power").JSON.String "message" }}</div>
+                </div>
+              </div>
+
+      - size: full
+        widgets:
+          - type: extension
+            url: http://dynacat-k8s-extension:8080/extension/nodes
+            allow-potentially-dangerous-html: true
+            cache: 1m
+
+          - type: extension
+            url: http://dynacat-k8s-extension:8080/extension/apps
+            allow-potentially-dangerous-html: true
+            cache: 1m
+            parameters:
+              # Expression over the workload's namespace, name and annotations.
+              # Only /extension/apps reads this; /extension/nodes ignores it.
+              show-if: |
+                namespace != "kube-system" &&
+                ("glance/hide" not in annotations || annotations["glance/hide"] != "true")
+
+      - size: small
+        widgets:
+          - type: monitor
+            title: Platform
+            cache: 2m
+            style: compact
+            show-history: true
+            sites:
+              - title: Grafana
+                url: https://grafana.omux.io
+                icon: sh:grafana
+              - title: Prometheus
+                url: https://prometheus.omux.io
+                icon: sh:prometheus
+              - title: Alertmanager
+                url: https://alertmanager.omux.io
+                icon: mdi:bell-alert
+              - title: Karma
+                url: https://karma.omux.io
+                icon: mdi:view-dashboard
+              - title: Gatus
+                url: https://status.omux.io
+                icon: sh:gatus
+              - title: VictoriaLogs
+                url: https://vlogs.omux.io
+                icon: sh:victorialogs
+              - title: Flux
+                url: https://flux.omux.io
+                icon: di:flux-cd
+              - title: Rook Ceph
+                url: https://rook.omux.io
+                icon: di:rook
+              - title: Kopia
+                url: https://kopia.omux.io
+                icon: sh:kopia
+              - title: Databasus
+                url: https://databasus.omux.io
+                icon: di:databasus
+              - title: Authentik
+                url: https://auth.omux.io
+                icon: sh:authentik
+
+          - type: speedtest
+            title: Internet
+            cache: 6h
+
+  - name: Feed
+    slug: feed
+    columns:
+      - size: small
+        widgets:
+          - type: search
+            search-engine: DuckDuckGo
+
+          - type: rss
+            limit: 10
+            collapse-after: 3
+            cache: 3h
+            feeds:
+              - url: https://ciechanow.ski/atom.xml
+              - url: https://www.joshwcomeau.com/rss.xml
+                title: Josh Comeau
+              - url: https://samwho.dev/rss.xml
+              - url: https://awesomekling.github.io/feed.xml
+              - url: https://ishadeed.com/feed.xml
+                title: Ahmad Shadeed
+              - url: https://selfh.st/rss/
+                title: selfh.st
+                limit: 5
+              - url: https://blog.cloudflare.com/rss
+                title: Cloudflare Blog
+
+          - type: lobsters
+            collapse-after: 5
+            sort-by: hot
+            tags:
+              - linux
+              - programming
+              - rust
+              - homelab
+              - kubernetes
+              - cloud
+              - networking
+              - security
+              - automation
+              - go
+              - golang
+
+          - type: twitch-channels
+            channels:
+              - theprimeagen
+
+      - size: full
+        widgets:
+          - type: hacker-news
+
+          - type: videos
+            channels:
+              - UCR-DXc1voovS8nhAvccRZhg # Jeff Geerling
+              - UCv6J_jJa8GJqFwQNgNrMuww # ServeTheHome
+              - UCOk-gHyjcWZNj3Br4oxwh0A # Techno Tim
+              - UC4w1YQAJMWOz4qtxinq55LQ # Level1Techs
+              - UC1LpsuAUaKoMzzJSEt5WImw # Asianometry
+              - UCSNsJvvc3LarXVkJ2H6e2zQ # Michael Hendriks
+              - UCHnyfMqiRRG1u-2MsSQLbXA # Veritasium
+              - UCYO_jab_esuFRV4b17AJtAw # 3Blue1Brown
+              - UCIZa-t5ctYtAn6BruNTxxwQ # Clockwork
+
+          - type: reddit
+            subreddit: selfhosted
+
+      - size: small
+        widgets:
+          - type: bookmarks
+            groups:
+              - title: Music Production
+                links:
+                  - title: Audioz
+                    url: https://audioz.download/
+                  - title: Trex | Patreon
+                    url: https://www.patreon.com/c/Trexdnb1/posts
+                  - title: Sample Genie
+                    url: https://sample-genie.com
+                  - title: MVSep
+                    url: https://mvsep.com
+
+              - title: DevOps
+                links:
+                  - title: Artifacthub
+                    url: https://artifacthub.io
+                  - title: k8s-at-home-search
+                    url: https://nanne.dev/k8s-at-home-search/
+
+              - title: Hacking
+                links:
+                  - title: Shodan
+                    url: https://shodan.io
+                  - title: Intelx
+                    url: https://intelx.io
+                  - title: Greynoise
+                    url: https://greynoise.io
+                  - title: GrayHatWarfare
+                    url: https://grayhatwarfare.com
+                  - title: BGP View
+                    url: https://bgp.he.net
+                  - title: ViewDNS
+                    url: https://viewdns.info
+                  - title: DNSChecker
+                    url: https://dnschecker.org
+
+          - type: repository
+            repository: kyteproject/gitops-homelab
+            pull-requests-limit: 5
+            issues-limit: 3
