@@ -84,3 +84,57 @@ metrics:
       - { color: "green", min: 0, max: 0 }
       - { color: "red", min: 1, max: 9999 }
     title: Alerts
+
+  - name: cluster_ceph_health
+    query: ceph_health_status
+    colors:
+      - { color: green, min: 0, max: 0, valueOverride: OK }
+      - { color: orange, min: 1, max: 1, valueOverride: WARN }
+      - { color: red, min: 2, max: 9999, valueOverride: ERR }
+    title: Ceph
+
+  - name: cluster_ceph_usage
+    query: round(ceph_cluster_total_used_bytes / ceph_cluster_total_bytes * 100,
+      0.1)
+    suffix: "%"
+    colors:
+      - { color: green, min: 0, max: 70 }
+      - { color: orange, min: 71, max: 85 }
+      - { color: red, min: 86, max: 9999 }
+    title: Ceph used
+
+  - name: cluster_ceph_capacity
+    query: round(ceph_cluster_total_bytes / 1024 / 1024 / 1024 / 1024, 0.1)
+    suffix: TiB
+    colors:
+      - { color: green, min: 0, max: 9999 }
+    title: Ceph capacity
+
+  - name: cluster_ceph_osds_up
+    query: count(ceph_osd_up == 1)
+    colors:
+      - { color: red, min: 0, max: 2 }
+      - { color: green, min: 3, max: 9999 }
+    title: OSDs up
+
+  # drm-exporter reports a 0 to 1 ratio per engine. The busiest engine is the
+  # useful number: a Jellyfin transcode loads video, not render.
+  - name: cluster_gpu_usage
+    query: round(max(drm_engine_utilization_ratio) * 100, 0.1)
+    suffix: "%"
+    colors:
+      - { color: green, min: 0, max: 35 }
+      - { color: orange, min: 36, max: 75 }
+      - { color: red, min: 76, max: 9999 }
+    title: GPU
+
+  # domain="gpu" is the GPU tile alone. The package domain would include the
+  # whole CPU package and read about 16w per node at idle.
+  - name: cluster_gpu_power
+    query: round(sum(drm_power_watts{domain="gpu"}), 0.1)
+    suffix: w
+    colors:
+      - { color: green, min: 0, max: 30 }
+      - { color: orange, min: 31, max: 60 }
+      - { color: red, min: 61, max: 9999 }
+    title: GPU power
