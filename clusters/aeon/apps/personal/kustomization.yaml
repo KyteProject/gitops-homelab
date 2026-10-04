@@ -9,7 +9,6 @@ resources:
   - dynacat/ks.yaml
   # - hoarder/ks.yaml
   - forgejo/ks.yaml
-  # - glance/ks.yaml
   # - immich/ks.yaml
   - radicale/ks.yaml
   - paperless/ks.yaml
