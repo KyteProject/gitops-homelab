@@ -1,6 +1,12 @@
 server:
   port: 80
   proxied: true
+  # 3.0.0 defaults this to true (internal/dynacat/config.go sets it before the
+  # YAML is unmarshalled), which exposes the config editor to anyone who can
+  # reach the service. The config is a read-only ConfigMap from git, so editing
+  # it from a browser is wrong here regardless. ENABLE_EDITOR=false in the
+  # HelmRelease switches the editor off outright as well.
+  allow-editing: false
   # Dynacat creates this directory at startup, so it cannot sit on the read-only
   # root filesystem. Backed by the emptyDir in release.yaml.
   cache-dir: /cache
@@ -200,9 +206,6 @@ pages:
                   - title: Forgejo
                     url: https://git.omux.io
                     icon: sh:forgejo
-                  - title: Glance
-                    url: https://g.omux.io
-                    icon: sh:glance
 
               - type: monitor
                 title: Home

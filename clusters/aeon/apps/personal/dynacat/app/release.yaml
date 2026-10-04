@@ -23,6 +23,9 @@ spec:
               tag: 3.0.0@sha256:974563ad02c190f6a3e1240a096b8927136145956f2c202c17ffbb47d5a9c367
             env:
               TZ: Europe/London
+              # Belt and braces with server.allow-editing: false. This disables
+              # the whole editor subsystem rather than just the write path.
+              ENABLE_EDITOR: "false"
             envFrom:
               - secretRef:
                   name: dynacat-secret
