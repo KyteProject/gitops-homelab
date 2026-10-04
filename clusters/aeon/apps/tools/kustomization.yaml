@@ -5,7 +5,7 @@ namespace: tools
 resources:
   - namespace.yaml
   - atuin/ks.yaml
-  - changedetection/ks.yaml
+  # - changedetection/ks.yaml
   - chartdb/ks.yaml
   - cyberchef/ks.yaml
   - docmost/ks.yaml
@@ -14,6 +14,6 @@ resources:
   - leafwiki/ks.yaml
   - omni-tools/ks.yaml
   - tika/ks.yaml
-  - windmill/ks.yaml
+  # - windmill/ks.yaml
 components:
   - ../../../../infrastructure/components/namespace
