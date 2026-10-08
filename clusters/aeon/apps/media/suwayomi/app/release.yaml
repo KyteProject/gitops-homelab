@@ -19,7 +19,7 @@ spec:
           app:
             image:
               repository: ghcr.io/suwayomi/suwayomi-server
-              tag: v2.4.2378
+              tag: v2.4.2422
             # The wiki says settings are JVM flags only; the container image
             # additionally rewrites server.conf from these on every start.
             env:
