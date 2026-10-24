@@ -31,7 +31,7 @@ spec:
           app:
             image:
               repository: docker.io/docmost/docmost
-              tag: 0.96.0@sha256:b56947fcfd08aab8fae12a377e1792784786adbf8b96e4281f14ef4fc072685a
+              tag: 0.97.0@sha256:43990f100cda8a1edf1103b97a9842d2bb5a8959b8f042c8ba42295937e29527
             env:
               APP_URL: https://docmost.omux.io
               MAIL_DRIVER: smtp
