@@ -18,7 +18,7 @@ spec:
           app:
             image:
               repository: docker.io/boulderbadgedad/soulsync
-              tag: latest@sha256:0b00d6e658d52817775260430d8a4d1ac9a0009cf0b147561fc0f7f47074c2ac
+              tag: latest@sha256:4f9b5a3d39f0585228020045da088098773371582f80e91c5c6ba52ce5036404
             env:
               PGID: "1000"
               PUID: "1000"
