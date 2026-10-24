@@ -6,6 +6,8 @@ metadata:
   labels:
     dashboards: grafana
 spec:
+  # renovate: datasource=docker depName=docker.io/grafana/grafana
+  version: 12.4.13
   config:
     analytics:
       check_for_updates: "false"
