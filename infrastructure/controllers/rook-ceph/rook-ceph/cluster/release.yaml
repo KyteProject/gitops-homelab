@@ -74,19 +74,20 @@ spec:
       # in step; the raw command leaves them stale (rook#18240).
       # Bumping keyGeneration is one-way. csi waited for Talos v1.13.10, which
       # backports aes256k to the 6.18 kernel; without it the krbd and kcephfs
-      # mounts cannot speak the new key type. keepPriorKeyCountMax keeps the
-      # previous generation valid so mounts already established stay up and
-      # migrate as their pods reschedule.
+      # mounts cannot speak the new key type. Every node rebooted onto Talos
+      # v1.14.4 after the csi rotation, so no mount still holds a prior-generation
+      # key and keepPriorKeyCountMax: 0 retires the legacy aes csi entities.
+      # daemon.keyType is left unset: Rook autodetects aes256k, and setting it
+      # makes Rook start the mons with --mon-auth-emergency-allowed-ciphers.
       security:
         cephx:
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-            keyType: aes256k
           csi:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
-            keepPriorKeyCountMax: 1
+            keepPriorKeyCountMax: 0
             keyType: aes256k
           # Nothing mirrors here, but the entity exists and is counted by
           # AUTH_INSECURE_CLIENT_KEY_TYPE until it carries a modern key.
