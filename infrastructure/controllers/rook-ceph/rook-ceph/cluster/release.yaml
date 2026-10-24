@@ -81,6 +81,11 @@ spec:
       # makes Rook start the mons with --mon-auth-emergency-allowed-ciphers.
       security:
         cephx:
+          # Every key reported aes256k in `ceph auth dump-keys` before this was set.
+          # Rook warns that an aes daemon key left behind makes the cluster refuse
+          # connections; see the allowedCiphers workaround in Rook's cephx docs.
+          allowedCiphers:
+            - aes256k
           daemon:
             keyRotationPolicy: KeyGeneration
             keyGeneration: 2
