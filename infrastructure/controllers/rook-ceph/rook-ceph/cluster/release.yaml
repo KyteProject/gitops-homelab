@@ -28,7 +28,7 @@ spec:
     # separate and do the Ceph major as its own deliberate change.
     cephImage:
       repository: quay.io/ceph/ceph
-      tag: v19.2.7
+      tag: v20.2.4
     monitoring:
       enabled: true
       createPrometheusRules: true
