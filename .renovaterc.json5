@@ -42,4 +42,15 @@
       '/(^|/)(bootstrap|clusters|infrastructure)/.+\\.ya?ml$/',
     ],
   },
+  packageRules: [
+    {
+      // Ceph has no pre-release suffix: x.0.z is development, x.1.z is a
+      // release candidate and x.2.z onwards is stable. Renovate sees v21.1.2
+      // as a normal release, so only offer stable point releases.
+      description: 'Only stable Ceph releases',
+      matchDatasources: ['docker'],
+      matchPackageNames: ['quay.io/ceph/ceph'],
+      allowedVersions: '/^v\\d+\\.2\\.\\d+$/',
+    },
+  ],
 }
