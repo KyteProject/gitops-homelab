@@ -14,6 +14,9 @@ spec:
   postBuild:
     substitute:
       APP: upbrr
+      KOPIUR_MOVER_UID: "1000"
+      KOPIUR_MOVER_GID: "1000"
+      KOPIUR_MOVER_FSGROUP: "1000"
       KOPIUR_CAPACITY: 5Gi
   prune: true
   sourceRef:
