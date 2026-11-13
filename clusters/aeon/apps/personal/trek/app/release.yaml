@@ -24,7 +24,7 @@ spec:
           app:
             image:
               repository: docker.io/mauriceboe/trek
-              tag: 5.0.1@sha256:6f590b97c09158e92e9bc7d914ea1af207077735f07f7b622b1f6fb690442bc3
+              tag: 5.1.4@sha256:991ff5aa53244b25d5a8ea40361dc286cfc8211638044eabe12b9926729db5cc
             env:
               ALLOWED_ORIGINS: https://trek.omux.io
               APP_URL: https://trek.omux.io
