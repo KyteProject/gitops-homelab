@@ -20,7 +20,7 @@ spec:
           app:
             image:
               repository: mirror.gcr.io/cloudflare/cloudflared
-              tag: 2026.10.6@sha256:004d843fa5fdc3103983fd580ee19fab4a8fa98add31f87249c1659e848c98e0
+              tag: 2026.11.1@sha256:e613aadbc2d9511785d2e67a86b0c8ac18dd63a3f9af0d06faf04cbfdcb35f2d
             args:
               - tunnel
               - run
