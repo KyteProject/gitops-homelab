@@ -26,7 +26,7 @@ spec:
           copy-ui:
             image:
               repository: docker.io/databasus/databasus
-              tag: v3.64.0@sha256:a4bbf8b285c54f76c61a997d604cb22d7f53a01fe72b644a8abdb9b5b4cc82a5
+              tag: v3.71.0@sha256:ed28097ee88ce0754516e9115b10f3876b96920bcf39d9f35ee71222bd3a334d
             # -r not -a: -a preserves timestamps, which a non-root container cannot
             # set on the emptyDir mount root ("cp: preserving times ... not permitted")
             command: ["sh", "-c", "cp -r /app/ui/build/. /ui-build/"]
@@ -38,7 +38,7 @@ spec:
           app:
             image:
               repository: docker.io/databasus/databasus
-              tag: v3.64.0@sha256:a4bbf8b285c54f76c61a997d604cb22d7f53a01fe72b644a8abdb9b5b4cc82a5
+              tag: v3.71.0@sha256:ed28097ee88ce0754516e9115b10f3876b96920bcf39d9f35ee71222bd3a334d
             env:
               TZ: Europe/London
             probes:
